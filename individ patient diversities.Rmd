@@ -1,0 +1,1221 @@
+---
+title: "Inidividual diversities"
+author: "Tess Attenborough"
+date: "03/05/2020"
+output: html_document
+---
+
+
+```{r}
+diversities_theALL <- read.csv('diversity_data.csv', stringsAsFactors = F) #no diversities below 400
+
+```
+
+
+```{r}
+#diversity and clonotype plots for patient A
+
+CVG001_info<- subset(diversities_theALL, subset=(diversities_theALL$ID=="CVG001"))
+
+#gini
+p1 = ggplot(CVG001_info, aes(x=Days_post, y=Observed, color=ID, fill=ID)) +
+  geom_point(size = 8) + theme(axis.title.x = element_text(size=5),
+                               axis.text.x  = element_text(angle=90, vjust=0.5, size=5)) + 
+  geom_line() + labs(title = "Observed OTUs", x = "Days", y = "Number of observed OTUs")  +
+    scale_color_manual(labels = c("CVG001"), values = c('#E75B64')) +
+  theme_bw() + guides(fill=FALSE, color = FALSE)+ theme(
+    plot.title = element_text(color="black", size=24, face="bold"),
+    axis.title.x = element_text(color="black", size=24, face="bold"),
+    axis.title.y = element_text(color="black", size=24, face="bold"),
+    axis.text=element_text(size=26),
+    legend.title = element_text(color = "black", size = 26),
+    legend.text = element_text(color = "black", size = 24)
+  )  +geom_line(aes(group=ID), size =2) + scale_x_continuous(breaks = integer_breaks())+ coord_cartesian(ylim = c(0, 65))
+p1
+ggsave("CVG001_info_observed.pdf", width = 25, height = 20, units = c('cm'))
+
+#shannon
+p2 = ggplot(CVG001_info, aes(x=Days_post, y=Shannon, color=ID, fill=ID)) +
+  geom_point(size = 8) + theme(axis.title.x = element_text(size=5),
+                               axis.text.x  = element_text(angle=90, vjust=0.5, size=5)) + 
+  geom_line() + labs(title = "Shannon entropy", x = "Days", y = "Shannon entropy", color = "Days_post") +
+      scale_color_manual(labels = c("CVG001"), values = c("#5C5992FF")) +
+  theme_bw() + guides(fill=FALSE, color = FALSE)+ theme(
+    plot.title = element_text(color="black", size=24, face="bold"),
+    axis.title.x = element_text(color="black", size=24, face="bold"),
+    axis.title.y = element_text(color="black", size=24, face="bold"),
+    axis.text=element_text(size=26),
+    legend.title = element_text(color = "black", size = 26),
+    legend.text = element_text(color = "black", size = 24)
+  )+geom_line(aes(group=ID), size =2) + scale_x_continuous(breaks = integer_breaks())+ coord_cartesian(ylim = c(0, 3.2))
+p2
+ggsave("CVG001_info_shannon.pdf", width = 25, height = 20, units = c('cm'))
+
+#gini
+p3 = ggplot(CVG001_info, aes(x=Days_post, y=Gini_coefficient, color=ID, fill=ID)) +
+  geom_point(size = 8) + theme(axis.title.x = element_text(size=5),
+                               axis.text.x  = element_text(angle=90, vjust=0.5, size=5)) + 
+  geom_line() + labs(title = "Gini coefficient", x = "Days", y = "Gini coefficient") +
+      scale_color_manual(labels = c("CVG001"), values = c("#008E90FF")) +
+  theme_bw() + guides(fill=FALSE, color = FALSE)+ theme(
+    plot.title = element_text(color="black", size=24, face="bold"),
+    axis.title.x = element_text(color="black", size=24, face="bold"),
+    axis.title.y = element_text(color="black", size=24, face="bold"),
+    axis.text=element_text(size=26),
+    legend.title = element_text(color = "black", size = 26),
+    legend.text = element_text(color = "black", size = 24)
+  )+geom_line(aes(group=ID), size =2) + scale_x_continuous(breaks = integer_breaks())+ coord_cartesian(ylim = c(0.95, 1))
+p3
+ggsave("CVG001_info_gini.pdf", width = 25, height = 20, units = c('cm'))
+
+
+p1 / p2 /
+  p3 + plot_layout(guides = 'collect', ncol = 1)
+ggsave("CVG001_info_all_the_diversities.pdf", width = 32, height = 35, units = c('cm'))
+
+```
+
+```{r}
+CVG002_info<- subset(diversities_theALL, subset=(diversities_theALL$ID=="CVG002"))
+
+#gini
+p1 = ggplot(CVG002_info, aes(x=Days_post, y=Observed, color=ID, fill=ID)) +
+  geom_point(size = 8) + theme(axis.title.x = element_text(size=5),
+                               axis.text.x  = element_text(angle=90, vjust=0.5, size=5)) + 
+  geom_line() + labs(title = "Observed OTUs", x = "Days", y = "Number of observed OTUs")  +
+    scale_color_manual(labels = c("CVG002"), values = c('#E75B64')) +
+  theme_bw() + guides(fill=FALSE, color = FALSE)+ theme(
+    plot.title = element_text(color="black", size=24, face="bold"),
+    axis.title.x = element_text(color="black", size=24, face="bold"),
+    axis.title.y = element_text(color="black", size=24, face="bold"),
+    axis.text=element_text(size=26),
+    legend.title = element_text(color = "black", size = 26),
+    legend.text = element_text(color = "black", size = 24)
+  )  +geom_line(aes(group=ID), size =2) + scale_x_continuous(breaks = integer_breaks())+ coord_cartesian(ylim = c(0, 65))
+p1
+ggsave("CVG002_info_observed.pdf", width = 25, height = 20, units = c('cm'))
+
+#shannon
+p2 = ggplot(CVG002_info, aes(x=Days_post, y=Shannon, color=ID, fill=ID)) +
+  geom_point(size = 8) + theme(axis.title.x = element_text(size=5),
+                               axis.text.x  = element_text(angle=90, vjust=0.5, size=5)) + 
+  geom_line() + labs(title = "Shannon entropy", x = "Days", y = "Shannon entropy", color = "Number_of_days_post_transplant") +
+      scale_color_manual(labels = c("CVG002"), values = c("#5C5992FF")) +
+  theme_bw() + guides(fill=FALSE, color = FALSE)+ theme(
+    plot.title = element_text(color="black", size=24, face="bold"),
+    axis.title.x = element_text(color="black", size=24, face="bold"),
+    axis.title.y = element_text(color="black", size=24, face="bold"),
+    axis.text=element_text(size=26),
+    legend.title = element_text(color = "black", size = 26),
+    legend.text = element_text(color = "black", size = 24)
+  )+geom_line(aes(group=ID), size =2) + scale_x_continuous(breaks = integer_breaks())+ coord_cartesian(ylim = c(0, 3.2))
+p2
+ggsave("CVG002_info_shannon.pdf", width = 25, height = 20, units = c('cm'))
+
+#gini
+p3 = ggplot(CVG002_info, aes(x=Days_post, y=Gini_coefficient, color=ID, fill=ID)) +
+  geom_point(size = 8) + theme(axis.title.x = element_text(size=5),
+                               axis.text.x  = element_text(angle=90, vjust=0.5, size=5)) + 
+  geom_line() + labs(title = "Gini coefficient", x = "Days", y = "Gini coefficient") +
+      scale_color_manual(labels = c("CVG002"), values = c("#008E90FF")) +
+  theme_bw() + guides(fill=FALSE, color = FALSE)+ theme(
+    plot.title = element_text(color="black", size=24, face="bold"),
+    axis.title.x = element_text(color="black", size=24, face="bold"),
+    axis.title.y = element_text(color="black", size=24, face="bold"),
+    axis.text=element_text(size=26),
+    legend.title = element_text(color = "black", size = 26),
+    legend.text = element_text(color = "black", size = 24)
+  )+geom_line(aes(group=ID), size =2) + scale_x_continuous(breaks = integer_breaks())+ coord_cartesian(ylim = c(0.95, 1))
+p3
+ggsave("CVG002_info_gini.pdf", width = 25, height = 20, units = c('cm'))
+
+
+p1 / p2 /
+  p3 + plot_layout(guides = 'collect', ncol = 1)
+ggsave("CVG002_info_all_the_diversities.pdf", width = 32, height = 35, units = c('cm'))
+```
+
+```{r}
+CVG003_info<- subset(diversities_theALL, subset=(diversities_theALL$ID=="CVG003"))
+
+#gini
+p1 = ggplot(CVG003_info, aes(x=Days_post, y=Observed, color=ID, fill=ID)) +
+  geom_point(size = 8) + theme(axis.title.x = element_text(size=5),
+                               axis.text.x  = element_text(angle=90, vjust=0.5, size=5)) + 
+  geom_line() + labs(title = "Observed OTUs", x = "Days", y = "Number of observed OTUs")  +
+    scale_color_manual(labels = c("CVG003"), values = c('#E75B64')) +
+  theme_bw() + guides(fill=FALSE, color = FALSE)+ theme(
+    plot.title = element_text(color="black", size=24, face="bold"),
+    axis.title.x = element_text(color="black", size=24, face="bold"),
+    axis.title.y = element_text(color="black", size=24, face="bold"),
+    axis.text=element_text(size=26),
+    legend.title = element_text(color = "black", size = 26),
+    legend.text = element_text(color = "black", size = 24)
+  )  +geom_line(aes(group=ID), size =2) + scale_x_continuous(breaks = integer_breaks())+ coord_cartesian(ylim = c(0, 65))
+p1
+ggsave("CVG003_info_observed.pdf", width = 25, height = 20, units = c('cm'))
+
+#shannon
+p2 = ggplot(CVG003_info, aes(x=Days_post, y=Shannon, color=ID, fill=ID)) +
+  geom_point(size = 8) + theme(axis.title.x = element_text(size=5),
+                               axis.text.x  = element_text(angle=90, vjust=0.5, size=5)) + 
+  geom_line() + labs(title = "Shannon entropy", x = "Days", y = "Shannon entropy", color = "Number_of_days_post_transplant") +
+      scale_color_manual(labels = c("CVG003"), values = c("#5C5992FF")) +
+  theme_bw() + guides(fill=FALSE, color = FALSE)+ theme(
+    plot.title = element_text(color="black", size=24, face="bold"),
+    axis.title.x = element_text(color="black", size=24, face="bold"),
+    axis.title.y = element_text(color="black", size=24, face="bold"),
+    axis.text=element_text(size=26),
+    legend.title = element_text(color = "black", size = 26),
+    legend.text = element_text(color = "black", size = 24)
+  )+geom_line(aes(group=ID), size =2) + scale_x_continuous(breaks = integer_breaks())+ coord_cartesian(ylim = c(0, 3.2))
+p2
+ggsave("CVG003_info_shannon.pdf", width = 25, height = 20, units = c('cm'))
+
+#gini
+p3 = ggplot(CVG003_info, aes(x=Days_post, y=Gini_coefficient, color=ID, fill=ID)) +
+  geom_point(size = 8) + theme(axis.title.x = element_text(size=5),
+                               axis.text.x  = element_text(angle=90, vjust=0.5, size=5)) + 
+  geom_line() + labs(title = "Gini coefficient", x = "Days", y = "Gini coefficient") +
+      scale_color_manual(labels = c("CVG003"), values = c("#008E90FF")) +
+  theme_bw() + guides(fill=FALSE, color = FALSE)+ theme(
+    plot.title = element_text(color="black", size=24, face="bold"),
+    axis.title.x = element_text(color="black", size=24, face="bold"),
+    axis.title.y = element_text(color="black", size=24, face="bold"),
+    axis.text=element_text(size=26),
+    legend.title = element_text(color = "black", size = 26),
+    legend.text = element_text(color = "black", size = 24)
+  )+geom_line(aes(group=ID), size =2) + scale_x_continuous(breaks = integer_breaks())+ coord_cartesian(ylim = c(0.95, 1))
+p3
+ggsave("CVG003_info_gini.pdf", width = 25, height = 20, units = c('cm'))
+
+
+p1 / p2 /
+  p3 + plot_layout(guides = 'collect', ncol = 1)
+ggsave("CVG003_info_all_the_diversities.pdf", width = 32, height = 35, units = c('cm'))
+```
+
+```{r}
+CVG004_info<- subset(diversities_theALL, subset=(diversities_theALL$ID=="CVG004"))
+
+#gini
+p1 = ggplot(CVG004_info, aes(x=Days_post, y=Observed, color=ID, fill=ID)) +
+  geom_point(size = 8) + theme(axis.title.x = element_text(size=5),
+                               axis.text.x  = element_text(angle=90, vjust=0.5, size=5)) + 
+  geom_line() + labs(title = "Observed OTUs", x = "Days", y = "Number of observed OTUs")  +
+    scale_color_manual(labels = c("CVG004"), values = c('#E75B64')) +
+  theme_bw() + guides(fill=FALSE, color = FALSE)+ theme(
+    plot.title = element_text(color="black", size=24, face="bold"),
+    axis.title.x = element_text(color="black", size=24, face="bold"),
+    axis.title.y = element_text(color="black", size=24, face="bold"),
+    axis.text=element_text(size=26),
+    legend.title = element_text(color = "black", size = 26),
+    legend.text = element_text(color = "black", size = 24)
+  )  +geom_line(aes(group=ID), size =2) + scale_x_continuous(breaks = integer_breaks())+ coord_cartesian(ylim = c(0, 65))
+p1
+ggsave("CVG004_info_observed.pdf", width = 25, height = 20, units = c('cm'))
+
+#shannon
+p2 = ggplot(CVG004_info, aes(x=Days_post, y=Shannon, color=ID, fill=ID)) +
+  geom_point(size = 8) + theme(axis.title.x = element_text(size=5),
+                               axis.text.x  = element_text(angle=90, vjust=0.5, size=5)) + 
+  geom_line() + labs(title = "Shannon entropy", x = "Days", y = "Shannon entropy", color = "Number_of_days_post_transplant") +
+      scale_color_manual(labels = c("CVG004"), values = c("#5C5992FF")) +
+  theme_bw() + guides(fill=FALSE, color = FALSE)+ theme(
+    plot.title = element_text(color="black", size=24, face="bold"),
+    axis.title.x = element_text(color="black", size=24, face="bold"),
+    axis.title.y = element_text(color="black", size=24, face="bold"),
+    axis.text=element_text(size=26),
+    legend.title = element_text(color = "black", size = 26),
+    legend.text = element_text(color = "black", size = 24)
+  )+geom_line(aes(group=ID), size =2) + scale_x_continuous(breaks = integer_breaks())+ coord_cartesian(ylim = c(0, 3.2))
+p2
+ggsave("CVG004_info_shannon.pdf", width = 25, height = 20, units = c('cm'))
+
+#gini
+p3 = ggplot(CVG004_info, aes(x=Days_post, y=Gini_coefficient, color=ID, fill=ID)) +
+  geom_point(size = 8) + theme(axis.title.x = element_text(size=5),
+                               axis.text.x  = element_text(angle=90, vjust=0.5, size=5)) + 
+  geom_line() + labs(title = "Gini coefficient", x = "Days", y = "Gini coefficient") +
+      scale_color_manual(labels = c("CVG004"), values = c("#008E90FF")) +
+  theme_bw() + guides(fill=FALSE, color = FALSE)+ theme(
+    plot.title = element_text(color="black", size=24, face="bold"),
+    axis.title.x = element_text(color="black", size=24, face="bold"),
+    axis.title.y = element_text(color="black", size=24, face="bold"),
+    axis.text=element_text(size=26),
+    legend.title = element_text(color = "black", size = 26),
+    legend.text = element_text(color = "black", size = 24)
+  )+geom_line(aes(group=ID), size =2) + scale_x_continuous(breaks = integer_breaks())+ coord_cartesian(ylim = c(0.95, 1))
+p3
+ggsave("CVG004_info_gini.pdf", width = 25, height = 20, units = c('cm'))
+
+
+p1 / p2 /
+  p3 + plot_layout(guides = 'collect', ncol = 1)
+ggsave("CVG004_info_all_the_diversities.pdf", width = 32, height = 35, units = c('cm'))
+```
+
+```{r}
+CVG005_info<- subset(diversities_theALL, subset=(diversities_theALL$ID=="CVG005"))
+
+#gini
+p1 = ggplot(CVG005_info, aes(x=Days_post, y=Observed, color=ID, fill=ID)) +
+  geom_point(size = 8) + theme(axis.title.x = element_text(size=5),
+                               axis.text.x  = element_text(angle=90, vjust=0.5, size=5)) + 
+  geom_line() + labs(title = "Observed OTUs", x = "Days", y = "Number of observed OTUs")  +
+    scale_color_manual(labels = c("CVG005"), values = c('#E75B64')) +
+  theme_bw() + guides(fill=FALSE, color = FALSE)+ theme(
+    plot.title = element_text(color="black", size=24, face="bold"),
+    axis.title.x = element_text(color="black", size=24, face="bold"),
+    axis.title.y = element_text(color="black", size=24, face="bold"),
+    axis.text=element_text(size=26),
+    legend.title = element_text(color = "black", size = 26),
+    legend.text = element_text(color = "black", size = 24)
+  )  +geom_line(aes(group=ID), size =2) + scale_x_continuous(breaks = integer_breaks())+ coord_cartesian(ylim = c(0, 65))
+p1
+ggsave("CVG005_info_observed.pdf", width = 25, height = 20, units = c('cm'))
+
+#shannon
+p2 = ggplot(CVG005_info, aes(x=Days_post, y=Shannon, color=ID, fill=ID)) +
+  geom_point(size = 8) + theme(axis.title.x = element_text(size=5),
+                               axis.text.x  = element_text(angle=90, vjust=0.5, size=5)) + 
+  geom_line() + labs(title = "Shannon entropy", x = "Days", y = "Shannon entropy", color = "Number_of_days_post_transplant") +
+      scale_color_manual(labels = c("CVG005"), values = c("#5C5992FF")) +
+  theme_bw() + guides(fill=FALSE, color = FALSE)+ theme(
+    plot.title = element_text(color="black", size=24, face="bold"),
+    axis.title.x = element_text(color="black", size=24, face="bold"),
+    axis.title.y = element_text(color="black", size=24, face="bold"),
+    axis.text=element_text(size=26),
+    legend.title = element_text(color = "black", size = 26),
+    legend.text = element_text(color = "black", size = 24)
+  )+geom_line(aes(group=ID), size =2) + scale_x_continuous(breaks = integer_breaks())+ coord_cartesian(ylim = c(0, 3.2))
+p2
+ggsave("CVG005_info_shannon.pdf", width = 25, height = 20, units = c('cm'))
+
+#gini
+p3 = ggplot(CVG005_info, aes(x=Days_post, y=Gini_coefficient, color=ID, fill=ID)) +
+  geom_point(size = 8) + theme(axis.title.x = element_text(size=5),
+                               axis.text.x  = element_text(angle=90, vjust=0.5, size=5)) + 
+  geom_line() + labs(title = "Gini coefficient", x = "Days", y = "Gini coefficient") +
+      scale_color_manual(labels = c("CVG005"), values = c("#008E90FF")) +
+  theme_bw() + guides(fill=FALSE, color = FALSE)+ theme(
+    plot.title = element_text(color="black", size=24, face="bold"),
+    axis.title.x = element_text(color="black", size=24, face="bold"),
+    axis.title.y = element_text(color="black", size=24, face="bold"),
+    axis.text=element_text(size=26),
+    legend.title = element_text(color = "black", size = 26),
+    legend.text = element_text(color = "black", size = 24)
+  )+geom_line(aes(group=ID), size =2) + scale_x_continuous(breaks = integer_breaks())+ coord_cartesian(ylim = c(0.95, 1))
+p3
+ggsave("CVG005_info_gini.pdf", width = 25, height = 20, units = c('cm'))
+
+
+p1 / p2 /
+  p3 + plot_layout(guides = 'collect', ncol = 1)
+ggsave("CVG005_info_all_the_diversities.pdf", width = 32, height = 35, units = c('cm'))
+```
+
+```{r}
+CVG012_info<- subset(diversities_theALL, subset=(diversities_theALL$ID=="CVG012"))
+
+#gini
+p1 = ggplot(CVG012_info, aes(x=Days_post, y=Observed, color=ID, fill=ID)) +
+  geom_point(size = 8) + theme(axis.title.x = element_text(size=5),
+                               axis.text.x  = element_text(angle=90, vjust=0.5, size=5)) + 
+  geom_line() + labs(title = "Observed OTUs", x = "Days", y = "Number of observed OTUs")  +
+    scale_color_manual(labels = c("CVG012"), values = c('#E75B64')) +
+  theme_bw() + guides(fill=FALSE, color = FALSE)+ theme(
+    plot.title = element_text(color="black", size=24, face="bold"),
+    axis.title.x = element_text(color="black", size=24, face="bold"),
+    axis.title.y = element_text(color="black", size=24, face="bold"),
+    axis.text=element_text(size=26),
+    legend.title = element_text(color = "black", size = 26),
+    legend.text = element_text(color = "black", size = 24)
+  )  +geom_line(aes(group=ID), size =2) + scale_x_continuous(breaks = integer_breaks())+ coord_cartesian(ylim = c(0, 65))
+p1
+ggsave("CVG012_info_observed.pdf", width = 25, height = 20, units = c('cm'))
+
+#shannon
+p2 = ggplot(CVG012_info, aes(x=Days_post, y=Shannon, color=ID, fill=ID)) +
+  geom_point(size = 8) + theme(axis.title.x = element_text(size=5),
+                               axis.text.x  = element_text(angle=90, vjust=0.5, size=5)) + 
+  geom_line() + labs(title = "Shannon entropy", x = "Days", y = "Shannon entropy", color = "Number_of_days_post_transplant") +
+      scale_color_manual(labels = c("CVG012"), values = c("#5C5992FF")) +
+  theme_bw() + guides(fill=FALSE, color = FALSE)+ theme(
+    plot.title = element_text(color="black", size=24, face="bold"),
+    axis.title.x = element_text(color="black", size=24, face="bold"),
+    axis.title.y = element_text(color="black", size=24, face="bold"),
+    axis.text=element_text(size=26),
+    legend.title = element_text(color = "black", size = 26),
+    legend.text = element_text(color = "black", size = 24)
+  )+geom_line(aes(group=ID), size =2) + scale_x_continuous(breaks = integer_breaks())+ coord_cartesian(ylim = c(0, 3.2))
+p2
+ggsave("CVG012_info_shannon.pdf", width = 25, height = 20, units = c('cm'))
+
+#gini
+p3 = ggplot(CVG012_info, aes(x=Days_post, y=Gini_coefficient, color=ID, fill=ID)) +
+  geom_point(size = 8) + theme(axis.title.x = element_text(size=5),
+                               axis.text.x  = element_text(angle=90, vjust=0.5, size=5)) + 
+  geom_line() + labs(title = "Gini coefficient", x = "Days", y = "Gini coefficient") +
+      scale_color_manual(labels = c("CVG012"), values = c("#008E90FF")) +
+  theme_bw() + guides(fill=FALSE, color = FALSE)+ theme(
+    plot.title = element_text(color="black", size=24, face="bold"),
+    axis.title.x = element_text(color="black", size=24, face="bold"),
+    axis.title.y = element_text(color="black", size=24, face="bold"),
+    axis.text=element_text(size=26),
+    legend.title = element_text(color = "black", size = 26),
+    legend.text = element_text(color = "black", size = 24)
+  )+geom_line(aes(group=ID), size =2) + scale_x_continuous(breaks = integer_breaks())+ coord_cartesian(ylim = c(0.95, 1))
+p3
+ggsave("CVG012_info_gini.pdf", width = 25, height = 20, units = c('cm'))
+
+
+p1 / p2 /
+  p3 + plot_layout(guides = 'collect', ncol = 1)
+ggsave("CVG012_info_all_the_diversities.pdf", width = 32, height = 35, units = c('cm'))
+```
+
+```{r}
+CVG014_info<- subset(diversities_theALL, subset=(diversities_theALL$ID=="CVG014"))
+
+#gini
+p1 = ggplot(CVG014_info, aes(x=Days_post, y=Observed, color=ID, fill=ID)) +
+  geom_point(size = 8) + theme(axis.title.x = element_text(size=5),
+                               axis.text.x  = element_text(angle=90, vjust=0.5, size=5)) + 
+  geom_line() + labs(title = "Observed OTUs", x = "Days", y = "Number of observed OTUs")  +
+    scale_color_manual(labels = c("CVG014"), values = c('#E75B64')) +
+  theme_bw() + guides(fill=FALSE, color = FALSE)+ theme(
+    plot.title = element_text(color="black", size=24, face="bold"),
+    axis.title.x = element_text(color="black", size=24, face="bold"),
+    axis.title.y = element_text(color="black", size=24, face="bold"),
+    axis.text=element_text(size=26),
+    legend.title = element_text(color = "black", size = 26),
+    legend.text = element_text(color = "black", size = 24)
+  )  +geom_line(aes(group=ID), size =2) + scale_x_continuous(breaks = integer_breaks())+ coord_cartesian(ylim = c(0, 65))
+p1
+ggsave("CVG014_info_observed.pdf", width = 25, height = 20, units = c('cm'))
+
+#shannon
+p2 = ggplot(CVG014_info, aes(x=Days_post, y=Shannon, color=ID, fill=ID)) +
+  geom_point(size = 8) + theme(axis.title.x = element_text(size=5),
+                               axis.text.x  = element_text(angle=90, vjust=0.5, size=5)) + 
+  geom_line() + labs(title = "Shannon entropy", x = "Days", y = "Shannon entropy", color = "Number_of_days_post_transplant") +
+      scale_color_manual(labels = c("CVG014"), values = c("#5C5992FF")) +
+  theme_bw() + guides(fill=FALSE, color = FALSE)+ theme(
+    plot.title = element_text(color="black", size=24, face="bold"),
+    axis.title.x = element_text(color="black", size=24, face="bold"),
+    axis.title.y = element_text(color="black", size=24, face="bold"),
+    axis.text=element_text(size=26),
+    legend.title = element_text(color = "black", size = 26),
+    legend.text = element_text(color = "black", size = 24)
+  )+geom_line(aes(group=ID), size =2) + scale_x_continuous(breaks = integer_breaks())+ coord_cartesian(ylim = c(0, 3.2))
+p2
+ggsave("CVG014_info_shannon.pdf", width = 25, height = 20, units = c('cm'))
+
+#gini
+p3 = ggplot(CVG014_info, aes(x=Days_post, y=Gini_coefficient, color=ID, fill=ID)) +
+  geom_point(size = 8) + theme(axis.title.x = element_text(size=5),
+                               axis.text.x  = element_text(angle=90, vjust=0.5, size=5)) + 
+  geom_line() + labs(title = "Gini coefficient", x = "Days", y = "Gini coefficient") +
+      scale_color_manual(labels = c("CVG014"), values = c("#008E90FF")) +
+  theme_bw() + guides(fill=FALSE, color = FALSE)+ theme(
+    plot.title = element_text(color="black", size=24, face="bold"),
+    axis.title.x = element_text(color="black", size=24, face="bold"),
+    axis.title.y = element_text(color="black", size=24, face="bold"),
+    axis.text=element_text(size=26),
+    legend.title = element_text(color = "black", size = 26),
+    legend.text = element_text(color = "black", size = 24)
+  )+geom_line(aes(group=ID), size =2) + scale_x_continuous(breaks = integer_breaks())+ coord_cartesian(ylim = c(0.95, 1))
+p3
+ggsave("CVG014_info_gini.pdf", width = 25, height = 20, units = c('cm'))
+
+
+p1 / p2 /
+  p3 + plot_layout(guides = 'collect', ncol = 1)
+ggsave("CVG014_info_all_the_diversities.pdf", width = 32, height = 35, units = c('cm'))
+```
+
+```{r}
+CVG016_info<- subset(diversities_theALL, subset=(diversities_theALL$ID=="CVG016"))
+
+#gini
+p1 = ggplot(CVG016_info, aes(x=Days_post, y=Observed, color=ID, fill=ID)) +
+  geom_point(size = 8) + theme(axis.title.x = element_text(size=5),
+                               axis.text.x  = element_text(angle=90, vjust=0.5, size=5)) + 
+  geom_line() + labs(title = "Observed OTUs", x = "Days", y = "Number of observed OTUs")  +
+    scale_color_manual(labels = c("CVG016"), values = c('#E75B64')) +
+  theme_bw() + guides(fill=FALSE, color = FALSE)+ theme(
+    plot.title = element_text(color="black", size=24, face="bold"),
+    axis.title.x = element_text(color="black", size=24, face="bold"),
+    axis.title.y = element_text(color="black", size=24, face="bold"),
+    axis.text=element_text(size=26),
+    legend.title = element_text(color = "black", size = 26),
+    legend.text = element_text(color = "black", size = 24)
+  )  +geom_line(aes(group=ID), size =2) + scale_x_continuous(breaks = integer_breaks())+ coord_cartesian(ylim = c(0, 65))
+p1
+ggsave("CVG016_info_observed.pdf", width = 25, height = 20, units = c('cm'))
+
+#shannon
+p2 = ggplot(CVG016_info, aes(x=Days_post, y=Shannon, color=ID, fill=ID)) +
+  geom_point(size = 8) + theme(axis.title.x = element_text(size=5),
+                               axis.text.x  = element_text(angle=90, vjust=0.5, size=5)) + 
+  geom_line() + labs(title = "Shannon entropy", x = "Days", y = "Shannon entropy", color = "Number_of_days_post_transplant") +
+      scale_color_manual(labels = c("CVG016"), values = c("#5C5992FF")) +
+  theme_bw() + guides(fill=FALSE, color = FALSE)+ theme(
+    plot.title = element_text(color="black", size=24, face="bold"),
+    axis.title.x = element_text(color="black", size=24, face="bold"),
+    axis.title.y = element_text(color="black", size=24, face="bold"),
+    axis.text=element_text(size=26),
+    legend.title = element_text(color = "black", size = 26),
+    legend.text = element_text(color = "black", size = 24)
+  )+geom_line(aes(group=ID), size =2) + scale_x_continuous(breaks = integer_breaks())+ coord_cartesian(ylim = c(0, 3.2))
+p2
+ggsave("CVG016_info_shannon.pdf", width = 25, height = 20, units = c('cm'))
+
+#gini
+p3 = ggplot(CVG016_info, aes(x=Days_post, y=Gini_coefficient, color=ID, fill=ID)) +
+  geom_point(size = 8) + theme(axis.title.x = element_text(size=5),
+                               axis.text.x  = element_text(angle=90, vjust=0.5, size=5)) + 
+  geom_line() + labs(title = "Gini coefficient", x = "Days", y = "Gini coefficient") +
+      scale_color_manual(labels = c("CVG016"), values = c("#008E90FF")) +
+  theme_bw() + guides(fill=FALSE, color = FALSE)+ theme(
+    plot.title = element_text(color="black", size=24, face="bold"),
+    axis.title.x = element_text(color="black", size=24, face="bold"),
+    axis.title.y = element_text(color="black", size=24, face="bold"),
+    axis.text=element_text(size=26),
+    legend.title = element_text(color = "black", size = 26),
+    legend.text = element_text(color = "black", size = 24)
+  )+geom_line(aes(group=ID), size =2) + scale_x_continuous(breaks = integer_breaks())+ coord_cartesian(ylim = c(0.95, 1))
+p3
+ggsave("CVG016_info_gini.pdf", width = 25, height = 20, units = c('cm'))
+
+
+p1 / p2 /
+  p3 + plot_layout(guides = 'collect', ncol = 1)
+ggsave("CVG016_info_all_the_diversities.pdf", width = 32, height = 35, units = c('cm'))
+```
+
+```{r}
+CVG017_info<- subset(diversities_theALL, subset=(diversities_theALL$ID=="CVG017"))
+
+#gini
+p1 = ggplot(CVG017_info, aes(x=Days_post, y=Observed, color=ID, fill=ID)) +
+  geom_point(size = 8) + theme(axis.title.x = element_text(size=5),
+                               axis.text.x  = element_text(angle=90, vjust=0.5, size=5)) + 
+  geom_line() + labs(title = "Observed OTUs", x = "Days", y = "Number of observed OTUs")  +
+    scale_color_manual(labels = c("CVG017"), values = c('#E75B64')) +
+  theme_bw() + guides(fill=FALSE, color = FALSE)+ theme(
+    plot.title = element_text(color="black", size=24, face="bold"),
+    axis.title.x = element_text(color="black", size=24, face="bold"),
+    axis.title.y = element_text(color="black", size=24, face="bold"),
+    axis.text=element_text(size=26),
+    legend.title = element_text(color = "black", size = 26),
+    legend.text = element_text(color = "black", size = 24)
+  )  +geom_line(aes(group=ID), size =2) + scale_x_continuous(breaks = integer_breaks())+ coord_cartesian(ylim = c(0, 65))
+p1
+ggsave("CVG017_info_observed.pdf", width = 25, height = 20, units = c('cm'))
+
+#shannon
+p2 = ggplot(CVG017_info, aes(x=Days_post, y=Shannon, color=ID, fill=ID)) +
+  geom_point(size = 8) + theme(axis.title.x = element_text(size=5),
+                               axis.text.x  = element_text(angle=90, vjust=0.5, size=5)) + 
+  geom_line() + labs(title = "Shannon entropy", x = "Days", y = "Shannon entropy", color = "Number_of_days_post_transplant") +
+      scale_color_manual(labels = c("CVG017"), values = c("#5C5992FF")) +
+  theme_bw() + guides(fill=FALSE, color = FALSE)+ theme(
+    plot.title = element_text(color="black", size=24, face="bold"),
+    axis.title.x = element_text(color="black", size=24, face="bold"),
+    axis.title.y = element_text(color="black", size=24, face="bold"),
+    axis.text=element_text(size=26),
+    legend.title = element_text(color = "black", size = 26),
+    legend.text = element_text(color = "black", size = 24)
+  )+geom_line(aes(group=ID), size =2) + scale_x_continuous(breaks = integer_breaks())+ coord_cartesian(ylim = c(0, 3.2))
+p2
+ggsave("CVG017_info_shannon.pdf", width = 25, height = 20, units = c('cm'))
+
+#gini
+p3 = ggplot(CVG017_info, aes(x=Days_post, y=Gini_coefficient, color=ID, fill=ID)) +
+  geom_point(size = 8) + theme(axis.title.x = element_text(size=5),
+                               axis.text.x  = element_text(angle=90, vjust=0.5, size=5)) + 
+  geom_line() + labs(title = "Gini coefficient", x = "Days", y = "Gini coefficient") +
+      scale_color_manual(labels = c("CVG017"), values = c("#008E90FF")) +
+  theme_bw() + guides(fill=FALSE, color = FALSE)+ theme(
+    plot.title = element_text(color="black", size=24, face="bold"),
+    axis.title.x = element_text(color="black", size=24, face="bold"),
+    axis.title.y = element_text(color="black", size=24, face="bold"),
+    axis.text=element_text(size=26),
+    legend.title = element_text(color = "black", size = 26),
+    legend.text = element_text(color = "black", size = 24)
+  )+geom_line(aes(group=ID), size =2) + scale_x_continuous(breaks = integer_breaks())+ coord_cartesian(ylim = c(0.95, 1))
+p3
+ggsave("CVG017_info_gini.pdf", width = 25, height = 20, units = c('cm'))
+
+
+p1 / p2 /
+  p3 + plot_layout(guides = 'collect', ncol = 1)
+ggsave("CVG017_info_all_the_diversities.pdf", width = 32, height = 35, units = c('cm'))
+```
+
+```{r}
+CVG019_info<- subset(diversities_theALL, subset=(diversities_theALL$ID=="CVG019"))
+
+#gini
+p1 = ggplot(CVG019_info, aes(x=Days_post, y=Observed, color=ID, fill=ID)) +
+  geom_point(size = 8) + theme(axis.title.x = element_text(size=5),
+                               axis.text.x  = element_text(angle=90, vjust=0.5, size=5)) + 
+  geom_line() + labs(title = "Observed OTUs", x = "Days", y = "Number of observed OTUs")  +
+    scale_color_manual(labels = c("CVG019"), values = c('#E75B64')) +
+  theme_bw() + guides(fill=FALSE, color = FALSE)+ theme(
+    plot.title = element_text(color="black", size=24, face="bold"),
+    axis.title.x = element_text(color="black", size=24, face="bold"),
+    axis.title.y = element_text(color="black", size=24, face="bold"),
+    axis.text=element_text(size=26),
+    legend.title = element_text(color = "black", size = 26),
+    legend.text = element_text(color = "black", size = 24)
+  )  +geom_line(aes(group=ID), size =2) + scale_x_continuous(breaks = integer_breaks())+ coord_cartesian(ylim = c(0, 65))
+p1
+ggsave("CVG019_info_observed.pdf", width = 25, height = 20, units = c('cm'))
+
+#shannon
+p2 = ggplot(CVG019_info, aes(x=Days_post, y=Shannon, color=ID, fill=ID)) +
+  geom_point(size = 8) + theme(axis.title.x = element_text(size=5),
+                               axis.text.x  = element_text(angle=90, vjust=0.5, size=5)) + 
+  geom_line() + labs(title = "Shannon entropy", x = "Days", y = "Shannon entropy", color = "Number_of_days_post_transplant") +
+      scale_color_manual(labels = c("CVG019"), values = c("#5C5992FF")) +
+  theme_bw() + guides(fill=FALSE, color = FALSE)+ theme(
+    plot.title = element_text(color="black", size=24, face="bold"),
+    axis.title.x = element_text(color="black", size=24, face="bold"),
+    axis.title.y = element_text(color="black", size=24, face="bold"),
+    axis.text=element_text(size=26),
+    legend.title = element_text(color = "black", size = 26),
+    legend.text = element_text(color = "black", size = 24)
+  )+geom_line(aes(group=ID), size =2) + scale_x_continuous(breaks = integer_breaks())+ coord_cartesian(ylim = c(0, 3.2))
+p2
+ggsave("CVG019_info_shannon.pdf", width = 25, height = 20, units = c('cm'))
+
+#gini
+p3 = ggplot(CVG019_info, aes(x=Days_post, y=Gini_coefficient, color=ID, fill=ID)) +
+  geom_point(size = 8) + theme(axis.title.x = element_text(size=5),
+                               axis.text.x  = element_text(angle=90, vjust=0.5, size=5)) + 
+  geom_line() + labs(title = "Gini coefficient", x = "Days", y = "Gini coefficient") +
+      scale_color_manual(labels = c("CVG019"), values = c("#008E90FF")) +
+  theme_bw() + guides(fill=FALSE, color = FALSE)+ theme(
+    plot.title = element_text(color="black", size=24, face="bold"),
+    axis.title.x = element_text(color="black", size=24, face="bold"),
+    axis.title.y = element_text(color="black", size=24, face="bold"),
+    axis.text=element_text(size=26),
+    legend.title = element_text(color = "black", size = 26),
+    legend.text = element_text(color = "black", size = 24)
+  )+geom_line(aes(group=ID), size =2) + scale_x_continuous(breaks = integer_breaks())+ coord_cartesian(ylim = c(0.95, 1))
+p3
+ggsave("CVG019_info_gini.pdf", width = 25, height = 20, units = c('cm'))
+
+
+p1 / p2 /
+  p3 + plot_layout(guides = 'collect', ncol = 1)
+ggsave("CVG019_info_all_the_diversities.pdf", width = 32, height = 35, units = c('cm'))
+```
+
+```{r}
+CVG021_info<- subset(diversities_theALL, subset=(diversities_theALL$ID=="CVG021"))
+
+#gini
+p1 = ggplot(CVG021_info, aes(x=Days_post, y=Observed, color=ID, fill=ID)) +
+  geom_point(size = 8) + theme(axis.title.x = element_text(size=5),
+                               axis.text.x  = element_text(angle=90, vjust=0.5, size=5)) + 
+  geom_line() + labs(title = "Observed OTUs", x = "Days", y = "Number of observed OTUs")  +
+    scale_color_manual(labels = c("CVG021"), values = c('#E75B64')) +
+  theme_bw() + guides(fill=FALSE, color = FALSE)+ theme(
+    plot.title = element_text(color="black", size=24, face="bold"),
+    axis.title.x = element_text(color="black", size=24, face="bold"),
+    axis.title.y = element_text(color="black", size=24, face="bold"),
+    axis.text=element_text(size=26),
+    legend.title = element_text(color = "black", size = 26),
+    legend.text = element_text(color = "black", size = 24)
+  )  +geom_line(aes(group=ID), size =2) + scale_x_continuous(breaks = integer_breaks())+ coord_cartesian(ylim = c(0, 65))
+p1
+ggsave("CVG021_info_observed.pdf", width = 25, height = 20, units = c('cm'))
+
+#shannon
+p2 = ggplot(CVG021_info, aes(x=Days_post, y=Shannon, color=ID, fill=ID)) +
+  geom_point(size = 8) + theme(axis.title.x = element_text(size=5),
+                               axis.text.x  = element_text(angle=90, vjust=0.5, size=5)) + 
+  geom_line() + labs(title = "Shannon entropy", x = "Days", y = "Shannon entropy", color = "Number_of_days_post_transplant") +
+      scale_color_manual(labels = c("CVG021"), values = c("#5C5992FF")) +
+  theme_bw() + guides(fill=FALSE, color = FALSE)+ theme(
+    plot.title = element_text(color="black", size=24, face="bold"),
+    axis.title.x = element_text(color="black", size=24, face="bold"),
+    axis.title.y = element_text(color="black", size=24, face="bold"),
+    axis.text=element_text(size=26),
+    legend.title = element_text(color = "black", size = 26),
+    legend.text = element_text(color = "black", size = 24)
+  )+geom_line(aes(group=ID), size =2) + scale_x_continuous(breaks = integer_breaks())+ coord_cartesian(ylim = c(0, 3.2))
+p2
+ggsave("CVG021_info_shannon.pdf", width = 25, height = 20, units = c('cm'))
+
+#gini
+p3 = ggplot(CVG021_info, aes(x=Days_post, y=Gini_coefficient, color=ID, fill=ID)) +
+  geom_point(size = 8) + theme(axis.title.x = element_text(size=5),
+                               axis.text.x  = element_text(angle=90, vjust=0.5, size=5)) + 
+  geom_line() + labs(title = "Gini coefficient", x = "Days", y = "Gini coefficient") +
+      scale_color_manual(labels = c("CVG021"), values = c("#008E90FF")) +
+  theme_bw() + guides(fill=FALSE, color = FALSE)+ theme(
+    plot.title = element_text(color="black", size=24, face="bold"),
+    axis.title.x = element_text(color="black", size=24, face="bold"),
+    axis.title.y = element_text(color="black", size=24, face="bold"),
+    axis.text=element_text(size=26),
+    legend.title = element_text(color = "black", size = 26),
+    legend.text = element_text(color = "black", size = 24)
+  )+geom_line(aes(group=ID), size =2) + scale_x_continuous(breaks = integer_breaks())+ coord_cartesian(ylim = c(0.95, 1))
+p3
+ggsave("CVG021_info_gini.pdf", width = 25, height = 20, units = c('cm'))
+
+
+p1 / p2 /
+  p3 + plot_layout(guides = 'collect', ncol = 1)
+ggsave("CVG021_info_all_the_diversities.pdf", width = 32, height = 35, units = c('cm'))
+```
+
+```{r}
+CVG028_info<- subset(diversities_theALL, subset=(diversities_theALL$ID=="CVG028"))
+
+#gini
+p1 = ggplot(CVG028_info, aes(x=Days_post, y=Observed, color=ID, fill=ID)) +
+  geom_point(size = 8) + theme(axis.title.x = element_text(size=5),
+                               axis.text.x  = element_text(angle=90, vjust=0.5, size=5)) + 
+  geom_line() + labs(title = "Observed OTUs", x = "Days", y = "Number of observed OTUs")  +
+    scale_color_manual(labels = c("CVG028"), values = c('#E75B64')) +
+  theme_bw() + guides(fill=FALSE, color = FALSE)+ theme(
+    plot.title = element_text(color="black", size=24, face="bold"),
+    axis.title.x = element_text(color="black", size=24, face="bold"),
+    axis.title.y = element_text(color="black", size=24, face="bold"),
+    axis.text=element_text(size=26),
+    legend.title = element_text(color = "black", size = 26),
+    legend.text = element_text(color = "black", size = 24)
+  )  +geom_line(aes(group=ID), size =2) + scale_x_continuous(breaks = integer_breaks())+ coord_cartesian(ylim = c(0, 65))
+p1
+ggsave("CVG028_info_observed.pdf", width = 25, height = 20, units = c('cm'))
+
+#shannon
+p2 = ggplot(CVG028_info, aes(x=Days_post, y=Shannon, color=ID, fill=ID)) +
+  geom_point(size = 8) + theme(axis.title.x = element_text(size=5),
+                               axis.text.x  = element_text(angle=90, vjust=0.5, size=5)) + 
+  geom_line() + labs(title = "Shannon entropy", x = "Days", y = "Shannon entropy", color = "Number_of_days_post_transplant") +
+      scale_color_manual(labels = c("CVG028"), values = c("#5C5992FF")) +
+  theme_bw() + guides(fill=FALSE, color = FALSE)+ theme(
+    plot.title = element_text(color="black", size=24, face="bold"),
+    axis.title.x = element_text(color="black", size=24, face="bold"),
+    axis.title.y = element_text(color="black", size=24, face="bold"),
+    axis.text=element_text(size=26),
+    legend.title = element_text(color = "black", size = 26),
+    legend.text = element_text(color = "black", size = 24)
+  )+geom_line(aes(group=ID), size =2) + scale_x_continuous(breaks = integer_breaks())+ coord_cartesian(ylim = c(0, 3.2))
+p2
+ggsave("CVG028_info_shannon.pdf", width = 25, height = 20, units = c('cm'))
+
+#gini
+p3 = ggplot(CVG028_info, aes(x=Days_post, y=Gini_coefficient, color=ID, fill=ID)) +
+  geom_point(size = 8) + theme(axis.title.x = element_text(size=5),
+                               axis.text.x  = element_text(angle=90, vjust=0.5, size=5)) + 
+  geom_line() + labs(title = "Gini coefficient", x = "Days", y = "Gini coefficient") +
+      scale_color_manual(labels = c("CVG028"), values = c("#008E90FF")) +
+  theme_bw() + guides(fill=FALSE, color = FALSE)+ theme(
+    plot.title = element_text(color="black", size=24, face="bold"),
+    axis.title.x = element_text(color="black", size=24, face="bold"),
+    axis.title.y = element_text(color="black", size=24, face="bold"),
+    axis.text=element_text(size=26),
+    legend.title = element_text(color = "black", size = 26),
+    legend.text = element_text(color = "black", size = 24)
+  )+geom_line(aes(group=ID), size =2) + scale_x_continuous(breaks = integer_breaks())+ coord_cartesian(ylim = c(0.95, 1))
+p3
+ggsave("CVG028_info_gini.pdf", width = 25, height = 20, units = c('cm'))
+
+
+p1 / p2 /
+  p3 + plot_layout(guides = 'collect', ncol = 1)
+ggsave("CVG028_info_all_the_diversities.pdf", width = 32, height = 35, units = c('cm'))
+```
+
+```{r}
+CVG032_info<- subset(diversities_theALL, subset=(diversities_theALL$ID=="CVG032"))
+
+#gini
+p1 = ggplot(CVG032_info, aes(x=Days_post, y=Observed, color=ID, fill=ID)) +
+  geom_point(size = 8) + theme(axis.title.x = element_text(size=5),
+                               axis.text.x  = element_text(angle=90, vjust=0.5, size=5)) + 
+  geom_line() + labs(title = "Observed OTUs", x = "Days", y = "Number of observed OTUs")  +
+    scale_color_manual(labels = c("CVG032"), values = c('#E75B64')) +
+  theme_bw() + guides(fill=FALSE, color = FALSE)+ theme(
+    plot.title = element_text(color="black", size=24, face="bold"),
+    axis.title.x = element_text(color="black", size=24, face="bold"),
+    axis.title.y = element_text(color="black", size=24, face="bold"),
+    axis.text=element_text(size=26),
+    legend.title = element_text(color = "black", size = 26),
+    legend.text = element_text(color = "black", size = 24)
+  )  +geom_line(aes(group=ID), size =2) + scale_x_continuous(breaks = integer_breaks())+ coord_cartesian(ylim = c(0, 65))
+p1
+ggsave("CVG032_info_observed.pdf", width = 25, height = 20, units = c('cm'))
+
+#shannon
+p2 = ggplot(CVG032_info, aes(x=Days_post, y=Shannon, color=ID, fill=ID)) +
+  geom_point(size = 8) + theme(axis.title.x = element_text(size=5),
+                               axis.text.x  = element_text(angle=90, vjust=0.5, size=5)) + 
+  geom_line() + labs(title = "Shannon entropy", x = "Days", y = "Shannon entropy", color = "Number_of_days_post_transplant") +
+      scale_color_manual(labels = c("CVG032"), values = c("#5C5992FF")) +
+  theme_bw() + guides(fill=FALSE, color = FALSE)+ theme(
+    plot.title = element_text(color="black", size=24, face="bold"),
+    axis.title.x = element_text(color="black", size=24, face="bold"),
+    axis.title.y = element_text(color="black", size=24, face="bold"),
+    axis.text=element_text(size=26),
+    legend.title = element_text(color = "black", size = 26),
+    legend.text = element_text(color = "black", size = 24)
+  )+geom_line(aes(group=ID), size =2) + scale_x_continuous(breaks = integer_breaks())+ coord_cartesian(ylim = c(0, 3.2))
+p2
+ggsave("CVG032_info_shannon.pdf", width = 25, height = 20, units = c('cm'))
+
+#gini
+p3 = ggplot(CVG032_info, aes(x=Days_post, y=Gini_coefficient, color=ID, fill=ID)) +
+  geom_point(size = 8) + theme(axis.title.x = element_text(size=5),
+                               axis.text.x  = element_text(angle=90, vjust=0.5, size=5)) + 
+  geom_line() + labs(title = "Gini coefficient", x = "Days", y = "Gini coefficient") +
+      scale_color_manual(labels = c("CVG032"), values = c("#008E90FF")) +
+  theme_bw() + guides(fill=FALSE, color = FALSE)+ theme(
+    plot.title = element_text(color="black", size=24, face="bold"),
+    axis.title.x = element_text(color="black", size=24, face="bold"),
+    axis.title.y = element_text(color="black", size=24, face="bold"),
+    axis.text=element_text(size=26),
+    legend.title = element_text(color = "black", size = 26),
+    legend.text = element_text(color = "black", size = 24)
+  )+geom_line(aes(group=ID), size =2) + scale_x_continuous(breaks = integer_breaks())+ coord_cartesian(ylim = c(0.95, 1))
+p3
+ggsave("CVG032_info_gini.pdf", width = 25, height = 20, units = c('cm'))
+
+
+p1 / p2 /
+  p3 + plot_layout(guides = 'collect', ncol = 1)
+ggsave("CVG032_info_all_the_diversities.pdf", width = 32, height = 35, units = c('cm'))
+```
+
+```{r}
+CVG041_info<- subset(diversities_theALL, subset=(diversities_theALL$ID=="CVG041"))
+
+#gini
+p1 = ggplot(CVG041_info, aes(x=Days_post, y=Observed, color=ID, fill=ID)) +
+  geom_point(size = 8) + theme(axis.title.x = element_text(size=5),
+                               axis.text.x  = element_text(angle=90, vjust=0.5, size=5)) + 
+  geom_line() + labs(title = "Observed OTUs", x = "Days", y = "Number of observed OTUs")  +
+    scale_color_manual(labels = c("CVG041"), values = c('#E75B64')) +
+  theme_bw() + guides(fill=FALSE, color = FALSE)+ theme(
+    plot.title = element_text(color="black", size=24, face="bold"),
+    axis.title.x = element_text(color="black", size=24, face="bold"),
+    axis.title.y = element_text(color="black", size=24, face="bold"),
+    axis.text=element_text(size=26),
+    legend.title = element_text(color = "black", size = 26),
+    legend.text = element_text(color = "black", size = 24)
+  )  +geom_line(aes(group=ID), size =2) + scale_x_continuous(breaks = integer_breaks())+ coord_cartesian(ylim = c(0, 65))
+p1
+ggsave("CVG041_info_observed.pdf", width = 25, height = 20, units = c('cm'))
+
+#shannon
+p2 = ggplot(CVG041_info, aes(x=Days_post, y=Shannon, color=ID, fill=ID)) +
+  geom_point(size = 8) + theme(axis.title.x = element_text(size=5),
+                               axis.text.x  = element_text(angle=90, vjust=0.5, size=5)) + 
+  geom_line() + labs(title = "Shannon entropy", x = "Days", y = "Shannon entropy", color = "Number_of_days_post_transplant") +
+      scale_color_manual(labels = c("CVG041"), values = c("#5C5992FF")) +
+  theme_bw() + guides(fill=FALSE, color = FALSE)+ theme(
+    plot.title = element_text(color="black", size=24, face="bold"),
+    axis.title.x = element_text(color="black", size=24, face="bold"),
+    axis.title.y = element_text(color="black", size=24, face="bold"),
+    axis.text=element_text(size=26),
+    legend.title = element_text(color = "black", size = 26),
+    legend.text = element_text(color = "black", size = 24)
+  )+geom_line(aes(group=ID), size =2) + scale_x_continuous(breaks = integer_breaks())+ coord_cartesian(ylim = c(0, 3.2))
+p2
+ggsave("CVG041_info_shannon.pdf", width = 25, height = 20, units = c('cm'))
+
+#gini
+p3 = ggplot(CVG041_info, aes(x=Days_post, y=Gini_coefficient, color=ID, fill=ID)) +
+  geom_point(size = 8) + theme(axis.title.x = element_text(size=5),
+                               axis.text.x  = element_text(angle=90, vjust=0.5, size=5)) + 
+  geom_line() + labs(title = "Gini coefficient", x = "Days", y = "Gini coefficient") +
+      scale_color_manual(labels = c("CVG041"), values = c("#008E90FF")) +
+  theme_bw() + guides(fill=FALSE, color = FALSE)+ theme(
+    plot.title = element_text(color="black", size=24, face="bold"),
+    axis.title.x = element_text(color="black", size=24, face="bold"),
+    axis.title.y = element_text(color="black", size=24, face="bold"),
+    axis.text=element_text(size=26),
+    legend.title = element_text(color = "black", size = 26),
+    legend.text = element_text(color = "black", size = 24)
+  )+geom_line(aes(group=ID), size =2) + scale_x_continuous(breaks = integer_breaks())+ coord_cartesian(ylim = c(0.95, 1))
+p3
+ggsave("CVG041_info_gini.pdf", width = 25, height = 20, units = c('cm'))
+
+
+p1 / p2 /
+  p3 + plot_layout(guides = 'collect', ncol = 1)
+ggsave("CVG041_info_all_the_diversities.pdf", width = 32, height = 35, units = c('cm'))
+```
+
+```{r}
+CVG042_info<- subset(diversities_theALL, subset=(diversities_theALL$ID=="CVG042"))
+
+#gini
+p1 = ggplot(CVG042_info, aes(x=Days_post, y=Observed, color=ID, fill=ID)) +
+  geom_point(size = 8) + theme(axis.title.x = element_text(size=5),
+                               axis.text.x  = element_text(angle=90, vjust=0.5, size=5)) + 
+  geom_line() + labs(title = "Observed OTUs", x = "Days", y = "Number of observed OTUs")  +
+    scale_color_manual(labels = c("CVG042"), values = c('#E75B64')) +
+  theme_bw() + guides(fill=FALSE, color = FALSE)+ theme(
+    plot.title = element_text(color="black", size=24, face="bold"),
+    axis.title.x = element_text(color="black", size=24, face="bold"),
+    axis.title.y = element_text(color="black", size=24, face="bold"),
+    axis.text=element_text(size=26),
+    legend.title = element_text(color = "black", size = 26),
+    legend.text = element_text(color = "black", size = 24)
+  )  +geom_line(aes(group=ID), size =2) + scale_x_continuous(breaks = integer_breaks())+ coord_cartesian(ylim = c(0, 65))
+p1
+ggsave("CVG042_info_observed.pdf", width = 25, height = 20, units = c('cm'))
+
+#shannon
+p2 = ggplot(CVG042_info, aes(x=Days_post, y=Shannon, color=ID, fill=ID)) +
+  geom_point(size = 8) + theme(axis.title.x = element_text(size=5),
+                               axis.text.x  = element_text(angle=90, vjust=0.5, size=5)) + 
+  geom_line() + labs(title = "Shannon entropy", x = "Days", y = "Shannon entropy", color = "Number_of_days_post_transplant") +
+      scale_color_manual(labels = c("CVG042"), values = c("#5C5992FF")) +
+  theme_bw() + guides(fill=FALSE, color = FALSE)+ theme(
+    plot.title = element_text(color="black", size=24, face="bold"),
+    axis.title.x = element_text(color="black", size=24, face="bold"),
+    axis.title.y = element_text(color="black", size=24, face="bold"),
+    axis.text=element_text(size=26),
+    legend.title = element_text(color = "black", size = 26),
+    legend.text = element_text(color = "black", size = 24)
+  )+geom_line(aes(group=ID), size =2) + scale_x_continuous(breaks = integer_breaks())+ coord_cartesian(ylim = c(0, 3.2))
+p2
+ggsave("CVG042_info_shannon.pdf", width = 25, height = 20, units = c('cm'))
+
+#gini
+p3 = ggplot(CVG042_info, aes(x=Days_post, y=Gini_coefficient, color=ID, fill=ID)) +
+  geom_point(size = 8) + theme(axis.title.x = element_text(size=5),
+                               axis.text.x  = element_text(angle=90, vjust=0.5, size=5)) + 
+  geom_line() + labs(title = "Gini coefficient", x = "Days", y = "Gini coefficient") +
+      scale_color_manual(labels = c("CVG042"), values = c("#008E90FF")) +
+  theme_bw() + guides(fill=FALSE, color = FALSE)+ theme(
+    plot.title = element_text(color="black", size=24, face="bold"),
+    axis.title.x = element_text(color="black", size=24, face="bold"),
+    axis.title.y = element_text(color="black", size=24, face="bold"),
+    axis.text=element_text(size=26),
+    legend.title = element_text(color = "black", size = 26),
+    legend.text = element_text(color = "black", size = 24)
+  )+geom_line(aes(group=ID), size =2) + scale_x_continuous(breaks = integer_breaks())+ coord_cartesian(ylim = c(0.95, 1))
+p3
+ggsave("CVG042_info_gini.pdf", width = 25, height = 20, units = c('cm'))
+
+
+p1 / p2 /
+  p3 + plot_layout(guides = 'collect', ncol = 1)
+ggsave("CVG042_info_all_the_diversities.pdf", width = 32, height = 35, units = c('cm'))
+```
+
+```{r}
+CVG046_info<- subset(diversities_theALL, subset=(diversities_theALL$ID=="CVG046"))
+
+#gini
+p1 = ggplot(CVG046_info, aes(x=Days_post, y=Observed, color=ID, fill=ID)) +
+  geom_point(size = 8) + theme(axis.title.x = element_text(size=5),
+                               axis.text.x  = element_text(angle=90, vjust=0.5, size=5)) + 
+  geom_line() + labs(title = "Observed OTUs", x = "Days", y = "Number of observed OTUs")  +
+    scale_color_manual(labels = c("CVG046"), values = c('#E75B64')) +
+  theme_bw() + guides(fill=FALSE, color = FALSE)+ theme(
+    plot.title = element_text(color="black", size=24, face="bold"),
+    axis.title.x = element_text(color="black", size=24, face="bold"),
+    axis.title.y = element_text(color="black", size=24, face="bold"),
+    axis.text=element_text(size=26),
+    legend.title = element_text(color = "black", size = 26),
+    legend.text = element_text(color = "black", size = 24)
+  )  +geom_line(aes(group=ID), size =2) + scale_x_continuous(breaks = integer_breaks())+ coord_cartesian(ylim = c(0, 65))
+p1
+ggsave("CVG046_info_observed.pdf", width = 25, height = 20, units = c('cm'))
+
+#shannon
+p2 = ggplot(CVG046_info, aes(x=Days_post, y=Shannon, color=ID, fill=ID)) +
+  geom_point(size = 8) + theme(axis.title.x = element_text(size=5),
+                               axis.text.x  = element_text(angle=90, vjust=0.5, size=5)) + 
+  geom_line() + labs(title = "Shannon entropy", x = "Days", y = "Shannon entropy", color = "Number_of_days_post_transplant") +
+      scale_color_manual(labels = c("CVG046"), values = c("#5C5992FF")) +
+  theme_bw() + guides(fill=FALSE, color = FALSE)+ theme(
+    plot.title = element_text(color="black", size=24, face="bold"),
+    axis.title.x = element_text(color="black", size=24, face="bold"),
+    axis.title.y = element_text(color="black", size=24, face="bold"),
+    axis.text=element_text(size=26),
+    legend.title = element_text(color = "black", size = 26),
+    legend.text = element_text(color = "black", size = 24)
+  )+geom_line(aes(group=ID), size =2) + scale_x_continuous(breaks = integer_breaks())+ coord_cartesian(ylim = c(0, 3.2))
+p2
+ggsave("CVG046_info_shannon.pdf", width = 25, height = 20, units = c('cm'))
+
+#gini
+p3 = ggplot(CVG046_info, aes(x=Days_post, y=Gini_coefficient, color=ID, fill=ID)) +
+  geom_point(size = 8) + theme(axis.title.x = element_text(size=5),
+                               axis.text.x  = element_text(angle=90, vjust=0.5, size=5)) + 
+  geom_line() + labs(title = "Gini coefficient", x = "Days", y = "Gini coefficient") +
+      scale_color_manual(labels = c("CVG046"), values = c("#008E90FF")) +
+  theme_bw() + guides(fill=FALSE, color = FALSE)+ theme(
+    plot.title = element_text(color="black", size=24, face="bold"),
+    axis.title.x = element_text(color="black", size=24, face="bold"),
+    axis.title.y = element_text(color="black", size=24, face="bold"),
+    axis.text=element_text(size=26),
+    legend.title = element_text(color = "black", size = 26),
+    legend.text = element_text(color = "black", size = 24)
+  )+geom_line(aes(group=ID), size =2) + scale_x_continuous(breaks = integer_breaks())+ coord_cartesian(ylim = c(0.95, 1))
+p3
+ggsave("CVG046_info_gini.pdf", width = 25, height = 20, units = c('cm'))
+
+
+p1 / p2 /
+  p3 + plot_layout(guides = 'collect', ncol = 1)
+ggsave("CVG046_info_all_the_diversities.pdf", width = 32, height = 35, units = c('cm'))
+```
+
+```{r}
+CVG047_info<- subset(diversities_theALL, subset=(diversities_theALL$ID=="CVG047"))
+
+#gini
+p1 = ggplot(CVG047_info, aes(x=Days_post, y=Observed, color=ID, fill=ID)) +
+  geom_point(size = 8) + theme(axis.title.x = element_text(size=5),
+                               axis.text.x  = element_text(angle=90, vjust=0.5, size=5)) + 
+  geom_line() + labs(title = "Observed OTUs", x = "Days", y = "Number of observed OTUs")  +
+    scale_color_manual(labels = c("CVG047"), values = c('#E75B64')) +
+  theme_bw() + guides(fill=FALSE, color = FALSE)+ theme(
+    plot.title = element_text(color="black", size=24, face="bold"),
+    axis.title.x = element_text(color="black", size=24, face="bold"),
+    axis.title.y = element_text(color="black", size=24, face="bold"),
+    axis.text=element_text(size=26),
+    legend.title = element_text(color = "black", size = 26),
+    legend.text = element_text(color = "black", size = 24)
+  )  +geom_line(aes(group=ID), size =2) + scale_x_continuous(breaks = integer_breaks())+ coord_cartesian(ylim = c(0, 65))
+p1
+ggsave("CVG047_info_observed.pdf", width = 25, height = 20, units = c('cm'))
+
+#shannon
+p2 = ggplot(CVG047_info, aes(x=Days_post, y=Shannon, color=ID, fill=ID)) +
+  geom_point(size = 8) + theme(axis.title.x = element_text(size=5),
+                               axis.text.x  = element_text(angle=90, vjust=0.5, size=5)) + 
+  geom_line() + labs(title = "Shannon entropy", x = "Days", y = "Shannon entropy", color = "Number_of_days_post_transplant") +
+      scale_color_manual(labels = c("CVG047"), values = c("#5C5992FF")) +
+  theme_bw() + guides(fill=FALSE, color = FALSE)+ theme(
+    plot.title = element_text(color="black", size=24, face="bold"),
+    axis.title.x = element_text(color="black", size=24, face="bold"),
+    axis.title.y = element_text(color="black", size=24, face="bold"),
+    axis.text=element_text(size=26),
+    legend.title = element_text(color = "black", size = 26),
+    legend.text = element_text(color = "black", size = 24)
+  )+geom_line(aes(group=ID), size =2) + scale_x_continuous(breaks = integer_breaks())+ coord_cartesian(ylim = c(0, 3.2))
+p2
+ggsave("CVG047_info_shannon.pdf", width = 25, height = 20, units = c('cm'))
+
+#gini
+p3 = ggplot(CVG047_info, aes(x=Days_post, y=Gini_coefficient, color=ID, fill=ID)) +
+  geom_point(size = 8) + theme(axis.title.x = element_text(size=5),
+                               axis.text.x  = element_text(angle=90, vjust=0.5, size=5)) + 
+  geom_line() + labs(title = "Gini coefficient", x = "Days", y = "Gini coefficient") +
+      scale_color_manual(labels = c("CVG047"), values = c("#008E90FF")) +
+  theme_bw() + guides(fill=FALSE, color = FALSE)+ theme(
+    plot.title = element_text(color="black", size=24, face="bold"),
+    axis.title.x = element_text(color="black", size=24, face="bold"),
+    axis.title.y = element_text(color="black", size=24, face="bold"),
+    axis.text=element_text(size=26),
+    legend.title = element_text(color = "black", size = 26),
+    legend.text = element_text(color = "black", size = 24)
+  )+geom_line(aes(group=ID), size =2) + scale_x_continuous(breaks = integer_breaks())+ coord_cartesian(ylim = c(0.95, 1))
+p3
+ggsave("CVG047_info_gini.pdf", width = 25, height = 20, units = c('cm'))
+
+
+p1 / p2 /
+  p3 + plot_layout(guides = 'collect', ncol = 1)
+ggsave("CVG047_info_all_the_diversities.pdf", width = 32, height = 35, units = c('cm'))
+```
+
+```{r}
+CVG048_info<- subset(diversities_theALL, subset=(diversities_theALL$ID=="CVG048"))
+
+#gini
+p1 = ggplot(CVG048_info, aes(x=Days_post, y=Observed, color=ID, fill=ID)) +
+  geom_point(size = 8) + theme(axis.title.x = element_text(size=5),
+                               axis.text.x  = element_text(angle=90, vjust=0.5, size=5)) + 
+  geom_line() + labs(title = "Observed OTUs", x = "Days", y = "Number of observed OTUs")  +
+    scale_color_manual(labels = c("CVG048"), values = c('#E75B64')) +
+  theme_bw() + guides(fill=FALSE, color = FALSE)+ theme(
+    plot.title = element_text(color="black", size=24, face="bold"),
+    axis.title.x = element_text(color="black", size=24, face="bold"),
+    axis.title.y = element_text(color="black", size=24, face="bold"),
+    axis.text=element_text(size=26),
+    legend.title = element_text(color = "black", size = 26),
+    legend.text = element_text(color = "black", size = 24)
+  )  +geom_line(aes(group=ID), size =2) + scale_x_continuous(breaks = integer_breaks())+ coord_cartesian(ylim = c(0, 65))
+p1
+ggsave("CVG048_info_observed.pdf", width = 25, height = 20, units = c('cm'))
+
+#shannon
+p2 = ggplot(CVG048_info, aes(x=Days_post, y=Shannon, color=ID, fill=ID)) +
+  geom_point(size = 8) + theme(axis.title.x = element_text(size=5),
+                               axis.text.x  = element_text(angle=90, vjust=0.5, size=5)) + 
+  geom_line() + labs(title = "Shannon entropy", x = "Days", y = "Shannon entropy", color = "Number_of_days_post_transplant") +
+      scale_color_manual(labels = c("CVG048"), values = c("#5C5992FF")) +
+  theme_bw() + guides(fill=FALSE, color = FALSE)+ theme(
+    plot.title = element_text(color="black", size=24, face="bold"),
+    axis.title.x = element_text(color="black", size=24, face="bold"),
+    axis.title.y = element_text(color="black", size=24, face="bold"),
+    axis.text=element_text(size=26),
+    legend.title = element_text(color = "black", size = 26),
+    legend.text = element_text(color = "black", size = 24)
+  )+geom_line(aes(group=ID), size =2) + scale_x_continuous(breaks = integer_breaks())+ coord_cartesian(ylim = c(0, 3.2))
+p2
+ggsave("CVG048_info_shannon.pdf", width = 25, height = 20, units = c('cm'))
+
+#gini
+p3 = ggplot(CVG048_info, aes(x=Days_post, y=Gini_coefficient, color=ID, fill=ID)) +
+  geom_point(size = 8) + theme(axis.title.x = element_text(size=5),
+                               axis.text.x  = element_text(angle=90, vjust=0.5, size=5)) + 
+  geom_line() + labs(title = "Gini coefficient", x = "Days", y = "Gini coefficient") +
+      scale_color_manual(labels = c("CVG048"), values = c("#008E90FF")) +
+  theme_bw() + guides(fill=FALSE, color = FALSE)+ theme(
+    plot.title = element_text(color="black", size=24, face="bold"),
+    axis.title.x = element_text(color="black", size=24, face="bold"),
+    axis.title.y = element_text(color="black", size=24, face="bold"),
+    axis.text=element_text(size=26),
+    legend.title = element_text(color = "black", size = 26),
+    legend.text = element_text(color = "black", size = 24)
+  )+geom_line(aes(group=ID), size =2) + scale_x_continuous(breaks = integer_breaks())+ coord_cartesian(ylim = c(0.95, 1))
+p3
+ggsave("CVG048_info_gini.pdf", width = 25, height = 20, units = c('cm'))
+
+
+p1 / p2 /
+  p3 + plot_layout(guides = 'collect', ncol = 1)
+ggsave("CVG048_info_all_the_diversities.pdf", width = 32, height = 35, units = c('cm'))
+```
+
+```{r}
+CVG052_info<- subset(diversities_theALL, subset=(diversities_theALL$ID=="CVG052"))
+
+#gini
+p1 = ggplot(CVG052_info, aes(x=Days_post, y=Observed, color=ID, fill=ID)) +
+  geom_point(size = 8) + theme(axis.title.x = element_text(size=5),
+                               axis.text.x  = element_text(angle=90, vjust=0.5, size=5)) + 
+  geom_line() + labs(title = "Observed OTUs", x = "Days", y = "Number of observed OTUs")  +
+    scale_color_manual(labels = c("CVG052"), values = c('#E75B64')) +
+  theme_bw() + guides(fill=FALSE, color = FALSE)+ theme(
+    plot.title = element_text(color="black", size=24, face="bold"),
+    axis.title.x = element_text(color="black", size=24, face="bold"),
+    axis.title.y = element_text(color="black", size=24, face="bold"),
+    axis.text=element_text(size=26),
+    legend.title = element_text(color = "black", size = 26),
+    legend.text = element_text(color = "black", size = 24)
+  )  +geom_line(aes(group=ID), size =2) + scale_x_continuous(breaks = integer_breaks())+ coord_cartesian(ylim = c(0, 65))
+p1
+ggsave("CVG052_info_observed.pdf", width = 25, height = 20, units = c('cm'))
+
+#shannon
+p2 = ggplot(CVG052_info, aes(x=Days_post, y=Shannon, color=ID, fill=ID)) +
+  geom_point(size = 8) + theme(axis.title.x = element_text(size=5),
+                               axis.text.x  = element_text(angle=90, vjust=0.5, size=5)) + 
+  geom_line() + labs(title = "Shannon entropy", x = "Days", y = "Shannon entropy", color = "Number_of_days_post_transplant") +
+      scale_color_manual(labels = c("CVG052"), values = c("#5C5992FF")) +
+  theme_bw() + guides(fill=FALSE, color = FALSE)+ theme(
+    plot.title = element_text(color="black", size=24, face="bold"),
+    axis.title.x = element_text(color="black", size=24, face="bold"),
+    axis.title.y = element_text(color="black", size=24, face="bold"),
+    axis.text=element_text(size=26),
+    legend.title = element_text(color = "black", size = 26),
+    legend.text = element_text(color = "black", size = 24)
+  )+geom_line(aes(group=ID), size =2) + scale_x_continuous(breaks = integer_breaks())+ coord_cartesian(ylim = c(0, 3.2))
+p2
+ggsave("CVG052_info_shannon.pdf", width = 25, height = 20, units = c('cm'))
+
+#gini
+p3 = ggplot(CVG052_info, aes(x=Days_post, y=Gini_coefficient, color=ID, fill=ID)) +
+  geom_point(size = 8) + theme(axis.title.x = element_text(size=5),
+                               axis.text.x  = element_text(angle=90, vjust=0.5, size=5)) + 
+  geom_line() + labs(title = "Gini coefficient", x = "Days", y = "Gini coefficient") +
+      scale_color_manual(labels = c("CVG052"), values = c("#008E90FF")) +
+  theme_bw() + guides(fill=FALSE, color = FALSE)+ theme(
+    plot.title = element_text(color="black", size=24, face="bold"),
+    axis.title.x = element_text(color="black", size=24, face="bold"),
+    axis.title.y = element_text(color="black", size=24, face="bold"),
+    axis.text=element_text(size=26),
+    legend.title = element_text(color = "black", size = 26),
+    legend.text = element_text(color = "black", size = 24)
+  )+geom_line(aes(group=ID), size =2) + scale_x_continuous(breaks = integer_breaks())+ coord_cartesian(ylim = c(0.95, 1))
+p3
+ggsave("CVG052_info_gini.pdf", width = 25, height = 20, units = c('cm'))
+
+
+p1 / p2 /
+  p3 + plot_layout(guides = 'collect', ncol = 1)
+ggsave("CVG052_info_all_the_diversities.pdf", width = 32, height = 35, units = c('cm'))
+```
+
+
+```{r}
+CVG054_info<- subset(diversities_theALL, subset=(diversities_theALL$ID=="CVG054"))
+
+#gini
+p1 = ggplot(CVG054_info, aes(x=Days_post, y=Observed, color=ID, fill=ID)) +
+  geom_point(size = 8) + theme(axis.title.x = element_text(size=5),
+                               axis.text.x  = element_text(angle=90, vjust=0.5, size=5)) + 
+  geom_line() + labs(title = "Observed OTUs", x = "Days", y = "Number of observed OTUs")  +
+    scale_color_manual(labels = c("CVG054"), values = c('#E75B64')) +
+  theme_bw() + guides(fill=FALSE, color = FALSE)+ theme(
+    plot.title = element_text(color="black", size=24, face="bold"),
+    axis.title.x = element_text(color="black", size=24, face="bold"),
+    axis.title.y = element_text(color="black", size=24, face="bold"),
+    axis.text=element_text(size=26),
+    legend.title = element_text(color = "black", size = 26),
+    legend.text = element_text(color = "black", size = 24)
+  )  +geom_line(aes(group=ID), size =2) + scale_x_continuous(breaks = integer_breaks())+ coord_cartesian(ylim = c(0, 65))
+p1
+ggsave("CVG054_info_observed.pdf", width = 25, height = 20, units = c('cm'))
+
+#shannon
+p2 = ggplot(CVG054_info, aes(x=Days_post, y=Shannon, color=ID, fill=ID)) +
+  geom_point(size = 8) + theme(axis.title.x = element_text(size=5),
+                               axis.text.x  = element_text(angle=90, vjust=0.5, size=5)) + 
+  geom_line() + labs(title = "Shannon entropy", x = "Days", y = "Shannon entropy", color = "Number_of_days_post_transplant") +
+      scale_color_manual(labels = c("CVG054"), values = c("#5C5992FF")) +
+  theme_bw() + guides(fill=FALSE, color = FALSE)+ theme(
+    plot.title = element_text(color="black", size=24, face="bold"),
+    axis.title.x = element_text(color="black", size=24, face="bold"),
+    axis.title.y = element_text(color="black", size=24, face="bold"),
+    axis.text=element_text(size=26),
+    legend.title = element_text(color = "black", size = 26),
+    legend.text = element_text(color = "black", size = 24)
+  )+geom_line(aes(group=ID), size =2) + scale_x_continuous(breaks = integer_breaks())+ coord_cartesian(ylim = c(0, 3.2))
+p2
+ggsave("CVG054_info_shannon.pdf", width = 25, height = 20, units = c('cm'))
+
+#gini
+p3 = ggplot(CVG054_info, aes(x=Days_post, y=Gini_coefficient, color=ID, fill=ID)) +
+  geom_point(size = 8) + theme(axis.title.x = element_text(size=5),
+                               axis.text.x  = element_text(angle=90, vjust=0.5, size=5)) + 
+  geom_line() + labs(title = "Gini coefficient", x = "Days", y = "Gini coefficient") +
+      scale_color_manual(labels = c("CVG054"), values = c("#008E90FF")) +
+  theme_bw() + guides(fill=FALSE, color = FALSE)+ theme(
+    plot.title = element_text(color="black", size=24, face="bold"),
+    axis.title.x = element_text(color="black", size=24, face="bold"),
+    axis.title.y = element_text(color="black", size=24, face="bold"),
+    axis.text=element_text(size=26),
+    legend.title = element_text(color = "black", size = 26),
+    legend.text = element_text(color = "black", size = 24)
+  )+geom_line(aes(group=ID), size =2) + scale_x_continuous(breaks = integer_breaks())+ coord_cartesian(ylim = c(0.95, 1))
+p3
+ggsave("CVG054_info_gini.pdf", width = 25, height = 20, units = c('cm'))
+
+
+p1 / p2 /
+  p3 + plot_layout(guides = 'collect', ncol = 1)
+ggsave("CVG054_info_all_the_diversities.pdf", width = 32, height = 35, units = c('cm'))
+```
+
+
+
+

@@ -1,0 +1,71 @@
+---
+title: "all ov em"
+author: "Tess Attenborough"
+date: "04/05/2020"
+output: html_document
+---
+
+```{r}
+addthem <- rbind(stackedSharedGenus1, stackedSharedGenus2, stackedSharedGenus3, stackedSharedGenus4, stackedSharedGenus5, stackedSharedGenus12, stackedSharedGenus14, stackedSharedGenus16, stackedSharedGenus17, stackedSharedGenus19, stackedSharedGenus21, stackedSharedGenus28, stackedSharedGenus32, stackedSharedGenus41, stackedSharedGenus42, stackedSharedGenus46, stackedSharedGenus47, stackedSharedGenus48, stackedSharedGenus52, stackedSharedGenus54)
+
+names(addthem)[names(addthem)=="ID"] <- "Patient_ID"
+
+
+
+write.csv(addthem, "addthem.csv")
+
+the20bins = read.csv("addthem.csv")
+names(the20bins)[names(the20bins)=="X.1"] <- "Sample_group"
+#the20bins[1] <- NULL
+
+
+
+colnames(the20bins)
+```
+
+```{r}
+library(tidyverse)
+
+test <- the20bins %>%
+  group_by(Sample_group,Patient_ID,Days_post) %>%
+  summarise(max_count = max(Count)) 
+
+write.csv(test, "tops.csv")
+
+```
+
+```{r}
+the20binsWmedian = read.csv("topsMetaMeduan.csv") #one entry per patient per time pint, by median
+
+aggregate(the20binsWmedian, by = list(the20binsWmedian$Sample_group, the20binsWmedian$Outcome), FUN = mean)
+
+ooutcomeMedians = the20binsWmedian %>%
+  group_by(Sample_group, Outcome) %>%
+  summarise(median = median(max_count))
+write.csv(ooutcomeMedians, "ooutcomeMedians.csv")
+
+gvhdMedians = the20binsWmedian %>%
+  group_by(Sample_group, GvHD.degree) %>%
+  summarise(median = median(max_count))
+write.csv(gvhdMedians, "gvhdMedians.csv")
+
+ooutcomeIQRs = the20binsWmedian %>%
+  group_by(Sample_group, Outcome) %>%
+  summarise(IQR = IQR(max_count))
+write.csv(ooutcomeIQRs, "ooutcomeIQRs.csv")
+
+gvhdIQRs = the20binsWmedian %>%
+  group_by(Sample_group, GvHD.degree) %>%
+  summarise(IQR = IQR(max_count))
+write.csv(gvhdIQRs, "gvhdIQRs.csv")
+
+
+
+```
+```{r}
+test1 <- subset(test, Sample_group==1)
+
+the20bins1 <- subset(the20bins, Sample_group==1)
+
+```
+

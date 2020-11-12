@@ -1,0 +1,1103 @@
+---
+title: "changesinBacteriaForAnti"
+author: "Tess Attenborough"
+date: "01/05/2020"
+output: html_document
+---
+
+#here i want to make a parallel plot bacteria changes over time
+
+```{r}
+library("ape")
+library("ggplot2")
+library("plyr")
+library("scales")
+library("vegan")
+library("knitr")
+library("dplyr")
+library("praise")
+library("tidyverse")
+library("phyloseq")
+library("ggforce")
+library("microbiome")
+library("patchwork")
+```
+
+```{r}
+chinchilla = estimate_richness(CVG_phyloseq_decontaminated, split = TRUE, measures = c("Observed", "Shannon"))
+
+codespatient = sample_data_table$Patient_ID
+codespatient = sample_data_table$Sample_bin
+codespatient = sample_data_table$Number_of_days_post_transplant
+
+chinchilla$ID = codespatient
+chinchilla$Bin = codespatient
+chinchilla$Bin = codespatient
+chinchilla$Days_post = codespatient
+chinchilla$Gini_coefficient = d
+
+write.csv(chinchilla, "diversity_data.csv")
+
+
+d <- inequality(CVG_phyloseq_decontaminated)
+```
+
+
+
+```{r}
+stackedSharedGenus1$Days_post <- as.numeric(stackedSharedGenus1$Days_post)
+
+#evidence.summary.main %>%
+#    tidyr::complete(year, studyType, fill = list(N = 0)) %>%
+#    ggplot(aes(x = as.numeric(year), y = N, fill = studyType)) + 
+#    geom_area(alpha = .8)
+
+test <- stackedSharedGenus1 %>%
+    tidyr::complete(Days_post, Genus, fill = list(Count = 0))
+range(antiBUp001$Administered_dttm)
+
+
+#stackedShared1raw <- stackedShared1raw  %>%
+#  group_by(Days_post, Family) %>%
+#  summarise(n = sum(Count)) %>%
+#  mutate(percentage = n / sum(n))
+
+# Plot
+AA1 = ggplot(test, aes(x=Days_post, y=Count, fill=Genus)) + theme_bw()+labs(title = "CVG001 Genera", x ="Days from transplant", y = "Percentage (%)", color = "Genus") +  theme(
+    plot.title = element_text(color="black", size=28, face="bold"),
+    axis.title.x = element_text(color="black", size=28, face="bold"),
+    axis.title.y = element_text(color="black", size=28, face="bold"),
+    axis.text=element_text(size=26),
+    legend.title = element_text(color = "black", size = 26),
+    legend.text = element_text(color = "black", size = 24)
+  ) + geom_area(alpha=0.8, size=0.1, colour="black")  +guides(fill=guide_legend(ncol=1))+xlim(-9, 104) #start from the beginning of anti to end of sampleß
+AA1 <- AA1 + geom_vline(xintercept = -8, 
+                    color = "black", size=1)
+AA1 <- AA1 + geom_vline(xintercept = 12, 
+                    color = "black", size=1)
+AA1 <- AA1 + geom_vline(xintercept = 27, 
+                    color = "black", size=1)
+AA1 <- AA1 + geom_vline(xintercept = 41, 
+                    color = "black", size=1)
+AA1 <- AA1 + geom_vline(xintercept = 104, 
+                    color = "black", size=1)
+AA1 <- AA1 + geom_vline(xintercept = 14, 
+                    color = "red", size=1)
+
+AA1
+
+
+ggsave("areaplot1.pdf", width = 47, height = 40, units = c('cm'))
+
+```
+
+
+```{r}
+(A1 / AA1 / AV1) + plot_layout(guides = 'collect', ncol = 1)
+
+ggsave("combplot1.pdf", width = 47, height = 60, units = c('cm'))
+
+```
+
+
+
+```{r}
+stackedSharedGenus2$Days_post <- as.numeric(stackedSharedGenus2$Days_post)
+
+#evidence.summary.main %>%
+#    tidyr::complete(year, studyType, fill = list(N = 0)) %>%
+#    ggplot(aes(x = as.numeric(year), y = N, fill = studyType)) + 
+#    geom_area(alpha = .8)
+
+test <- stackedSharedGenus2 %>%
+    tidyr::complete(Days_post, Genus, fill = list(Count = 0))
+
+
+#stackedShared1raw <- stackedShared1raw  %>%
+#  group_by(Days_post, Family) %>%
+#  summarise(n = sum(Count)) %>%
+#  mutate(percentage = n / sum(n))
+
+# Plot
+p = ggplot(test, aes(x=Days_post, y=Count, fill=Genus)) + theme_bw()+labs(title = "CVG002 Genera", x ="Days from transplant", y = "Percentage (%)", color = "Genus") +  theme(
+    plot.title = element_text(color="black", size=28, face="bold"),
+    axis.title.x = element_text(color="black", size=28, face="bold"),
+    axis.title.y = element_text(color="black", size=28, face="bold"),
+    axis.text=element_text(size=26),
+    legend.title = element_text(color = "black", size = 26),
+    legend.text = element_text(color = "black", size = 24)
+  ) + geom_area(alpha=0.8, size=0.1, colour="black") +guides(fill=guide_legend(ncol=1))+xlim(	-39, 304)
+p <- p + geom_vline(xintercept = 10, 
+                    color = "black", size=1)
+p <- p + geom_vline(xintercept = 26, 
+                    color = "black", size=1)
+p <- p + geom_vline(xintercept = 32, 
+                    color = "black", size=1)
+p <- p + geom_vline(xintercept = 67, 
+                    color = "black", size=1)
+p <- p + geom_vline(xintercept = 69, 
+                    color = "black", size=1)
+p <- p + geom_vline(xintercept = 90, 
+                    color = "black", size=1)
+p <- p + geom_vline(xintercept = 207, 
+                    color = "black", size=1)
+p <- p + geom_vline(xintercept = 222, 
+                    color = "black", size=1)
+p <- p + geom_vline(xintercept = 304, 
+                    color = "black", size=1)
+AA2 <- p + geom_vline(xintercept = 20, 
+                    color = "red", size=1)
+
+AA2
+
+
+ggsave("areaplot2.pdf", width = 47, height = 40, units = c('cm'))
+
+```
+
+```{r}
+(A2 / AA2) + plot_layout(guides = 'collect', ncol = 1)
+
+ggsave("combplot2.pdf", width = 47, height = 60, units = c('cm'))
+
+```
+
+```{r}
+stackedSharedGenus3$Days_post <- as.numeric(stackedSharedGenus3$Days_post)
+
+#evidence.summary.main %>%
+#    tidyr::complete(year, studyType, fill = list(N = 0)) %>%
+#    ggplot(aes(x = as.numeric(year), y = N, fill = studyType)) + 
+#    geom_area(alpha = .8)
+
+test <- stackedSharedGenus3 %>%
+    tidyr::complete(Days_post, Genus, fill = list(Count = 0))
+
+
+#stackedShared1raw <- stackedShared1raw  %>%
+#  group_by(Days_post, Family) %>%
+#  summarise(n = sum(Count)) %>%
+#  mutate(percentage = n / sum(n))
+
+# Plot
+p = ggplot(test, aes(x=Days_post, y=Count, fill=Genus)) + theme_bw()+labs(title = "CVG003 Genera", x ="Days from transplant", y = "Percentage (%)", color = "Genus") +  theme(
+    plot.title = element_text(color="black", size=28, face="bold"),
+    axis.title.x = element_text(color="black", size=28, face="bold"),
+    axis.title.y = element_text(color="black", size=28, face="bold"),
+    axis.text=element_text(size=26),
+    legend.title = element_text(color = "black", size = 26),
+    legend.text = element_text(color = "black", size = 24)
+  ) + geom_area(alpha=0.8, size=0.1, colour="black") +guides(fill=guide_legend(ncol=1))+xlim(	-24, 180)
+p <- p + geom_vline(xintercept = 0, 
+                    color = "black", size=1)
+p <- p + geom_vline(xintercept = 32, 
+                    color = "black", size=1)
+p <- p + geom_vline(xintercept = 180, 
+                    color = "black", size=1)
+AA3 <- p + geom_vline(xintercept = 26, 
+                    color = "red", size=1)
+
+AA3
+
+
+ggsave("areaplot3.pdf", width = 47, height = 40, units = c('cm'))
+
+
+```
+
+
+```{r}
+(A3 / AA3) + plot_layout(guides = 'collect', ncol = 1)
+
+ggsave("combplot3.pdf", width = 47, height = 60, units = c('cm'))
+
+```
+
+```{r}
+stackedSharedGenus4$Days_post <- as.numeric(stackedSharedGenus4$Days_post)
+
+#evidence.summary.main %>%
+#    tidyr::complete(year, studyType, fill = list(N = 0)) %>%
+#    ggplot(aes(x = as.numeric(year), y = N, fill = studyType)) + 
+#    geom_area(alpha = .8)
+
+test <- stackedSharedGenus4 %>%
+    tidyr::complete(Days_post, Genus, fill = list(Count = 0))
+
+
+#stackedShared1raw <- stackedShared1raw  %>%
+#  group_by(Days_post, Family) %>%
+#  summarise(n = sum(Count)) %>%
+#  mutate(percentage = n / sum(n))
+
+# Plot
+p = ggplot(test, aes(x=Days_post, y=Count, fill=Genus)) + theme_bw()+labs(title = "CVG004 Genera", x ="Days from transplant", y = "Percentage (%)", color = "Genus") +  theme(
+    plot.title = element_text(color="black", size=28, face="bold"),
+    axis.title.x = element_text(color="black", size=28, face="bold"),
+    axis.title.y = element_text(color="black", size=28, face="bold"),
+    axis.text=element_text(size=26),
+    legend.title = element_text(color = "black", size = 26),
+    legend.text = element_text(color = "black", size = 24)
+  ) + geom_area(alpha=0.8, size=0.1, colour="black") +guides(fill=guide_legend(ncol=1))+xlim(-31, 210)
+
+p <- p + geom_vline(xintercept = 0, 
+                    color = "black", size=1)
+p <- p + geom_vline(xintercept = 28, 
+                    color = "black", size=1)
+p <- p + geom_vline(xintercept = 161, 
+                    color = "black", size=1)
+p <- p + geom_vline(xintercept = 210, 
+                    color = "black", size=1)
+AA4 <- p + geom_vline(xintercept = 10, 
+                    color = "red", size=1)
+AA4
+
+ggsave("areaplot4.pdf", width = 47, height = 40, units = c('cm'))
+```
+
+```{r}
+stackedSharedGenus5$Days_post <- as.numeric(stackedSharedGenus5$Days_post)
+
+#evidence.summary.main %>%
+#    tidyr::complete(year, studyType, fill = list(N = 0)) %>%
+#    ggplot(aes(x = as.numeric(year), y = N, fill = studyType)) + 
+#    geom_area(alpha = .8)
+
+test <- stackedSharedGenus5 %>%
+    tidyr::complete(Days_post, Genus, fill = list(Count = 0))
+
+
+#stackedShared1raw <- stackedShared1raw  %>%
+#  group_by(Days_post, Family) %>%
+#  summarise(n = sum(Count)) %>%
+#  mutate(percentage = n / sum(n))
+
+# Plot
+p = ggplot(test, aes(x=Days_post, y=Count, fill=Genus)) + theme_bw()+labs(title = "CVG005 Genera", x ="Days from transplant", y = "Percentage (%)", color = "Genus") +  theme(
+    plot.title = element_text(color="black", size=28, face="bold"),
+    axis.title.x = element_text(color="black", size=28, face="bold"),
+    axis.title.y = element_text(color="black", size=28, face="bold"),
+    axis.text=element_text(size=26),
+    legend.title = element_text(color = "black", size = 26),
+    legend.text = element_text(color = "black", size = 24)
+  ) + geom_area(alpha=0.8, size=0.1, colour="black") +guides(fill=guide_legend(ncol=1))+xlim(-216, 44)
+
+p <- p + geom_vline(xintercept = 34, 
+                    color = "black", size=1)
+p <- p + geom_vline(xintercept =43, 
+                    color = "black", size=1)
+p <- p + geom_vline(xintercept = 44, 
+                    color = "black", size=1)
+AA5 <- p + geom_vline(xintercept = 21, 
+                    color = "red", size=1)
+AA5
+
+ggsave("areaplot5.pdf", width = 47, height = 40, units = c('cm'))
+```
+
+```{r}
+stackedSharedGenus12$Days_post <- as.numeric(stackedSharedGenus12$Days_post)
+
+#evidence.summary.main %>%
+#    tidyr::complete(year, studyType, fill = list(N = 0)) %>%
+#    ggplot(aes(x = as.numeric(year), y = N, fill = studyType)) + 
+#    geom_area(alpha = .8)
+
+test <- stackedSharedGenus12 %>%
+    tidyr::complete(Days_post, Genus, fill = list(Count = 0))
+
+
+#stackedShared1raw <- stackedShared1raw  %>%
+#  group_by(Days_post, Family) %>%
+#  summarise(n = sum(Count)) %>%
+#  mutate(percentage = n / sum(n))
+
+# Plot
+p = ggplot(test, aes(x=Days_post, y=Count, fill=Genus)) + theme_bw()+labs(title = "CVG012 Genera", x ="Days from transplant", y = "Percentage (%)", color = "Genus") +  theme(
+    plot.title = element_text(color="black", size=28, face="bold"),
+    axis.title.x = element_text(color="black", size=28, face="bold"),
+    axis.title.y = element_text(color="black", size=28, face="bold"),
+    axis.text=element_text(size=26),
+    legend.title = element_text(color = "black", size = 26),
+    legend.text = element_text(color = "black", size = 24)
+  ) + geom_area(alpha=0.8, size=0.1, colour="black") +guides(fill=guide_legend(ncol=1))+xlim(-38, 271)
+
+p <- p + geom_vline(xintercept = -7, 
+                    color = "black", size=1)
+p <- p + geom_vline(xintercept = 1, 
+                    color = "black", size=1)
+p <- p + geom_vline(xintercept = 7, 
+                    color = "black", size=1)
+p <- p + geom_vline(xintercept = 25, 
+                    color = "black", size=1)
+p <- p + geom_vline(xintercept = 36, 
+                    color = "black", size=1)
+p <- p + geom_vline(xintercept = 62, 
+                    color = "black", size=1)
+p <- p + geom_vline(xintercept = 89, 
+                    color = "black", size=1)
+p <- p + geom_vline(xintercept = 117, 
+                    color = "black", size=1)
+p <- p + geom_vline(xintercept = 236, 
+                    color = "black", size=1)
+p <- p + geom_vline(xintercept = 271, 
+                    color = "black", size=1)
+AA12 <- p + geom_vline(xintercept = 9, 
+                    color = "red", size=1)
+
+AA12
+
+ggsave("areaplot12.pdf", width = 47, height = 40, units = c('cm'))
+```
+
+```{r}
+stackedSharedGenus14$Days_post <- as.numeric(stackedSharedGenus14$Days_post)
+
+#evidence.summary.main %>%
+#    tidyr::complete(year, studyType, fill = list(N = 0)) %>%
+#    ggplot(aes(x = as.numeric(year), y = N, fill = studyType)) + 
+#    geom_area(alpha = .8)
+
+test <- stackedSharedGenus14 %>%
+    tidyr::complete(Days_post, Genus, fill = list(Count = 0))
+
+
+#stackedShared1raw <- stackedShared1raw  %>%
+#  group_by(Days_post, Family) %>%
+#  summarise(n = sum(Count)) %>%
+#  mutate(percentage = n / sum(n))
+
+# Plot
+p = ggplot(test, aes(x=Days_post, y=Count, fill=Genus)) + theme_bw()+labs(title = "CVG014 Genera", x ="Days from transplant", y = "Percentage (%)", color = "Genus") +  theme(
+    plot.title = element_text(color="black", size=28, face="bold"),
+    axis.title.x = element_text(color="black", size=28, face="bold"),
+    axis.title.y = element_text(color="black", size=28, face="bold"),
+    axis.text=element_text(size=26),
+    legend.title = element_text(color = "black", size = 26),
+    legend.text = element_text(color = "black", size = 24)
+  ) +  geom_area(alpha=0.8, size=0.1, colour="black") +guides(fill=guide_legend(ncol=1))+xlim(-38, 55)
+
+p <- p + geom_vline(xintercept = 18, 
+                    color = "black", size=1)
+p <- p + geom_vline(xintercept = 19, 
+                    color = "black", size=1)
+p <- p + geom_vline(xintercept = 34, 
+                    color = "black", size=1)
+p <- p + geom_vline(xintercept = 55, 
+                    color = "black", size=1)
+AA14 <- p + geom_vline(xintercept = 13, 
+                    color = "red", size=1)
+AA14
+
+ggsave("areaplot14.pdf", width = 47, height = 40, units = c('cm'))
+```
+
+```{r}
+stackedSharedGenus16$Days_post <- as.numeric(stackedSharedGenus16$Days_post)
+
+#evidence.summary.main %>%
+#    tidyr::complete(year, studyType, fill = list(N = 0)) %>%
+#    ggplot(aes(x = as.numeric(year), y = N, fill = studyType)) + 
+#    geom_area(alpha = .8)
+
+test <- stackedSharedGenus16 %>%
+    tidyr::complete(Days_post, Genus, fill = list(Count = 0))
+
+
+#stackedShared1raw <- stackedShared1raw  %>%
+#  group_by(Days_post, Family) %>%
+#  summarise(n = sum(Count)) %>%
+#  mutate(percentage = n / sum(n))
+
+# Plot
+p = ggplot(test, aes(x=Days_post, y=Count, fill=Genus)) + theme_bw()+labs(title = "CVG016 Genera", x ="Days from transplant", y = "Percentage (%)", color = "Genus") +  theme(
+    plot.title = element_text(color="black", size=28, face="bold"),
+    axis.title.x = element_text(color="black", size=28, face="bold"),
+    axis.title.y = element_text(color="black", size=28, face="bold"),
+    axis.text=element_text(size=26),
+    legend.title = element_text(color = "black", size = 26),
+    legend.text = element_text(color = "black", size = 24)
+  ) +  geom_area(alpha=0.8, size=0.1, colour="black") +guides(fill=guide_legend(ncol=1))+xlim(-138, 220)
+
+p <- p + geom_vline(xintercept = 8, 
+                    color = "black", size=1)
+p <- p + geom_vline(xintercept =35, 
+                    color = "black", size=1)
+p <- p + geom_vline(xintercept = 220, 
+                    color = "black", size=1)
+AA16 <- p + geom_vline(xintercept = 15, 
+                    color = "red", size=1)
+AA16
+
+ggsave("areaplot16.pdf", width = 47, height = 40, units = c('cm'))
+```
+
+```{r}
+stackedSharedGenus17$Days_post <- as.numeric(stackedSharedGenus17$Days_post)
+
+#evidence.summary.main %>%
+#    tidyr::complete(year, studyType, fill = list(N = 0)) %>%
+#    ggplot(aes(x = as.numeric(year), y = N, fill = studyType)) + 
+#    geom_area(alpha = .8)
+
+test <- stackedSharedGenus17 %>%
+    tidyr::complete(Days_post, Genus, fill = list(Count = 0))
+
+
+#stackedShared1raw <- stackedShared1raw  %>%
+#  group_by(Days_post, Family) %>%
+#  summarise(n = sum(Count)) %>%
+#  mutate(percentage = n / sum(n))
+
+# Plot
+p = ggplot(test, aes(x=Days_post, y=Count, fill=Genus)) + theme_bw()+labs(title = "CVG017 Genera", x ="Days from transplant", y = "Percentage (%)", color = "Genus") +  theme(
+    plot.title = element_text(color="black", size=28, face="bold"),
+    axis.title.x = element_text(color="black", size=28, face="bold"),
+    axis.title.y = element_text(color="black", size=28, face="bold"),
+    axis.text=element_text(size=26),
+    legend.title = element_text(color = "black", size = 26),
+    legend.text = element_text(color = "black", size = 24)
+  ) +  geom_area(alpha=0.8, size=0.1, colour="black") +guides(fill=guide_legend(ncol=1))+xlim(	-9, 180)
+
+p <- p + geom_vline(xintercept = 1, 
+                    color = "black", size=1)
+p <- p + geom_vline(xintercept = 35, 
+                    color = "black", size=1)
+p <- p + geom_vline(xintercept = 180, 
+                    color = "black", size=1)
+AA17 <- p + geom_vline(xintercept = 27, 
+                    color = "red", size=1)
+AA17
+
+ggsave("areaplot17.pdf", width = 47, height = 40, units = c('cm'))
+```
+
+```{r}
+stackedSharedGenus19$Days_post <- as.numeric(stackedSharedGenus19$Days_post)
+
+#evidence.summary.main %>%
+#    tidyr::complete(year, studyType, fill = list(N = 0)) %>%
+#    ggplot(aes(x = as.numeric(year), y = N, fill = studyType)) + 
+#    geom_area(alpha = .8)
+
+test <- stackedSharedGenus19 %>%
+    tidyr::complete(Days_post, Genus, fill = list(Count = 0))
+
+
+#stackedShared1raw <- stackedShared1raw  %>%
+#  group_by(Days_post, Family) %>%
+#  summarise(n = sum(Count)) %>%
+#  mutate(percentage = n / sum(n))
+
+# Plot
+p = ggplot(test, aes(x=Days_post, y=Count, fill=Genus)) + theme_bw()+labs(title = "CVG019 Genera", x ="Days from transplant", y = "Percentage (%)", color = "Genus") +  theme(
+    plot.title = element_text(color="black", size=28, face="bold"),
+    axis.title.x = element_text(color="black", size=28, face="bold"),
+    axis.title.y = element_text(color="black", size=28, face="bold"),
+    axis.text=element_text(size=26),
+    legend.title = element_text(color = "black", size = 26),
+    legend.text = element_text(color = "black", size = 24)
+  ) +  geom_area(alpha=0.8, size=0.1, colour="black") +guides(fill=guide_legend(ncol=1))+xlim(	-38, 370)
+
+p <- p + geom_vline(xintercept = 39, 
+                    color = "black", size=1)
+p <- p + geom_vline(xintercept = 61, 
+                    color = "black", size=1)
+p <- p + geom_vline(xintercept = 82, 
+                    color = "black", size=1)
+p <- p + geom_vline(xintercept = 370, 
+                    color = "black", size=1)
+AA19 <- p + geom_vline(xintercept = 43, 
+                    color = "red", size=1)
+
+AA19
+
+ggsave("areaplot19.pdf", width = 47, height = 40, units = c('cm'))
+```
+
+```{r}
+stackedSharedGenus21$Days_post <- as.numeric(stackedSharedGenus21$Days_post)
+
+#evidence.summary.main %>%
+#    tidyr::complete(year, studyType, fill = list(N = 0)) %>%
+#    ggplot(aes(x = as.numeric(year), y = N, fill = studyType)) + 
+#    geom_area(alpha = .8)
+
+test <- stackedSharedGenus21 %>%
+    tidyr::complete(Days_post, Genus, fill = list(Count = 0))
+
+
+#stackedShared1raw <- stackedShared1raw  %>%
+#  group_by(Days_post, Family) %>%
+#  summarise(n = sum(Count)) %>%
+#  mutate(percentage = n / sum(n))
+
+# Plot
+p = ggplot(test, aes(x=Days_post, y=Count, fill=Genus)) + theme_bw()+labs(title = "CVG021 Genera", x ="Days from transplant", y = "Percentage (%)", color = "Genus") +  theme(
+    plot.title = element_text(color="black", size=28, face="bold"),
+    axis.title.x = element_text(color="black", size=28, face="bold"),
+    axis.title.y = element_text(color="black", size=28, face="bold"),
+    axis.text=element_text(size=26),
+    legend.title = element_text(color = "black", size = 26),
+    legend.text = element_text(color = "black", size = 24)
+  ) +  geom_area(alpha=0.8, size=0.1, colour="black") +guides(fill=guide_legend(ncol=1))+xlim(-28, 23)
+
+p <- p + geom_vline(xintercept = -7, 
+                    color = "black", size=1)
+p <- p + geom_vline(xintercept = 0, 
+                    color = "black", size=1)
+p <- p + geom_vline(xintercept = 16, 
+                    color = "black", size=1)
+p <- p + geom_vline(xintercept = 23, 
+                    color = "black", size=1)
+AA21 <- p + geom_vline(xintercept = 25, 
+                    color = "red", size=1)
+
+AA21
+
+ggsave("areaplot21.pdf", width = 47, height = 40, units = c('cm'))
+```
+
+```{r}
+stackedSharedGenus28$Days_post <- as.numeric(stackedSharedGenus28$Days_post)
+
+#evidence.summary.main %>%
+#    tidyr::complete(year, studyType, fill = list(N = 0)) %>%
+#    ggplot(aes(x = as.numeric(year), y = N, fill = studyType)) + 
+#    geom_area(alpha = .8)
+
+test <- stackedSharedGenus28 %>%
+    tidyr::complete(Days_post, Genus, fill = list(Count = 0))
+
+
+#stackedShared1raw <- stackedShared1raw  %>%
+#  group_by(Days_post, Family) %>%
+#  summarise(n = sum(Count)) %>%
+#  mutate(percentage = n / sum(n))
+
+# Plot
+p = ggplot(test, aes(x=Days_post, y=Count, fill=Genus)) + theme_bw()+labs(title = "CVG028 Genera", x ="Days from transplant", y = "Percentage (%)", color = "Genus") +  theme(
+    plot.title = element_text(color="black", size=28, face="bold"),
+    axis.title.x = element_text(color="black", size=28, face="bold"),
+    axis.title.y = element_text(color="black", size=28, face="bold"),
+    axis.text=element_text(size=26),
+    legend.title = element_text(color = "black", size = 26),
+    legend.text = element_text(color = "black", size = 24)
+  ) +  geom_area(alpha=0.8, size=0.1, colour="black") +guides(fill=guide_legend(ncol=1))+xlim(-33, 281)
+
+p <- p + geom_vline(xintercept = -13, 
+                    color = "black", size=1)
+p <- p + geom_vline(xintercept = 1, 
+                    color = "black", size=1)
+p <- p + geom_vline(xintercept = 41, 
+                    color = "black", size=1)
+p <- p + geom_vline(xintercept = 65, 
+                    color = "black", size=1)
+p <- p + geom_vline(xintercept = 281, 
+                    color = "black", size=1)
+AA28 <- p + geom_vline(xintercept = 13, 
+                    color = "red", size=1)
+
+AA28
+
+ggsave("areaplot28.pdf", width = 47, height = 40, units = c('cm'))
+```
+
+```{r}
+stackedSharedGenus32$Days_post <- as.numeric(stackedSharedGenus32$Days_post)
+
+#evidence.summary.main %>%
+#    tidyr::complete(year, studyType, fill = list(N = 0)) %>%
+#    ggplot(aes(x = as.numeric(year), y = N, fill = studyType)) + 
+#    geom_area(alpha = .8)
+
+test <- stackedSharedGenus32 %>%
+    tidyr::complete(Days_post, Genus, fill = list(Count = 0))
+
+
+#stackedShared1raw <- stackedShared1raw  %>%
+#  group_by(Days_post, Family) %>%
+#  summarise(n = sum(Count)) %>%
+#  mutate(percentage = n / sum(n))
+
+# Plot
+p = ggplot(test, aes(x=Days_post, y=Count, fill=Genus)) + theme_bw()+labs(title = "CVG032 Genera", x ="Days from transplant", y = "Percentage (%)", color = "Genus") +  theme(
+    plot.title = element_text(color="black", size=28, face="bold"),
+    axis.title.x = element_text(color="black", size=28, face="bold"),
+    axis.title.y = element_text(color="black", size=28, face="bold"),
+    axis.text=element_text(size=26),
+    legend.title = element_text(color = "black", size = 26),
+    legend.text = element_text(color = "black", size = 24)
+  ) +  geom_area(alpha=0.8, size=0.1, colour="black") +guides(fill=guide_legend(ncol=1))+xlim(-30, 142)
+
+p <- p + geom_vline(xintercept = -7, 
+                    color = "black", size=1)
+p <- p + geom_vline(xintercept = -2, 
+                    color = "black", size=1)
+p <- p + geom_vline(xintercept = 0, 
+                    color = "black", size=1)
+p <- p + geom_vline(xintercept = 42, 
+                    color = "black", size=1)
+p <- p + geom_vline(xintercept = 69, 
+                    color = "black", size=1)
+p <- p + geom_vline(xintercept = 96, 
+                    color = "black", size=1)
+p <- p + geom_vline(xintercept = 98, 
+                    color = "black", size=1)
+p <- p + geom_vline(xintercept = 142, 
+                    color = "black", size=1)
+AA32 <- p + geom_vline(xintercept = 21, 
+                    color = "red", size=1)
+
+AA32
+
+ggsave("areaplot32.pdf", width = 47, height = 40, units = c('cm'))
+```
+
+```{r}
+stackedSharedGenus41$Days_post <- as.numeric(stackedSharedGenus41$Days_post)
+
+#evidence.summary.main %>%
+#    tidyr::complete(year, studyType, fill = list(N = 0)) %>%
+#    ggplot(aes(x = as.numeric(year), y = N, fill = studyType)) + 
+#    geom_area(alpha = .8)
+
+test <- stackedSharedGenus41 %>%
+    tidyr::complete(Days_post, Genus, fill = list(Count = 0))
+
+
+#stackedShared1raw <- stackedShared1raw  %>%
+#  group_by(Days_post, Family) %>%
+#  summarise(n = sum(Count)) %>%
+#  mutate(percentage = n / sum(n))
+
+# Plot
+p = ggplot(test, aes(x=Days_post, y=Count, fill=Genus)) + theme_bw()+labs(title = "CVG041 Genera", x ="Days from transplant", y = "Percentage (%)", color = "Genus") +  theme(
+    plot.title = element_text(color="black", size=28, face="bold"),
+    axis.title.x = element_text(color="black", size=28, face="bold"),
+    axis.title.y = element_text(color="black", size=28, face="bold"),
+    axis.text=element_text(size=26),
+    legend.title = element_text(color = "black", size = 26),
+    legend.text = element_text(color = "black", size = 24)
+  ) +  geom_area(alpha=0.8, size=0.1, colour="black") +guides(fill=guide_legend(ncol=1))+xlim(-10, 150)
+
+p <- p + geom_vline(xintercept = 1, 
+                    color = "black", size=1)
+p <- p + geom_vline(xintercept = 16, 
+                    color = "black", size=1)
+p <- p + geom_vline(xintercept = 37, 
+                    color = "black", size=1)
+p <- p + geom_vline(xintercept = 58, 
+                    color = "black", size=1)
+p <- p + geom_vline(xintercept = 120, 
+                    color = "black", size=1)
+p <- p + geom_vline(xintercept = 134, 
+                    color = "black", size=1)
+p <- p + geom_vline(xintercept = 150, 
+                    color = "black", size=1)
+AA41 <- p + geom_vline(xintercept = 16, 
+                    color = "red", size=1)
+
+AA41
+
+ggsave("areaplot41.pdf", width = 47, height = 40, units = c('cm'))
+```
+
+```{r}
+stackedSharedGenus42$Days_post <- as.numeric(stackedSharedGenus42$Days_post)
+
+#evidence.summary.main %>%
+#    tidyr::complete(year, studyType, fill = list(N = 0)) %>%
+#    ggplot(aes(x = as.numeric(year), y = N, fill = studyType)) + 
+#    geom_area(alpha = .8)
+
+test <- stackedSharedGenus42 %>%
+    tidyr::complete(Days_post, Genus, fill = list(Count = 0))
+
+
+#stackedShared1raw <- stackedShared1raw  %>%
+#  group_by(Days_post, Family) %>%
+#  summarise(n = sum(Count)) %>%
+#  mutate(percentage = n / sum(n))
+
+# Plot
+p = ggplot(test, aes(x=Days_post, y=Count, fill=Genus)) + theme_bw()+labs(title = "CVG042 Genera", x ="Days from transplant", y = "Percentage (%)", color = "Genus") +  theme(
+    plot.title = element_text(color="black", size=28, face="bold"),
+    axis.title.x = element_text(color="black", size=28, face="bold"),
+    axis.title.y = element_text(color="black", size=28, face="bold"),
+    axis.text=element_text(size=26),
+    legend.title = element_text(color = "black", size = 26),
+    legend.text = element_text(color = "black", size = 24)
+  ) +  geom_area(alpha=0.8, size=0.1, colour="black") +guides(fill=guide_legend(ncol=1))+xlim(-30, 158)
+
+p <- p + geom_vline(xintercept = 12, 
+                    color = "black", size=1)
+p <- p + geom_vline(xintercept = 20, 
+                    color = "black", size=1)
+p <- p + geom_vline(xintercept = 34, 
+                    color = "black", size=1)
+p <- p + geom_vline(xintercept = 88, 
+                    color = "black", size=1)
+p <- p + geom_vline(xintercept = 158, 
+                    color = "black", size=1)
+AA42 <- p + geom_vline(xintercept = 26, 
+                    color = "red", size=1)
+
+AA42
+
+ggsave("areaplot42.pdf", width = 47, height = 40, units = c('cm'))
+```
+
+```{r}
+stackedSharedGenus46$Days_post <- as.numeric(stackedSharedGenus46$Days_post)
+
+#evidence.summary.main %>%
+#    tidyr::complete(year, studyType, fill = list(N = 0)) %>%
+#    ggplot(aes(x = as.numeric(year), y = N, fill = studyType)) + 
+#    geom_area(alpha = .8)
+
+test <- stackedSharedGenus46 %>%
+    tidyr::complete(Days_post, Genus, fill = list(Count = 0))
+
+
+#stackedShared1raw <- stackedShared1raw  %>%
+#  group_by(Days_post, Family) %>%
+#  summarise(n = sum(Count)) %>%
+#  mutate(percentage = n / sum(n))
+
+# Plot
+p = ggplot(test, aes(x=Days_post, y=Count, fill=Genus)) + theme_bw()+labs(title = "CVG046 Genera", x ="Days from transplant", y = "Percentage (%)", color = "Genus") +  theme(
+    plot.title = element_text(color="black", size=28, face="bold"),
+    axis.title.x = element_text(color="black", size=28, face="bold"),
+    axis.title.y = element_text(color="black", size=28, face="bold"),
+    axis.text=element_text(size=26),
+    legend.title = element_text(color = "black", size = 26),
+    legend.text = element_text(color = "black", size = 24)
+  ) +  geom_area(alpha=0.8, size=0.1, colour="black") +guides(fill=guide_legend(ncol=1))+xlim(-21, 62)
+
+p <- p + geom_vline(xintercept = -7, 
+                    color = "black", size=1)
+p <- p + geom_vline(xintercept = 19, 
+                    color = "black", size=1)
+p <- p + geom_vline(xintercept = 37, 
+                    color = "black", size=1)
+p <- p + geom_vline(xintercept = 62, 
+                    color = "black", size=1)
+AA46 <- p + geom_vline(xintercept = 11, 
+                    color = "red", size=1)
+
+AA46
+
+ggsave("areaplot46.pdf", width = 47, height = 40, units = c('cm'))
+```
+
+```{r}
+stackedSharedGenus47$Days_post <- as.numeric(stackedSharedGenus47$Days_post)
+
+#evidence.summary.main %>%
+#    tidyr::complete(year, studyType, fill = list(N = 0)) %>%
+#    ggplot(aes(x = as.numeric(year), y = N, fill = studyType)) + 
+#    geom_area(alpha = .8)
+
+test <- stackedSharedGenus47 %>%
+    tidyr::complete(Days_post, Genus, fill = list(Count = 0))
+
+
+#stackedShared1raw <- stackedShared1raw  %>%
+#  group_by(Days_post, Family) %>%
+#  summarise(n = sum(Count)) %>%
+#  mutate(percentage = n / sum(n))
+
+# Plot
+p = ggplot(test, aes(x=Days_post, y=Count, fill=Genus)) + theme_bw()+labs(title = "CVG047 Genera", x ="Days from transplant", y = "Percentage (%)", color = "Genus") +  theme(
+    plot.title = element_text(color="black", size=28, face="bold"),
+    axis.title.x = element_text(color="black", size=28, face="bold"),
+    axis.title.y = element_text(color="black", size=28, face="bold"),
+    axis.text=element_text(size=26),
+    legend.title = element_text(color = "black", size = 26),
+    legend.text = element_text(color = "black", size = 24)
+  ) + geom_area(alpha=0.8, size=0.1, colour="black") +guides(fill=guide_legend(ncol=1))+xlim(-9, 242)
+
+p <- p + geom_vline(xintercept = -8, 
+                    color = "black", size=1)
+p <- p + geom_vline(xintercept = 13, 
+                    color = "black", size=1)
+p <- p + geom_vline(xintercept = 25, 
+                    color = "black", size=1)
+p <- p + geom_vline(xintercept = 31, 
+                    color = "black", size=1)
+p <- p + geom_vline(xintercept = 35, 
+                    color = "black", size=1)
+p <- p + geom_vline(xintercept = 60, 
+                    color = "black", size=1)
+p <- p + geom_vline(xintercept = 90, 
+                    color = "black", size=1)
+p <- p + geom_vline(xintercept = 180, 
+                    color = "black", size=1)
+p <- p + geom_vline(xintercept = 242, 
+                    color = "black", size=1)
+AA47 <- p + geom_vline(xintercept = 24, 
+                    color = "red", size=1)
+AA47
+
+ggsave("areaplot47.pdf", width = 47, height = 40, units = c('cm'))
+```
+
+```{r}
+stackedSharedGenus48$Days_post <- as.numeric(stackedSharedGenus48$Days_post)
+
+#evidence.summary.main %>%
+#    tidyr::complete(year, studyType, fill = list(N = 0)) %>%
+#    ggplot(aes(x = as.numeric(year), y = N, fill = studyType)) + 
+#    geom_area(alpha = .8)
+
+test <- stackedSharedGenus48 %>%
+    tidyr::complete(Days_post, Genus, fill = list(Count = 0))
+
+
+#stackedShared1raw <- stackedShared1raw  %>%
+#  group_by(Days_post, Family) %>%
+#  summarise(n = sum(Count)) %>%
+#  mutate(percentage = n / sum(n))
+
+# Plot
+p = ggplot(test, aes(x=Days_post, y=Count, fill=Genus)) + theme_bw()+labs(title = "CVG048 Genera", x ="Days from transplant", y = "Percentage (%)", color = "Genus") +  theme(
+    plot.title = element_text(color="black", size=28, face="bold"),
+    axis.title.x = element_text(color="black", size=28, face="bold"),
+    axis.title.y = element_text(color="black", size=28, face="bold"),
+    axis.text=element_text(size=26),
+    legend.title = element_text(color = "black", size = 26),
+    legend.text = element_text(color = "black", size = 24)
+  ) + geom_area(alpha=0.8, size=0.1, colour="black") +guides(fill=guide_legend(ncol=1))+xlim(-74, 153)
+
+p <- p + geom_vline(xintercept = 7, 
+                    color = "black", size=1)
+p <- p + geom_vline(xintercept = 9, 
+                    color = "black", size=1)
+p <- p + geom_vline(xintercept = 153, 
+                    color = "black", size=1)
+AA48 <- p + geom_vline(xintercept = 18, 
+                    color = "red", size=1)
+AA48
+
+ggsave("areaplot48.pdf", width = 47, height = 40, units = c('cm'))
+```
+
+```{r}
+stackedSharedGenus52$Days_post <- as.numeric(stackedSharedGenus52$Days_post)
+
+#evidence.summary.main %>%
+#    tidyr::complete(year, studyType, fill = list(N = 0)) %>%
+#    ggplot(aes(x = as.numeric(year), y = N, fill = studyType)) + 
+#    geom_area(alpha = .8)
+
+test <- stackedSharedGenus52 %>%
+    tidyr::complete(Days_post, Genus, fill = list(Count = 0))
+
+
+#stackedShared1raw <- stackedShared1raw  %>%
+#  group_by(Days_post, Family) %>%
+#  summarise(n = sum(Count)) %>%
+#  mutate(percentage = n / sum(n))
+
+# Plot
+p = ggplot(test, aes(x=Days_post, y=Count, fill=Genus)) + theme_bw()+labs(title = "CVG052 Genera", x ="Days from transplant", y = "Percentage (%)", color = "Genus") +  theme(
+    plot.title = element_text(color="black", size=28, face="bold"),
+    axis.title.x = element_text(color="black", size=28, face="bold"),
+    axis.title.y = element_text(color="black", size=28, face="bold"),
+    axis.text=element_text(size=26),
+    legend.title = element_text(color = "black", size = 26),
+    legend.text = element_text(color = "black", size = 24)
+  ) + geom_area(alpha=0.8, size=0.1, colour="black") +guides(fill=guide_legend(ncol=1))+xlim(-11, 62)
+
+p <- p + geom_vline(xintercept = 0, 
+                    color = "black", size=1)
+p <- p + geom_vline(xintercept = 7, 
+                    color = "black", size=1)
+p <- p + geom_vline(xintercept = 62, 
+                    color = "black", size=1)
+AA52 <- p + geom_vline(xintercept = 26, 
+                    color = "red", size=1)
+AA52
+
+ggsave("areaplot52.pdf", width = 47, height = 40, units = c('cm'))
+```
+
+```{r}
+stackedSharedGenus54$Days_post <- as.numeric(stackedSharedGenus54$Days_post)
+
+#evidence.summary.main %>%
+#    tidyr::complete(year, studyType, fill = list(N = 0)) %>%
+#    ggplot(aes(x = as.numeric(year), y = N, fill = studyType)) + 
+#    geom_area(alpha = .8)
+
+test <- stackedSharedGenus54 %>%
+    tidyr::complete(Days_post, Genus, fill = list(Count = 0))
+
+
+#stackedShared1raw <- stackedShared1raw  %>%
+#  group_by(Days_post, Family) %>%
+#  summarise(n = sum(Count)) %>%
+#  mutate(percentage = n / sum(n))
+
+# Plot
+p = ggplot(test, aes(x=Days_post, y=Count, fill=Genus)) + theme_bw()+labs(title = "CVG054 Genera", x ="Days from transplant", y = "Percentage (%)", color = "Genus") +  theme(
+    plot.title = element_text(color="black", size=28, face="bold"),
+    axis.title.x = element_text(color="black", size=28, face="bold"),
+    axis.title.y = element_text(color="black", size=28, face="bold"),
+    axis.text=element_text(size=26),
+    legend.title = element_text(color = "black", size = 26),
+    legend.text = element_text(color = "black", size = 24)
+  ) + geom_area(alpha=0.8, size=0.1, colour="black") +guides(fill=guide_legend(ncol=1))+xlim(-38, 28)
+
+p <- p + geom_vline(xintercept = -7, 
+                    color = "black", size=1)
+p <- p + geom_vline(xintercept = 6, 
+                    color = "black", size=1)
+p <- p + geom_vline(xintercept = 28, 
+                    color = "black", size=1)
+AA54 <- p + geom_vline(xintercept = 20, 
+                    color = "red", size=1)
+AA54
+
+ggsave("areaplot54.pdf", width = 47, height = 40, units = c('cm'))
+```
+
+```{r}
+(A4 / AA4) + plot_layout(guides = 'collect', ncol = 1)
+
+ggsave("combplot4.pdf", width = 47, height = 60, units = c('cm'))
+
+```
+
+```{r}
+(A5 / AA5) + plot_layout(guides = 'collect', ncol = 1)
+
+ggsave("combplot5.pdf", width = 47, height = 60, units = c('cm'))
+
+```
+
+```{r}
+(A12 / AA12) + plot_layout(guides = 'collect', ncol = 1)
+
+ggsave("combplot12.pdf", width = 47, height = 60, units = c('cm'))
+
+```
+
+```{r}
+(A14 / AA14) + plot_layout(guides = 'collect', ncol = 1)
+
+ggsave("combplot14.pdf", width = 47, height = 60, units = c('cm'))
+
+```
+
+```{r}
+(A16 / AA16) + plot_layout(guides = 'collect', ncol = 1)
+
+ggsave("combplot16.pdf", width = 47, height = 60, units = c('cm'))
+
+```
+
+```{r}
+(A17 / AA17) + plot_layout(guides = 'collect', ncol = 1)
+
+ggsave("combplot17.pdf", width = 47, height = 60, units = c('cm'))
+
+```
+
+```{r}
+(A19 / AA19) + plot_layout(guides = 'collect', ncol = 1)
+
+ggsave("combplot19.pdf", width = 47, height = 60, units = c('cm'))
+
+```
+
+```{r}
+(A21 / AA21) + plot_layout(guides = 'collect', ncol = 1)
+
+ggsave("combplot21.pdf", width = 47, height = 60, units = c('cm'))
+
+```
+
+```{r}
+(A28 / AA28) + plot_layout(guides = 'collect', ncol = 1)
+
+ggsave("combplot28.pdf", width = 47, height = 60, units = c('cm'))
+
+```
+
+```{r}
+(A32 / AA32) + plot_layout(guides = 'collect', ncol = 1)
+
+ggsave("combplot32.pdf", width = 47, height = 60, units = c('cm'))
+
+```
+
+```{r}
+(A41 / AA41) + plot_layout(guides = 'collect', ncol = 1)
+
+ggsave("combplot41.pdf", width = 47, height = 60, units = c('cm'))
+
+```
+
+```{r}
+(A42 / AA42) + plot_layout(guides = 'collect', ncol = 1)
+
+ggsave("combplot42.pdf", width = 47, height = 60, units = c('cm'))
+
+```
+
+```{r}
+(A46 / AA46) + plot_layout(guides = 'collect', ncol = 1)
+
+ggsave("combplot46.pdf", width = 47, height = 60, units = c('cm'))
+
+```
+
+```{r}
+(A47 / AA47) + plot_layout(guides = 'collect', ncol = 1)
+
+ggsave("combplot47.pdf", width = 47, height = 60, units = c('cm'))
+
+```
+
+```{r}
+(A48 / AA48) + plot_layout(guides = 'collect', ncol = 1)
+
+ggsave("combplot48.pdf", width = 47, height = 60, units = c('cm'))
+
+```
+
+```{r}
+(A52 / AA52) + plot_layout(guides = 'collect', ncol = 1)
+
+ggsave("combplot52.pdf", width = 47, height = 60, units = c('cm'))
+
+```
+
+```{r}
+(A54 / AA54) + plot_layout(guides = 'collect', ncol = 1)
+
+ggsave("combplot54.pdf", width = 47, height = 60, units = c('cm'))
+
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

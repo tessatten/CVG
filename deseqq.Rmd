@@ -1,0 +1,855 @@
+---
+title: "deseqq"
+author: "Tess Attenborough"
+date: "03/05/2020"
+output: html_document
+---
+
+#final_genus_CVG = tax_glom(CVG_phyloseq_decontaminated, taxrank = "Genus")
+#this is a pyuloseq obj with all contaminants removed and agglomerated at genus level
+
+```{r}
+
+install.packages('ghibli')
+library('ghibli')
+deseq_colours <- c(
+  `plum`        = "#B76367",
+  `purple`      = "#B388B3",
+  `sky blue`       = "#6EBBD9",
+  `teal`     = "#61E3B9",
+  `lemon`     = "#D4F77C")
+
+deseq_cols <- function(...) {
+  cols <- c(...)
+
+  if (is.null(cols))
+    return (deseq_colours)
+
+  deseq_colours[cols]
+}
+
+scale_color_deseq <- function(palette = "main", discrete = TRUE, reverse = FALSE, ...) {
+  pal <- deseq_cols(palette = palette, reverse = reverse)
+
+  if (discrete) {
+    discrete_scale("colour", paste0("deseq_", palette), palette = pal, ...)
+  } else {
+    scale_color_gradientn(colours = pal(256), ...)
+  }
+}
+
+scale_fill_deseq <- function(palette = "main", discrete = TRUE, reverse = FALSE, ...) {
+  pal <- deseq_cols(palette = palette, reverse = reverse)
+
+  if (discrete) {
+    discrete_scale("fill", paste0("deseq_", palette), palette = pal, ...)
+  } else {
+    scale_fill_gradientn(colours = pal(256), ...)
+  }
+}
+
+library(ggplot2)
+library(gridExtra)
+library(RColorBrewer)
+library(DESeq2)
+
+makeColors <- function(){
+  maxColors <- 10
+  usedColors <- c()
+  possibleColors <- colorRampPalette( brewer.pal( 9 , "Set1" ) )(maxColors)
+
+  function(values){
+    newKeys <- setdiff(values, names(usedColors))
+    newColors <- possibleColors[1:length(newKeys)]
+    usedColors.new <-  c(usedColors, newColors)
+    names(usedColors.new) <- c(names(usedColors), newKeys)
+    usedColors <<- usedColors.new
+
+    possibleColors <<- possibleColors[length(newKeys)+1:maxColors]
+    usedColors
+  }
+} 
+
+mkColor <- makeColors()
+
+
+
+PhylumColors <-
+  setNames(c("#B76367", "#B388B3", "#6EBBD9", "#61E3B9",  "#D4F77C"), levels(phylaa))
+           
+phylaa <-  c("Actinobacteria","Bacteroidetes", "Firmicutes", "Proteobacteria", "Fusobacteria")         
+
+```
+
+
+```{r}
+################################################################
+#now i am going to look at mortality
+
+head(sample_data(final_genus_CVG)$Survival, 20)
+survival_phyloseq = subset_samples(final_genus_CVG, Survival != "NA")
+head(sample_data(survival_phyloseq)$Survival, 20)
+
+survival_phyloseq <- prune_samples(sample_sums(survival_phyloseq) > 400, survival_phyloseq)
+
+diagdds = phyloseq_to_deseq2(survival_phyloseq, ~ Survival)
+
+gm_mean = function(x, na.rm=TRUE){
+  exp(sum(log(x[x > 0]), na.rm=na.rm) / length(x))
+}
+geoMeans = apply(counts(diagdds), 1, gm_mean)
+diagdds = estimateSizeFactors(diagdds, geoMeans = geoMeans)
+diagdds = DESeq(diagdds, fitType="local")
+
+res = results(diagdds)
+res = res[order(res$padj, na.last=NA), ]
+alpha = 0.1
+sigtab = res[(res$padj < alpha), ]
+sigtab = cbind(as(sigtab, "data.frame"), as(tax_table(survival_phyloseq)[rownames(sigtab), ], "matrix"))
+head(sigtab)
+res
+sigtab
+
+theme_set(theme_bw())
+sigtabgen = subset(sigtab, !is.na(Genus))
+# Phylum order
+x = tapply(sigtabgen$log2FoldChange, sigtabgen$Phylum, function(x) max(x))
+x = sort(x, TRUE)
+sigtabgen$Phylum = factor(as.character(sigtabgen$Phylum), levels=names(x))
+# Genus order
+x = tapply(sigtabgen$log2FoldChange, sigtabgen$Genus, function(x) max(x))
+x = sort(x, TRUE)
+sigtabgen$Genus = factor(as.character(sigtabgen$Genus), levels=names(x))
+ggplot(sigtabgen, aes(y=Genus, x=log2FoldChange, color=Phylum)) + 
+  geom_vline(xintercept = 0.0, color = "gray", size = 0.5) +
+  geom_point(size=15) + 
+  theme(axis.text.x = element_text(angle = -90, hjust = 0, vjust=0.5))+
+  theme_bw() + guides(fill=FALSE)+ theme(
+    plot.title = element_text(color="black", size=28, face="bold"),
+    axis.title.x = element_text(color="black", size=28, face="bold"),
+    axis.title.y = element_text(color="black", size=28, face="bold"),
+    axis.text=element_text(size=26),
+    legend.title = element_text(color = "black", size = 26),
+    legend.text = element_text(color = "black", size = 24)
+  ) + labs(title = "", x = "Difference in abundance (log2FoldChange)", y = "Genus")# +
+  #scale_color_manual(labels = c("Firmicutes"), values = c("#E77EA1")) 
+ggsave("DESeq2onMortality.pdf", width = 37, height = 30, units = c('cm'))
+
+
+```
+
+```{r}
+################################################################
+#now i am going to look at gvhd severity
+
+head(sample_data(final_genus_CVG)$GvHD.severity, 20)
+GvHD.severity_phyloseq = subset_samples(final_genus_CVG, GvHD.severity != "NA")
+head(sample_data(GvHD.severity_phyloseq)$GvHD.severity, 20)
+
+GvHD.severity_phyloseq <- prune_samples(sample_sums(GvHD.severity_phyloseq) > 400, GvHD.severity_phyloseq)
+
+diagdds = phyloseq_to_deseq2(GvHD.severity_phyloseq, ~ GvHD.severity)
+
+gm_mean = function(x, na.rm=TRUE){
+  exp(sum(log(x[x > 0]), na.rm=na.rm) / length(x))
+}
+geoMeans = apply(counts(diagdds), 1, gm_mean)
+diagdds = estimateSizeFactors(diagdds, geoMeans = geoMeans)
+diagdds = DESeq(diagdds, fitType="local")
+
+res = results(diagdds)
+res = res[order(res$padj, na.last=NA), ]
+res
+alpha = 0.01
+sigtab = res[(res$padj < alpha), ]
+sigtab = cbind(as(sigtab, "data.frame"), as(tax_table(GvHD.severity_phyloseq)[rownames(sigtab), ], "matrix"))
+head(sigtab)
+
+sigtab
+theme_set(theme_bw())
+sigtabgen = subset(sigtab, !is.na(Genus))
+# Phylum order
+#x = tapply(sigtabgen$log2FoldChange, sigtabgen$Phylum, function(x) max(x))
+#x = sort(x, TRUE)
+#sigtabgen$Phylum = factor(as.character(sigtabgen$Phylum), levels=names(x))
+# Genus order
+x = tapply(sigtabgen$log2FoldChange, sigtabgen$Genus, function(x) max(x))
+x = sort(x, TRUE)
+sigtabgen$Genus = factor(as.character(sigtabgen$Genus), levels=names(x))
+severity = ggplot(sigtabgen, aes(y=Genus, x=log2FoldChange, color=Phylum)) + 
+  geom_vline(xintercept = 0.0, color = "gray", size = 0.5) +
+  geom_point(size=15) + 
+  theme(axis.text.x = element_text(angle = -90, hjust = 0, vjust=0.5))+
+  theme_bw() + guides(fill=FALSE)+ theme(
+    plot.title = element_text(color="black", size=24, face="bold"),
+    axis.title.x = element_text(color="black", size=24, face="bold"),
+    axis.title.y = element_text(color="black", size=24, face="bold"),
+    axis.text=element_text(size=22),
+    legend.title = element_text(color = "black", size = 22),
+    legend.text = element_text(color = "black", size = 20)
+  ) + labs(title = "Patients with moderate/severe GvHD compared to low/no GvHD", x = "Difference in abundance (log2FoldChange)", y = "Genus") +  scale_color_manual(labels = c("Firmicutes"), values = c("#6EBBD9")) 
+ggsave("DESeq2onSeveritysig.pdf", width = 37, height = 30, units = c('cm'))
+
+alpha = 0.9
+sigtab = res[(res$padj < alpha), ]
+sigtab = cbind(as(sigtab, "data.frame"), as(tax_table(GvHD.severity_phyloseq)[rownames(sigtab), ], "matrix"))
+head(sigtab)
+
+sigtab
+
+theme_set(theme_bw())
+sigtabgen = subset(sigtab, !is.na(Genus))
+# Phylum order
+#x = tapply(sigtabgen$log2FoldChange, sigtabgen$Phylum, function(x) max(x))
+#x = sort(x, TRUE)
+#sigtabgen$Phylum = factor(as.character(sigtabgen$Phylum), levels=names(x))
+# Genus order
+x = tapply(sigtabgen$log2FoldChange, sigtabgen$Genus, function(x) max(x))
+x = sort(x, TRUE)
+sigtabgen$Genus = factor(as.character(sigtabgen$Genus), levels=names(x))
+severityno = ggplot(sigtabgen, aes(y=Genus, x=log2FoldChange, color=Phylum)) + 
+  geom_vline(xintercept = 0.0, color = "gray", size = 0.5) +
+  geom_point(size=15) + 
+  theme(axis.text.x = element_text(angle = -90, hjust = 0, vjust=0.5))+
+  theme_bw() + guides(fill=FALSE)+ theme(
+    plot.title = element_text(color="black", size=24, face="bold"),
+    axis.title.x = element_text(color="black", size=24, face="bold"),
+    axis.title.y = element_text(color="black", size=24, face="bold"),
+    axis.text=element_text(size=22),
+    legend.title = element_text(color = "black", size = 22),
+    legend.text = element_text(color = "black", size = 20)
+  ) + labs(title = "Patients with moderate/severe GvHD compared to low/no GvHD (not sig)", x = "Difference in abundance (log2FoldChange)", y = "Genus")  +   scale_color_manual(labels = c("Actinobacteria", "Firmicutes", "Proteobacteria"), values = c("#B76367", "#6EBBD9", "#61E3B9"))  
+
+ggsave("DESeq2onSeveritynosig.pdf", width = 37, height = 30, units = c('cm'))
+
+severity + severityno + plot_layout(guides = 'collect', ncol = 1)
+
+ggsave("SeverityDeseq.pdf", width = 47, height = 47, units = c('cm'))
+
+
+```
+
+```{r}
+################################################################
+#now i am going to look at bins one and two
+
+head(sample_data(final_genus_CVG)$Sample_bin, 20)
+GvHD.bin1.2_phyloseq = subset_samples(final_genus_CVG, Sample_bin != "NA")
+GvHD.bin1.2_phyloseq = subset_samples(GvHD.bin1.2_phyloseq, Sample_bin != 5)
+GvHD.bin1.2_phyloseq = subset_samples(GvHD.bin1.2_phyloseq, Sample_bin != 4)
+GvHD.bin1.2_phyloseq = subset_samples(GvHD.bin1.2_phyloseq, Sample_bin != 3)
+
+head(sample_data(GvHD.bin1.2_phyloseq)$Sample_bin, 20)
+
+GvHD.bin1.2_phyloseq <- prune_samples(sample_sums(GvHD.bin1.2_phyloseq) > 400, GvHD.bin1.2_phyloseq)
+
+diagdds = phyloseq_to_deseq2(GvHD.bin1.2_phyloseq, ~ Sample_bin)
+
+gm_mean = function(x, na.rm=TRUE){
+  exp(sum(log(x[x > 0]), na.rm=na.rm) / length(x))
+}
+geoMeans = apply(counts(diagdds), 1, gm_mean)
+diagdds = estimateSizeFactors(diagdds, geoMeans = geoMeans)
+diagdds = DESeq(diagdds, fitType="local")
+
+#results(diagdds, c("Sample_bin", "A", "C"))
+
+res = results(diagdds)
+res = res[order(res$padj, na.last=NA), ]
+res
+alpha = 0.01
+sigtab = res[(res$padj < alpha), ]
+sigtab = cbind(as(sigtab, "data.frame"), as(tax_table(GvHD.bin1.2_phyloseq)[rownames(sigtab), ], "matrix"))
+head(sigtab)
+
+sigtab
+
+theme_set(theme_bw())
+sigtabgen = subset(sigtab, !is.na(Genus))
+# Phylum order
+#x = tapply(sigtabgen$log2FoldChange, sigtabgen$Phylum, function(x) max(x))
+#x = sort(x, TRUE)
+#sigtabgen$Phylum = factor(as.character(sigtabgen$Phylum), levels=names(x))
+# Genus order
+x = tapply(sigtabgen$log2FoldChange, sigtabgen$Genus, function(x) max(x))
+x = sort(x, TRUE)
+sigtabgen$Genus = factor(as.character(sigtabgen$Genus), levels=names(x))
+bins = ggplot(sigtabgen, aes(y=Genus, x=log2FoldChange, color=Phylum)) + 
+  geom_vline(xintercept = 0.0, color = "gray", size = 0.5) +
+  geom_point(size=15) + 
+  theme(axis.text.x = element_text(angle = -90, hjust = 0, vjust=0.5))+
+  theme_bw() + guides(fill=FALSE)+ theme(
+    plot.title = element_text(color="black", size=24, face="bold"),
+    axis.title.x = element_text(color="black", size=24, face="bold"),
+    axis.title.y = element_text(color="black", size=24, face="bold"),
+    axis.text=element_text(size=22),
+    legend.title = element_text(color = "black", size = 22),
+    legend.text = element_text(color = "black", size = 20)
+  ) + labs(title = "Engraftment period  (group 2) compared to pre-transplant  (group 1)", x = "Difference in abundance (log2FoldChange)", y = "Genus") +
+  scale_color_manual(labels = c("Actinobacteria", "Firmicutes", "Proteobacteria"), values = c("#B76367", "#6EBBD9", "#61E3B9"))  
+ggsave("DESeq2onbin1bin2sig.pdf", width = 37, height = 30, units = c('cm'))
+
+
+alpha = 0.5
+sigtab = res[(res$padj < alpha), ]
+sigtab = cbind(as(sigtab, "data.frame"), as(tax_table(GvHD.bin1.2_phyloseq)[rownames(sigtab), ], "matrix"))
+head(sigtab)
+
+sigtab
+
+theme_set(theme_bw())
+sigtabgen = subset(sigtab, !is.na(Genus))
+# Phylum order
+#x = tapply(sigtabgen$log2FoldChange, sigtabgen$Phylum, function(x) max(x))
+#x = sort(x, TRUE)
+#sigtabgen$Phylum = factor(as.character(sigtabgen$Phylum), levels=names(x))
+# Genus order
+x = tapply(sigtabgen$log2FoldChange, sigtabgen$Genus, function(x) max(x))
+x = sort(x, TRUE)
+sigtabgen$Genus = factor(as.character(sigtabgen$Genus), levels=names(x))
+binsno = ggplot(sigtabgen, aes(y=Genus, x=log2FoldChange, color=Phylum)) + 
+  geom_vline(xintercept = 0.0, color = "gray", size = 0.5) +
+  geom_point(size=15) + 
+  theme(axis.text.x = element_text(angle = -90, hjust = 0, vjust=0.5))+
+  theme_bw() + guides(fill=FALSE)+ theme(
+    plot.title = element_text(color="black", size=24, face="bold"),
+    axis.title.x = element_text(color="black", size=24, face="bold"),
+    axis.title.y = element_text(color="black", size=24, face="bold"),
+    axis.text=element_text(size=22),
+    legend.title = element_text(color = "black", size = 22),
+    legend.text = element_text(color = "black", size = 20)
+  ) + labs(title = "Engraftment period  (group 2) compared to pre-transplant  (group 1) (not sig)", x = "Difference in abundance (log2FoldChange)", y = "Genus") +
+  scale_color_manual(labels = c("Actinobacteria", "Firmicutes", "Proteobacteria"), values = c("#B76367", "#6EBBD9", "#61E3B9"))  
+binsno
+ggsave("DESeq2onbin1bin2NOsig.pdf", width = 37, height = 30, units = c('cm'))
+
+bins + binsno + plot_layout(guides = 'collect', ncol = 1)
+
+ggsave("binsDeseq.pdf", width = 47, height = 47, units = c('cm'))
+
+
+alpha = 0.9
+sigtab = res[(res$padj < alpha), ]
+sigtab = cbind(as(sigtab, "data.frame"), as(tax_table(GvHD.bin1.2_phyloseq)[rownames(sigtab), ], "matrix"))
+head(sigtab)
+
+sigtab
+
+theme_set(theme_bw())
+sigtabgen = subset(sigtab, !is.na(Genus))
+# Phylum order
+x = tapply(sigtabgen$log2FoldChange, sigtabgen$Phylum, function(x) max(x))
+x = sort(x, TRUE)
+sigtabgen$Phylum = factor(as.character(sigtabgen$Phylum), levels=names(x))
+# Genus order
+x = tapply(sigtabgen$log2FoldChange, sigtabgen$Genus, function(x) max(x))
+x = sort(x, TRUE)
+sigtabgen$Genus = factor(as.character(sigtabgen$Genus), levels=names(x))
+ggplot(sigtabgen, aes(y=Genus, x=log2FoldChange, color=Phylum)) + 
+  geom_vline(xintercept = 0.0, color = "gray", size = 0.5) +
+  geom_point(size=15) + 
+  theme(axis.text.x = element_text(angle = -90, hjust = 0, vjust=0.5))+
+  theme_bw() + guides(fill=FALSE)+ theme(
+    plot.title = element_text(color="black", size=24, face="bold"),
+    axis.title.x = element_text(color="black", size=24, face="bold"),
+    axis.title.y = element_text(color="black", size=24, face="bold"),
+    axis.text=element_text(size=22),
+    legend.title = element_text(color = "black", size = 22),
+    legend.text = element_text(color = "black", size = 20)
+  ) + labs(title = "Engraftment period  (group 2) compared to pre-transplant  (group 1) (not sig)", x = "Difference in abundance (log2FoldChange)", y = "Genus")  #+
+  #scale_color_manual(labels = c("Actinobacteria","Bacteroidetes", "Firmicutes", "Proteobacteria", "Fusobacteria"), values = c("#B76367", "#B388B3", "#6EBBD9", "#61E3B9",  "#D4F77C")) 
+ggsave("DESeq2onbin1bin2NOsigALL.pdf", width = 67, height = 60, units = c('cm'))
+
+```
+
+```{r}
+final_genus_CVG
+head(sample_data(final_genus_CVG)$Pre_or_post, 20)
+pre_post_phyloseq = subset_samples(final_genus_CVG, Pre_or_post != "NA")
+pre_post_phyloseq
+
+
+pre_post_phyloseq <- prune_samples(sample_sums(pre_post_phyloseq) > 400, pre_post_phyloseq)
+pre_post_phyloseq
+
+diagdds = phyloseq_to_deseq2(pre_post_phyloseq, ~ Pre_or_post)
+# calculate geometric means prior to estimate size factors
+gm_mean = function(x, na.rm=TRUE){
+  exp(sum(log(x[x > 0]), na.rm=na.rm) / length(x))
+}
+geoMeans = apply(counts(diagdds), 1, gm_mean)
+diagdds = estimateSizeFactors(diagdds, geoMeans = geoMeans)
+diagdds = DESeq(diagdds, fitType="local")
+
+res = results(diagdds)
+res = res[order(res$padj, na.last=NA), ]
+alpha = 0.01
+sigtab = res[(res$padj < alpha), ]
+sigtab = cbind(as(sigtab, "data.frame"), as(tax_table(pre_post_phyloseq)[rownames(sigtab), ], "matrix"))
+head(sigtab)
+res
+sigtab
+
+#posigtab = sigtab[sigtab[, "log2FoldChange"] > 0, ]
+#posigtab = posigtab[, c("baseMean", "log2FoldChange", "lfcSE", "padj", "Phylum", "Class", "Family", "Genus")]
+#posigtab
+
+library("ggplot2")
+theme_set(theme_bw())
+sigtabgen = subset(sigtab, !is.na(Genus))
+# Phylum order
+#x = tapply(sigtabgen$log2FoldChange, sigtabgen$Phylum, function(x) max(x))
+#x = sort(x, TRUE)
+#sigtabgen$Phylum = factor(as.character(sigtabgen$Phylum), levels=names(x))
+# Genus order
+x = tapply(sigtabgen$log2FoldChange, sigtabgen$Genus, function(x) max(x))
+x = sort(x, TRUE)
+sigtabgen$Genus = factor(as.character(sigtabgen$Genus), levels=names(x))
+prepost = ggplot(sigtabgen, aes(y=Genus, x=log2FoldChange, color=Phylum)) + 
+  geom_vline(xintercept = 0.0, color = "gray", size = 0.5) +
+  geom_point(size=15) + 
+  theme(axis.text.x = element_text(angle = -90, hjust = 0, vjust=0.5))+
+  theme_bw() + guides(fill=FALSE, color=FALSE)+ theme(
+    plot.title = element_text(color="black", size=28, face="bold"),
+    axis.title.x = element_text(color="black", size=28, face="bold"),
+    axis.title.y = element_text(color="black", size=28, face="bold"),
+    axis.text=element_text(size=26),
+    legend.title = element_text(color = "black", size = 26),
+    legend.text = element_text(color = "black", size = 24)
+  ) + labs(title = "Pre-transplant compared to post-transplant", x = "Difference in abundance (log2FoldChange)", y = "Genus") +
+  scale_color_manual(labels = c("Firmicutes"), values = c("#6EBBD9")) 
+ggsave("DESeq2onPrePostsig.pdf", width = 37, height = 30, units = c('cm'))
+
+
+res = results(diagdds)
+res = res[order(res$padj, na.last=NA), ]
+alpha = 0.9
+sigtab = res[(res$padj < alpha), ]
+sigtab = cbind(as(sigtab, "data.frame"), as(tax_table(pre_post_phyloseq)[rownames(sigtab), ], "matrix"))
+head(sigtab)
+res
+sigtab
+
+
+sigtabgen = subset(sigtab, !is.na(Genus))
+# Phylum order
+#x = tapply(sigtabgen$log2FoldChange, sigtabgen$Phylum, function(x) max(x))
+#x = sort(x, TRUE)
+#sigtabgen$Phylum = factor(as.character(sigtabgen$Phylum), levels=names(x))
+# Genus order
+x = tapply(sigtabgen$log2FoldChange, sigtabgen$Genus, function(x) max(x))
+x = sort(x, TRUE)
+sigtabgen$Genus = factor(as.character(sigtabgen$Genus), levels=names(x))
+prepostno = ggplot(sigtabgen, aes(y=Genus, x=log2FoldChange, color=Phylum)) + 
+  geom_vline(xintercept = 0.0, color = "gray", size = 0.5) +
+  geom_point(size=12) + 
+  theme(axis.text.x = element_text(angle = -90, hjust = 0, vjust=0.5))+
+  theme_bw() + guides(fill=FALSE)+ theme(
+    plot.title = element_text(color="black", size=28, face="bold"),
+    axis.title.x = element_text(color="black", size=28, face="bold"),
+    axis.title.y = element_text(color="black", size=28, face="bold"),
+    axis.text=element_text(size=26),
+    legend.title = element_text(color = "black", size = 26),
+    legend.text = element_text(color = "black", size = 24)
+  ) + labs(title = "Pre-transplant compared to post-transplant (no sig)", x = "Difference in abundance (log2FoldChange)", y = "Genus") +
+  scale_color_manual(labels = c("Actinobacteria","Bacteroidetes", "Firmicutes", "Fusobacteria","Proteobacteria"), values = c("#B76367", "#B388B3", "#6EBBD9", "#D4F77C",  "#61E3B9")) 
+ggsave("DESeq2onPrePostPsofig.pdf", width = 37, height = 30, units = c('cm'))
+
+prepost + prepostno + plot_layout(guides = 'collect', ncol = 1)
+
+ggsave("prepostDeseq.pdf", width = 47, height = 47, units = c('cm'))
+
+
+```
+
+```{r}
+final_genus_CVG
+head(sample_data(final_genus_CVG)$Does_the_patient_have_diarrhoea, 20)
+diarrhoea_phyloseq = subset_samples(final_genus_CVG, Does_the_patient_have_diarrhoea != "NotKnown")
+diarrhoea_phyloseq
+
+
+diarrhoea_phyloseq <- prune_samples(sample_sums(diarrhoea_phyloseq) > 400, diarrhoea_phyloseq)
+diarrhoea_phyloseq
+
+diagdds = phyloseq_to_deseq2(diarrhoea_phyloseq, ~ Does_the_patient_have_diarrhoea)
+#diagdds$Does_the_patient_have_diarrhoea <- relevel(diagdds$Does_the_patient_have_diarrhoea, ref = "No")
+#diagdds$Does_the_patient_have_diarrhoea <- factor(diagdds$Does_the_patient_have_diarrhoea, levels = c("Yes","No"))
+# calculate geometric means prior to estimate size factors
+gm_mean = function(x, na.rm=TRUE){
+  exp(sum(log(x[x > 0]), na.rm=na.rm) / length(x))
+}
+geoMeans = apply(counts(diagdds), 1, gm_mean)
+diagdds = estimateSizeFactors(diagdds, geoMeans = geoMeans)
+diagdds = DESeq(diagdds, fitType="local")
+
+res = results(diagdds)
+res = res[order(res$padj, na.last=NA), ]
+alpha = 0.01
+sigtab = res[(res$padj < alpha), ]
+sigtab = cbind(as(sigtab, "data.frame"), as(tax_table(diarrhoea_phyloseq)[rownames(sigtab), ], "matrix"))
+head(sigtab)
+res
+sigtab
+
+#posigtab = sigtab[sigtab[, "log2FoldChange"] > 0, ]
+#posigtab = posigtab[, c("baseMean", "log2FoldChange", "lfcSE", "padj", "Phylum", "Class", "Family", "Genus")]
+#posigtab
+
+library("ggplot2")
+theme_set(theme_bw())
+sigtabgen = subset(sigtab, !is.na(Genus))
+# Phylum order
+#x = tapply(sigtabgen$log2FoldChange, sigtabgen$Phylum, function(x) max(x))
+#x = sort(x, TRUE)
+#sigtabgen$Phylum = factor(as.character(sigtabgen$Phylum), levels=names(x))
+# Genus order
+x = tapply(sigtabgen$log2FoldChange, sigtabgen$Genus, function(x) max(x))
+x = sort(x, TRUE)
+sigtabgen$Genus = factor(as.character(sigtabgen$Genus), levels=names(x))
+diarrhoea = ggplot(sigtabgen, aes(y=Genus, x=log2FoldChange, color=Phylum)) + 
+  geom_vline(xintercept = 0.0, color = "gray", size = 0.5) +
+  geom_point(size=15) + 
+  theme(axis.text.x = element_text(angle = -90, hjust = 0, vjust=0.5))+
+  theme_bw() + guides(fill=FALSE, color = FALSE)+ theme(
+    plot.title = element_text(color="black", size=28, face="bold"),
+    axis.title.x = element_text(color="black", size=28, face="bold"),
+    axis.title.y = element_text(color="black", size=28, face="bold"),
+    axis.text=element_text(size=26),
+    legend.title = element_text(color = "black", size = 26),
+    legend.text = element_text(color = "black", size = 24)
+  ) + labs(title = "Diarrhoea is present compared to absent", x = "Difference in abundance (log2FoldChange)", y = "Genus") +
+  scale_color_manual(labels = c("Firmicutes","Proteobacteria"), values = c("#6EBBD9", ("#61E3B9")))
+ggsave("DESeq2onDiarrhoeasig.pdf", width = 37, height = 30, units = c('cm'))
+
+#plotMA(res, ylim=c(-6,6))
+
+
+gp.ch = subset_taxa(diarrhoea_phyloseq, Family == "Enterococcaceae")
+plot_bar(gp.ch, x="Does_the_patient_have_diarrhoea", fill="Genus")
+
+res = results(diagdds)
+res = res[order(res$padj, na.last=NA), ]
+alpha = 0.2
+sigtab = res[(res$padj < alpha), ]
+sigtab = cbind(as(sigtab, "data.frame"), as(tax_table(diarrhoea_phyloseq)[rownames(sigtab), ], "matrix"))
+head(sigtab)
+res
+sigtab
+
+#posigtab = sigtab[sigtab[, "log2FoldChange"] > 0, ]
+#posigtab = posigtab[, c("baseMean", "log2FoldChange", "lfcSE", "padj", "Phylum", "Class", "Family", "Genus")]
+#posigtab
+
+library("ggplot2")
+theme_set(theme_bw())
+sigtabgen = subset(sigtab, !is.na(Genus))
+# Phylum order
+#x = tapply(sigtabgen$log2FoldChange, sigtabgen$Phylum, function(x) max(x))
+#x = sort(x, TRUE)
+#sigtabgen$Phylum = factor(as.character(sigtabgen$Phylum), levels=names(x))
+# Genus order
+x = tapply(sigtabgen$log2FoldChange, sigtabgen$Genus, function(x) max(x))
+x = sort(x, TRUE)
+sigtabgen$Genus = factor(as.character(sigtabgen$Genus), levels=names(x))
+diarrhoeano = ggplot(sigtabgen, aes(y=Genus, x=log2FoldChange, color=Phylum)) + 
+  geom_vline(xintercept = 0.0, color = "gray", size = 0.5) +
+  geom_point(size=15) + 
+  theme(axis.text.x = element_text(angle = -90, hjust = 0, vjust=0.5))+
+  theme_bw() + guides(fill=FALSE)+ theme(
+    plot.title = element_text(color="black", size=28, face="bold"),
+    axis.title.x = element_text(color="black", size=28, face="bold"),
+    axis.title.y = element_text(color="black", size=28, face="bold"),
+    axis.text=element_text(size=26),
+    legend.title = element_text(color = "black", size = 26),
+    legend.text = element_text(color = "black", size = 24)
+  ) + labs(title = "Diarrhoea is present compared to absent (no sig)", x = "Difference in abundance (log2FoldChange)", y = "Genus")+
+  scale_color_manual(labels = c("Bacteroidetes", "Firmicutes", "Proteobacteria"), values = c("#B388B3", "#6EBBD9", "#61E3B9")) 
+ggsave("DESeq2onDiarrhoeanosig.pdf", width = 37, height = 30, units = c('cm'))
+
+diarrhoea + diarrhoeano + plot_layout(guides = 'collect', ncol = 1)
+
+ggsave("diarrhoeaDeseq.pdf", width = 47, height = 47, units = c('cm'))
+
+```
+
+```{r}
+#now i am going to look at pre and post neutrophil engrafteyn
+
+
+final_genus_CVG
+head(sample_data(final_genus_CVG)$Pre_or_post_neutrophil, 20)
+neutrophil_phyloseq = subset_samples(final_genus_CVG, Pre_or_post_neutrophil != "NA")
+neutrophil_phyloseq
+
+
+neutrophil_phyloseq <- prune_samples(sample_sums(neutrophil_phyloseq) > 400, neutrophil_phyloseq)
+neutrophil_phyloseq
+
+diagdds = phyloseq_to_deseq2(neutrophil_phyloseq, ~ Pre_or_post_neutrophil)
+#diagdds$Does_the_patient_have_diarrhoea <- relevel(diagdds$Does_the_patient_have_diarrhoea, ref = "No")
+#diagdds$Does_the_patient_have_diarrhoea <- factor(diagdds$Does_the_patient_have_diarrhoea, levels = c("Yes","No"))
+# calculate geometric means prior to estimate size factors
+gm_mean = function(x, na.rm=TRUE){
+  exp(sum(log(x[x > 0]), na.rm=na.rm) / length(x))
+}
+geoMeans = apply(counts(diagdds), 1, gm_mean)
+diagdds = estimateSizeFactors(diagdds, geoMeans = geoMeans)
+diagdds = DESeq(diagdds, fitType="local")
+
+res = results(diagdds)
+res = res[order(res$padj, na.last=NA), ]
+alpha = 0.01
+sigtab = res[(res$padj < alpha), ]
+sigtab = cbind(as(sigtab, "data.frame"), as(tax_table(neutrophil_phyloseq)[rownames(sigtab), ], "matrix"))
+head(sigtab)
+res
+sigtab
+
+#posigtab = sigtab[sigtab[, "log2FoldChange"] > 0, ]
+#posigtab = posigtab[, c("baseMean", "log2FoldChange", "lfcSE", "padj", "Phylum", "Class", "Family", "Genus")]
+#posigtab
+
+library("ggplot2")
+theme_set(theme_bw())
+sigtabgen = subset(sigtab, !is.na(Genus))
+# Phylum order
+#x = tapply(sigtabgen$log2FoldChange, sigtabgen$Phylum, function(x) max(x))
+#x = sort(x, TRUE)
+#sigtabgen$Phylum = factor(as.character(sigtabgen$Phylum), levels=names(x))
+# Genus order
+x = tapply(sigtabgen$log2FoldChange, sigtabgen$Genus, function(x) max(x))
+x = sort(x, TRUE)
+sigtabgen$Genus = factor(as.character(sigtabgen$Genus), levels=names(x))
+neutrophil = ggplot(sigtabgen, aes(y=Genus, x=log2FoldChange, color=Phylum)) + 
+  geom_vline(xintercept = 0.0, color = "gray", size = 0.5) +
+  geom_point(size=15) + 
+  theme(axis.text.x = element_text(angle = -90, hjust = 0, vjust=0.5))+
+  theme_bw() + guides(fill=FALSE, color = FALSE)+ theme(
+    plot.title = element_text(color="black", size=28, face="bold"),
+    axis.title.x = element_text(color="black", size=28, face="bold"),
+    axis.title.y = element_text(color="black", size=28, face="bold"),
+    axis.text=element_text(size=26),
+    legend.title = element_text(color = "black", size = 26),
+    legend.text = element_text(color = "black", size = 24)
+  ) + labs(title = "Before compared to after neutrophil engraftment", x = "Difference in abundance (log2FoldChange)", y = "Genus") +
+scale_color_manual(labels = c("Bacteroidetes", "Firmicutes","Proteobacteria"), values = c( "#B388B3", "#6EBBD9", "#61E3B9"))
+ggsave("DESeq2onPrePostNeutrophilsig.pdf", width = 37, height = 30, units = c('cm'))
+
+gp.ch = subset_taxa(CVG_latest_phyloseq, Family == "Enterobacteriaceae")
+plot_bar(gp.ch, x="Pre_or_post_neutrophil", fill="Genus")
+
+
+res = results(diagdds)
+res = res[order(res$padj, na.last=NA), ]
+alpha = 0.9
+sigtab = res[(res$padj < alpha), ]
+sigtab = cbind(as(sigtab, "data.frame"), as(tax_table(neutrophil_phyloseq)[rownames(sigtab), ], "matrix"))
+head(sigtab)
+res
+sigtab
+
+#posigtab = sigtab[sigtab[, "log2FoldChange"] > 0, ]
+#posigtab = posigtab[, c("baseMean", "log2FoldChange", "lfcSE", "padj", "Phylum", "Class", "Family", "Genus")]
+#posigtab
+
+library("ggplot2")
+theme_set(theme_bw())
+sigtabgen = subset(sigtab, !is.na(Genus))
+# Phylum order
+#x = tapply(sigtabgen$log2FoldChange, sigtabgen$Phylum, function(x) max(x))
+#x = sort(x, TRUE)
+#sigtabgen$Phylum = factor(as.character(sigtabgen$Phylum), levels=names(x))
+# Genus order
+x = tapply(sigtabgen$log2FoldChange, sigtabgen$Genus, function(x) max(x))
+x = sort(x, TRUE)
+sigtabgen$Genus = factor(as.character(sigtabgen$Genus), levels=names(x))
+neutrophilno = ggplot(sigtabgen, aes(y=Genus, x=log2FoldChange, color=Phylum)) + 
+  geom_vline(xintercept = 0.0, color = "gray", size = 0.5) +
+  geom_point(size=15) + 
+  theme(axis.text.x = element_text(angle = -90, hjust = 0, vjust=0.5))+
+  theme_bw() + guides(fill=FALSE)+ theme(
+    plot.title = element_text(color="black", size=28, face="bold"),
+    axis.title.x = element_text(color="black", size=28, face="bold"),
+    axis.title.y = element_text(color="black", size=28, face="bold"),
+    axis.text=element_text(size=26),
+    legend.title = element_text(color = "black", size = 26),
+    legend.text = element_text(color = "black", size = 24)
+  ) + labs(title = "Before compared to after neutrophil engraftment (no sig)", x = "Difference in abundance (log2FoldChange)", y = "Genus") +
+  scale_color_manual(labels = c("Actinobacteria","Bacteroidetes", "Firmicutes", "Fusobacteria","Proteobacteria"), values = c("#B76367", "#B388B3", "#6EBBD9", "#D4F77C",  "#61E3B9"))   
+ggsave("DESeq2onPrePostNeutrophilP09nosig.pdf", width = 37, height = 30, units = c('cm'))
+
+neutrophil + neutrophilno + plot_layout(guides = 'collect', ncol = 1)
+
+ggsave("neutrophilDeseq.pdf", width = 47, height = 47, units = c('cm'))
+
+
+```
+
+```{r}
+#now i am going to look at AGE
+
+
+
+CVG_genus_phyloseq
+head(sample_data(CVG_genus_phyloseq)$Age_over_2_years, 20)
+age_phyloseq = subset_samples(CVG_genus_phyloseq, Age_over_2_years != "NA")
+age_phyloseq
+
+
+age_phyloseq <- prune_samples(sample_sums(age_phyloseq) > 400, age_phyloseq)
+age_phyloseq
+
+diagdds = phyloseq_to_deseq2(age_phyloseq, ~ Age_over_2_years)
+#diagdds$Does_the_patient_have_diarrhoea <- relevel(diagdds$Does_the_patient_have_diarrhoea, ref = "No")
+#diagdds$Does_the_patient_have_diarrhoea <- factor(diagdds$Does_the_patient_have_diarrhoea, levels = c("Yes","No"))
+# calculate geometric means prior to estimate size factors
+gm_mean = function(x, na.rm=TRUE){
+  exp(sum(log(x[x > 0]), na.rm=na.rm) / length(x))
+}
+geoMeans = apply(counts(diagdds), 1, gm_mean)
+diagdds = estimateSizeFactors(diagdds, geoMeans = geoMeans)
+diagdds = DESeq(diagdds, fitType="local")
+
+res = results(diagdds)
+res = res[order(res$padj, na.last=NA), ]
+alpha = 0.01
+sigtab = res[(res$padj < alpha), ]
+sigtab = cbind(as(sigtab, "data.frame"), as(tax_table(age_phyloseq)[rownames(sigtab), ], "matrix"))
+head(sigtab)
+res
+sigtab
+
+library("ggplot2")
+theme_set(theme_bw())
+sigtabgen = subset(sigtab, !is.na(Genus))
+# Phylum order
+#x = tapply(sigtabgen$log2FoldChange, sigtabgen$Phylum, function(x) max(x))
+#x = sort(x, TRUE)
+#sigtabgen$Phylum = factor(as.character(sigtabgen$Phylum), levels=names(x))
+# Genus order
+x = tapply(sigtabgen$log2FoldChange, sigtabgen$Genus, function(x) max(x))
+x = sort(x, TRUE)
+sigtabgen$Genus = factor(as.character(sigtabgen$Genus), levels=names(x))
+age = ggplot(sigtabgen, aes(y=Genus, x=log2FoldChange, color=Phylum)) + 
+  geom_vline(xintercept = 0.0, color = "gray", size = 0.5) +
+  geom_point(size=15) + 
+  theme(axis.text.x = element_text(angle = -90, hjust = 0, vjust=0.5))+
+  theme_bw() + guides(fill=FALSE)+ theme(
+    plot.title = element_text(color="black", size=28, face="bold"),
+    axis.title.x = element_text(color="black", size=28, face="bold"),
+    axis.title.y = element_text(color="black", size=28, face="bold"),
+    axis.text=element_text(size=26),
+    legend.title = element_text(color = "black", size = 26),
+    legend.text = element_text(color = "black", size = 24)
+  ) + labs(title = "Patient is under compared to over age two", x = "Difference in abundance (log2FoldChange)", y = "Genus") +
+  scale_color_manual(labels = c("Actinobacteria", "Firmicutes"), values = c("#B76367", "#6EBBD9")) 
+ggsave("DESeq2onAGEsig.pdf", width = 37, height = 30, units = c('cm'))
+
+gp.ch = subset_taxa(CVG_latest_phyloseq, Family == "Enterobacteriaceae")
+plot_line(gp.ch, x="Pre_or_post_neutrophil", fill="Genus")
+
+
+```
+
+
+```{r}
+################################################################
+#now i am going to look at gvhd severity
+
+head(sample_data(final_genus_CVG)$GvHD.gut, 20)
+GvHD.gut_phyloseq = subset_samples(final_genus_CVG, GvHD.gut != "NA")
+GvHD.gut_phyloseq = subset_samples(final_genus_CVG, GvHD.gut != "Skin")
+
+head(sample_data(GvHD.gut_phyloseq)$GvHD.gut, 20)
+
+GvHD.gut_phyloseq <- prune_samples(sample_sums(GvHD.gut_phyloseq) > 400, GvHD.gut_phyloseq)
+
+diagdds = phyloseq_to_deseq2(GvHD.gut_phyloseq, ~ GvHD.gut)
+
+gm_mean = function(x, na.rm=TRUE){
+  exp(sum(log(x[x > 0]), na.rm=na.rm) / length(x))
+}
+geoMeans = apply(counts(diagdds), 1, gm_mean)
+diagdds = estimateSizeFactors(diagdds, geoMeans = geoMeans)
+diagdds = DESeq(diagdds, fitType="local")
+
+res = results(diagdds)
+res = res[order(res$padj, na.last=NA), ]
+res
+alpha = 0.01
+sigtab = res[(res$padj < alpha), ]
+sigtab = cbind(as(sigtab, "data.frame"), as(tax_table(GvHD.gut_phyloseq)[rownames(sigtab), ], "matrix"))
+head(sigtab)
+
+sigtab
+theme_set(theme_bw())
+sigtabgen = subset(sigtab, !is.na(Genus))
+# Phylum order
+#x = tapply(sigtabgen$log2FoldChange, sigtabgen$Phylum, function(x) max(x))
+#x = sort(x, TRUE)
+#sigtabgen$Phylum = factor(as.character(sigtabgen$Phylum), levels=names(x))
+# Genus order
+x = tapply(sigtabgen$log2FoldChange, sigtabgen$Genus, function(x) max(x))
+x = sort(x, TRUE)
+sigtabgen$Genus = factor(as.character(sigtabgen$Genus), levels=names(x))
+gut = ggplot(sigtabgen, aes(y=Genus, x=log2FoldChange, color=Phylum)) + 
+  geom_vline(xintercept = 0.0, color = "gray", size = 0.5) +
+  geom_point(size=15) + 
+  theme(axis.text.x = element_text(angle = -90, hjust = 0, vjust=0.5))+
+  theme_bw() + guides(fill=FALSE)+ theme(
+    plot.title = element_text(color="black", size=24, face="bold"),
+    axis.title.x = element_text(color="black", size=24, face="bold"),
+    axis.title.y = element_text(color="black", size=24, face="bold"),
+    axis.text=element_text(size=22),
+    legend.title = element_text(color = "black", size = 22),
+    legend.text = element_text(color = "black", size = 20)
+  ) + labs(title = "Patients with no GvHD compared to gut GvHD", x = "Difference in abundance (log2FoldChange)", y = "Genus") +  scale_color_manual(labels = c("Firmicutes"), values = c("#6EBBD9")) 
+ggsave("DESeq2onGUtsig.pdf", width = 37, height = 30, units = c('cm'))
+
+alpha = 0.9
+sigtab = res[(res$padj < alpha), ]
+sigtab = cbind(as(sigtab, "data.frame"), as(tax_table(GvHD.severity_phyloseq)[rownames(sigtab), ], "matrix"))
+head(sigtab)
+
+sigtab
+
+theme_set(theme_bw())
+sigtabgen = subset(sigtab, !is.na(Genus))
+# Phylum order
+#x = tapply(sigtabgen$log2FoldChange, sigtabgen$Phylum, function(x) max(x))
+#x = sort(x, TRUE)
+#sigtabgen$Phylum = factor(as.character(sigtabgen$Phylum), levels=names(x))
+# Genus order
+x = tapply(sigtabgen$log2FoldChange, sigtabgen$Genus, function(x) max(x))
+x = sort(x, TRUE)
+sigtabgen$Genus = factor(as.character(sigtabgen$Genus), levels=names(x))
+gutno = ggplot(sigtabgen, aes(y=Genus, x=log2FoldChange, color=Phylum)) + 
+  geom_vline(xintercept = 0.0, color = "gray", size = 0.5) +
+  geom_point(size=15) + 
+  theme(axis.text.x = element_text(angle = -90, hjust = 0, vjust=0.5))+
+  theme_bw() + guides(fill=FALSE)+ theme(
+    plot.title = element_text(color="black", size=24, face="bold"),
+    axis.title.x = element_text(color="black", size=24, face="bold"),
+    axis.title.y = element_text(color="black", size=24, face="bold"),
+    axis.text=element_text(size=22),
+    legend.title = element_text(color = "black", size = 22),
+    legend.text = element_text(color = "black", size = 20)
+  ) + labs(title = "Patients with no GvHD compared to gut GvHD (not sig)", x = "Difference in abundance (log2FoldChange)", y = "Genus")  +  scale_color_manual(labels = c("Actinobacteria","Bacteroidetes", "Firmicutes","Proteobacteria"), values = c("#B76367", "#B388B3", "#6EBBD9",   "#61E3B9"))  
+
+ggsave("DESeq2onGutnosig.pdf", width = 37, height = 30, units = c('cm'))
+
+gut + gutno + plot_layout(guides = 'collect', ncol = 1)
+
+ggsave("GutDeseq.pdf", width = 47, height = 47, units = c('cm'))
+
+gp.ch = subset_taxa(GvHD.gut_phyloseq, Genus == "Blautia")
+plot_bar(gp.ch, x="GvHD.gut", fill="Genus")
+
+gp.ch = subset_taxa(GvHD.severity_phyloseq, Genus == "Enterococcus")
+plot_bar(gp.ch, x="GvHD.severity", fill="Genus")
+
+
+2^-5.71
+```
+

@@ -1,0 +1,39 @@
+---
+title: "ordinaaate"
+author: "Tess Attenborough"
+date: "03/05/2020"
+output: html_document
+---
+
+```{r}
+
+library("ape")
+library("ggplot2")
+library("plyr")
+library("scales")
+library("vegan")
+library("knitr")
+library("dplyr")
+library("praise")
+library("tidyverse")
+library("phyloseq")
+library("ggforce")
+library("microbiome")
+library("patchwork")
+```
+
+```{r}
+#trim the controls off object
+
+justpatients = subset_samples(CVG_phyloseq_decontaminated, Pre_or_post != "NA")
+
+GP1 = transform_sample_counts(justpatients, function(x) 1E6 * x/sum(x)) #transform and get even sampling depth
+
+GP.ord <- ordinate(GP1, "NMDS", "bray")
+
+p2 = plot_ordination(GP1, GP.ord, type="samples", color="Sample_bin", shape="Sample_bin")
+p2
+ggsave("pcoapatient.pdf", width = 47, height = 40, units = c('cm'))
+
+```
+

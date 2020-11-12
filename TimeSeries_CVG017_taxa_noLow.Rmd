@@ -1,0 +1,358 @@
+---
+title: "Microbiome Timeseries"
+author: "Tess Attenborough"
+date: "30 April 2019"
+output: html_document
+
+# Load libraries
+```{r}
+library(data.table)
+library(zoo)
+library(plyr)
+library(scales)
+library(ggplot2)
+library(ggthemes)
+library(dplyr)
+library(plotly)
+library(pracma)
+library(Hmisc)
+library(rpart)
+library(survminer)
+library(knitr)
+library(grid)
+library(stringr)
+library(ggrepel)
+library(ggjoy)
+library(RColorBrewer)
+library(stringdist)
+library(ape)
+library(reshape2)
+library(gplots)
+library(ineq)
+library(vegan)
+library(Rtsne)
+library(praise)
+```
+
+Next, a multiplot function to produce ggplot grid plots.
+```{r}
+multiplot <- function(..., plotlist=NULL, file, cols=1, layout=NULL) {
+  require(grid)
+
+  # Make a list from the ... arguments and plotlist
+  plots <- c(list(...), plotlist)
+
+  numPlots = length(plots)
+
+  # If layout is NULL, then use 'cols' to determine layout
+  if (is.null(layout)) {
+    # Make the panel
+    # ncol: Number of columns of plots
+    # nrow: Number of rows needed, calculated from # of cols
+    layout <- matrix(seq(1, cols * ceiling(numPlots/cols)),
+                    ncol = cols, nrow = ceiling(numPlots/cols))
+  }
+
+ if (numPlots==1) {
+    print(plots[[1]])
+
+  } else {
+    # Set up the page
+    grid.newpage()
+    pushViewport(viewport(layout = grid.layout(nrow(layout), ncol(layout))))
+
+    # Make each plot, in the correct location
+    for (i in 1:numPlots) {
+      # Get the i,j matrix positions of the regions that contain this subplot
+      matchidx <- as.data.frame(which(layout == i, arr.ind = TRUE))
+
+      print(plots[[i]], vp = viewport(layout.pos.row = matchidx$row,
+                                      layout.pos.col = matchidx$col))
+    }
+  }
+}
+```
+
+# Load data into format suitable for analysis
+
+```{r}
+#set the working directory
+wd <- "/Users/teresaattenborough/CVGSTUDY/CVGR"
+wd.output <- "/Users/teresaattenborough/CVGSTUDY/CVGR/TimeSeries"
+setwd(wd)
+
+CVG017Freqs <- read.csv(file = "CVG017.csv", stringsAsFactors = F) #import otu table
+
+CVG017Freqs <- CVG017Freqs[!(CVG017Freqs$Frequency==0),]
+
+
+#import a dataframe suitable (should contain these things)
+#dat <- data.frame(OTus, Days_pst, freq,  stringsAsFactors = F)
+#CD4
+#ID, month, chain, CDR3, freq
+Days_post <- CVG017Freqs$Days_post_transplant #days post transplant
+OTUs<- CVG017Freqs$OTU #OTU
+Count <- CVG017Freqs$Frequency #Freqs
+ID <- "CVG017"
+Genus <- CVG017Freqs$Genus
+
+
+
+dat <- data.frame(ID, OTUs, Count, Days_post, Genus, stringsAsFactors = F)
+
+```
+
+
+# % shared clonotypes time
+```{r}
+#  y | x1 | x2 | shared |
+# ---|----|----|--------|
+#  1 |  1 |  2 |   50   |
+#  1 |  2 |  3 |   50   |
+#  1 |  1 |  3 |   25   |
+
+fillseq <- seq(1, length(CVG017dfm$OTU)) #make list of numbers corresponding with number of unique clonotypes
+
+write.csv(CVG017dfm, file = "CVG017dfm.csv")
+
+#here i remove from the dataframe any OTUs that were either classed as contmainants or were not able to be classified
+CVG017dfm <- subset(CVG017dfm, OTU != "OTU_180" & OTU != "OTU_268" & OTU != "OTU_344" & OTU != "OTU_354" & OTU != "OTU_360" & OTU != "OTU_372" & OTU != "OTU_117" & OTU != "OTU_137" & OTU != "OTU_30" & OTU != "OTU_19" & OTU != "OTU_129" & OTU != "OTU_156" & OTU != "OTU_188" & OTU != "OTU_260" & OTU != "OTU_76" & OTU != "OTU_241" & OTU != "OTU_242" & OTU != "OTU_63" & OTU != "OTU_106" & OTU != "OTU_135" & OTU != "OTU_303" & OTU != "OTU_222" & OTU != "OTU_56" & OTU != "OTU_120" & OTU != "OTU_133" & OTU != "OTU_200" & OTU != "OTU_146" & OTU != "OTU_177" & OTU != "OTU_507" & OTU != "OTU_247" & OTU != "OTU_249")
+
+fillseq <- seq(1, length(CVG017dfm$OTU)) #make list of numbers corresponding with number of unique clonotypes
+
+CVG017dfm <- CVG017dfm[order(CVG017dfm$Genus),]
+
+CVG017dfm$fillseq <- fillseq #add numbers from fillseq to data frame with unique clonotypes
+
+
+
+#time point 1
+ID <- "CVG017"
+OTUs<- CVG017dfm$OTU
+Count <- CVG017dfm$CVG14V54122
+Days_post <- "-6"
+Genus <- CVG017dfm$Genus
+fillseq <- CVG017dfm$fillseq
+temp1 <- data.frame(ID, OTUs, Count, Days_post, Genus, fillseq, stringsAsFactors = F) #t0 first time point
+temp1 <- temp1[!(temp1$Count==0),]
+
+#time point 2
+ID <- "CVG017"
+OTUs<- CVG017dfm$OTU
+Count <- CVG017dfm$CVG14V54156
+Days_post <- "1"
+Genus <- CVG017dfm$Genus
+fillseq <- CVG017dfm$fillseq
+temp2 <- data.frame(ID, OTUs, Count, Days_post, Genus, fillseq, stringsAsFactors = F)
+temp2 <- temp2[!(temp2$Count==0),] #t2 the second time point   
+
+#time point 3
+ID <- "CVG017"
+OTUs<- CVG017dfm$OTU
+Count <- CVG017dfm$CVG14V54194
+Days_post <- "35"
+Genus <- CVG017dfm$Genus
+fillseq <- CVG017dfm$fillseq
+temp3 <- data.frame(ID, OTUs, Count, Days_post, Genus, fillseq, stringsAsFactors = F)
+temp3 <- temp3[!(temp3$Count==0),] #t3 the third time point   
+
+#time point 4
+ID <- "CVG017"
+OTUs<- CVG017dfm$OTU
+Count <- CVG017dfm$CVG14V54331
+Days_post <- "147"
+Genus <- CVG017dfm$Genus
+fillseq <- CVG017dfm$fillseq
+temp4 <- data.frame(ID, OTUs, Count, Days_post, Genus, fillseq, stringsAsFactors = F)
+temp4 <- temp4[!(temp4$Count==0),]   
+ #t4 the fourth time point  
+
+#time point 5
+ID <- "CVG017"
+OTUs<- CVG017dfm$OTU
+Count <- CVG017dfm$CVG14V54407
+Days_post <- "180"
+Genus <- CVG017dfm$Genus
+fillseq <- CVG017dfm$fillseq
+temp5 <- data.frame(ID, OTUs, Count, Days_post, Genus, fillseq, stringsAsFactors = F)
+temp5 <- temp5[!(temp5$Count==0),]   
+ #t5 the fifth time point 
+
+
+        ### Shared clonotype plot ###
+        # creates a vector identifying shared sequences
+temp1$shared <- NA #creates column
+temp2$shared <- NA
+temp3$shared <- NA #creates column
+temp4$shared <- NA
+temp5$shared <- NA
+
+
+
+temp2$shared[temp2$OTUs %in% temp3$OTUs | temp2$OTUs %in% temp5$OTUs] <- T  # marks clonotypes that are in temp2 and temp1 as TRUE
+temp2$shared[!temp2$OTUs %in% temp3$OTUs & !temp2$OTUs %in% temp5$OTUs] <- F #  marks clonotypes that are in temp2 and NOT in temp1 as FALSE
+
+temp3$shared[temp3$OTUs %in% temp2$OTUs | temp3$OTUs %in% temp5$OTUs] <- T  # marks clonotypes that are in temp2 and temp1 as TRUE
+temp3$shared[!temp3$OTUs %in% temp2$OTUs & !temp3$OTUs %in% temp5$OTUs] <- F #  marks clonotypes that are in temp2 and NOT in temp1 as FALSE
+
+
+temp5$shared[temp5$OTUs %in% temp2$OTUs | temp5$OTUs %in% temp3$OTUs] <- T  # marks clonotypes that are in temp2 and temp1 as TRUE
+temp5$shared[!temp5$OTUs %in% temp2$OTUs & !temp5$OTUs %in% temp3$OTUs] <- F # marks clonotypes that are in temp2 and NOT in temp1 as FALSE
+
+#testing to see if this the way
+#temp1$sharedintersect <- NA #creates column
+#temp2$sharedintersect <- NA
+#temp3$sharedintersect <- NA #creates column
+#temp4$sharedintersect <- NA
+
+#temp1$sharedintersect[temp1$V1 %in% temp2$V1] <- T
+#temp1$sharedintersect[!temp1$V1 %in% temp2$V1] <- F #same for false
+#temp2$sharedintersect[temp2$V1 %in% temp1$V1] <- T
+#temp2$sharedintersect[!temp2$V1 %in% temp1$V1] <- F
+
+
+temp2 <- arrange(temp2,desc(temp2$shared),temp2$fillseq)
+temp3 <- arrange(temp3,desc(temp3$shared),temp3$fillseq)
+temp5 <- arrange(temp5,desc(temp5$shared),temp5$fillseq)
+
+
+  # vector to order and colour sequence
+        #temp1$fillseq[temp1$shared == T] <- fillseq
+        #temp1$fillseq[temp1$shared == F] <- length(temp1$fillseq[temp1$shared == T])+1
+       # temp2$fillseq <- temp1$fillseq[match(temp2$V1, temp1$V1)]
+        #temp2$fillseq[temp2$shared == F] <- length(temp2$fillseq[temp2$shared == T])+1
+               
+
+        # create 1 entry for all non-shared sequences
+temp2.mod <- temp2
+temp3.mod <- temp3 #duplicates temp3 and saves it as temp3.mod
+temp5.mod <- temp5
+
+
+
+#temp3.mod$Count[length(temp3.mod$ID)] <- sum(temp3.mod$Count[temp3.mod$shared == F]) # the last entry is given the frequency of all the non-shared clonotypes
+temp5.mod$Count[length(temp5.mod$ID)] <- sum(temp5.mod$Count[temp5.mod$shared == F])
+
+
+#temp1.mod$V2[length(temp1.mod$ID)] <- sum(temp1.mod$V2[temp1.mod$sharedintersect == F]) # the last entry is given the frequency of all the non-shared clonotypes
+#temp2.mod$V2[length(temp2.mod$ID)] <- sum(temp2.mod$V2[temp2.mod$sharedintersect == F])
+
+
+#temp3.mod$shared[length(temp3.mod$ID)] <- T #makes the last entry true so it is kept
+temp5.mod$shared[length(temp5.mod$ID)] <- T
+
+
+#temp1.mod$sharedintersect[length(temp1.mod$ID)] <- T #makes the last entry true so it is kept
+#temp2.mod$sharedintersect[length(temp2.mod$ID)] <- T
+
+
+temp3.mod <- temp3.mod[!temp3.mod$shared == F,] #gets rid of all non-shared clonotypes
+temp5.mod <- temp5.mod[!temp5.mod$shared == F,]
+
+#temp1.mod <- temp1.mod[!temp1.mod$sharedintersect == F,] #gets rid of all non-shared clonotypes
+#temp2.mod <- temp2.mod[!temp2.mod$sharedintersect == F,]
+
+
+temp5.mod$shared[length(temp5.mod$ID)] <- F
+
+
+
+#temp3.mod$fillseq[length(temp3.mod$ID)] <- 900000 #puts the last entry back last in fillseq order
+temp5.mod$fillseq[length(temp5.mod$ID)] <- 900000
+
+        
+        # normalise sequence frequency
+temp2.mod$Count <- (100/sum(temp2.mod$Count))*temp2.mod$Count
+temp3.mod$Count <- (100/sum(temp3.mod$Count))*temp3.mod$Count #turns counts into percentages
+temp5.mod$Count <- (100/sum(temp5.mod$Count))*temp5.mod$Count
+
+        
+        #temp1.mod.expanded <- temp1.mod[rep(row.names(temp1.mod), temp1.mod$V2),]
+        #temp2.mod.expanded <- temp2.mod[rep(row.names(temp2.mod), temp2.mod$V2),]
+        
+maxPcntShared <- max(c(100 - sum(temp2.mod$Count[temp2.mod$shared==T]), 100 - sum(temp3.mod$Count[temp3.mod$shared==T]),100 - sum(temp5.mod$Count[temp5.mod$shared==T]))) #calculates highest % of uniques
+
+minPcntShared <- min(c(100 - sum(temp2.mod$Count[temp2.mod$shared==T]), 100 - sum(temp3.mod$Count[temp3.mod$shared==T]), 100 - sum(temp5.mod$Count[temp5.mod$shared==T]))) #calculates lowest % of uniques (gives % of reads that come from clonotypes unique to the sample)
+        
+        # create x coordinates for line plotting
+#temp1.mod$x <- 1.45 #new column all equalling 1.45
+#temp2.mod$x <- 2.55 #new column all equalling 2.55
+#temp3.mod$x <- 3.65 #new column all equalling 3.65
+#temp4.mod$x <- 4.75 #new column all equalling 4.75
+
+        # create x coordinates for line plotting
+temp2.mod$x <- 3.65 #new column all equalling 2.55
+temp3.mod$x <- 2.55 #new column all equalling 3.65
+temp5.mod$x <- 1.45 #new column all equalling 4.75
+
+        
+        # create the y point for the plot
+temp2.mod$y <- 100 - cumsum(temp2.mod$Count) + temp2.mod$Count
+temp3.mod$y <- 100 - cumsum(temp3.mod$Count) + temp3.mod$Count #calculates y coordinate for each clonotype
+temp5.mod$y <- 100 - cumsum(temp5.mod$Count) + temp5.mod$Count
+
+    
+#collect relevant data
+
+intersectB1 <- temp2.mod[temp2.mod$OTUs %in% temp3.mod$OTUs,] # overlap overlap( finds all the seqs in temp1 that also appear in temp 2)
+intersectB2 <- temp3.mod[temp3.mod$OTUs %in% temp2.mod$OTUs,] # overlap overlap( finds all the seqs in temp1 that also appear in temp 2)
+intersectC1 <- temp3.mod[temp3.mod$OTUs %in% temp5.mod$OTUs,] # overlap overlap( finds all the seqs in temp1 that also appear in temp 2)
+intersectC2 <- temp5.mod[temp5.mod$OTUs %in% temp3.mod$OTUs,] # overlap overlap( finds all the seqs in temp1 that also appear in temp 2)
+
+
+
+# merge the two datasets for plotting
+intersectB.mod <- rbind(intersectB1, intersectB2)
+intersectC.mod <- rbind(intersectC1, intersectC2)
+
+
+yadjst <- 7 # so we can move around the not shared label
+sampleName2 <- paste(unique(temp2.mod$Days_post))
+sampleName3 <- paste(unique(temp3.mod$Days_post)) #makes the sample name
+sampleName5 <- paste(unique(temp5.mod$Days_post))
+
+ #legend adventures
+stackedShared <- rbind(temp2.mod, temp3.mod, temp5.mod) #add together shared sequences
+stackedShared <- stackedShared[,c(5,6,7)] #make a dataframe with just cdr3seq and fillseq number
+stackedShared <- subset(stackedShared, shared!=FALSE) #remove non shared row for each sample
+stackedShared = stackedShared %>% distinct #remove duplicate rows
+dash <- sort(stackedShared$Genus)
+dash <- as.data.frame(dash, stringsAsFactors=FALSE)
+names(dash)[1] <- "Genus"
+stackedShared<-merge(x=stackedShared,y=dash,by="Genus",all.x=TRUE)
+
+ggp <- ggplot()+
+geom_line(aes(x = intersectC.mod$x, y = intersectC.mod$y, group = intersectC.mod$fillseq), colour = 'grey')+
+geom_line(aes(x = intersectB.mod$x + 0.9, y = intersectB.mod$y, group = intersectB.mod$fillseq), colour = 'grey')+
+
+#geom_errorbar(aes(x = 1, ymin = round(minPcntShared-yadjst), ymax = round(minPcntShared-yadjst)))+
+geom_bar(aes(x = 1, temp5.mod$Count, fill = as.factor(temp5.mod$fillseq), alpha = as.factor(temp5.mod$shared)), stat = 'identity', colour = 'black') +
+  geom_bar(aes(x = 3, temp3.mod$Count, fill = as.factor(temp3.mod$fillseq), alpha = as.factor(temp3.mod$shared)), stat = 'identity', colour = 'black') + 
+  geom_bar(aes(x = 5, temp2.mod$Count, fill = as.factor(temp2.mod$fillseq), alpha = as.factor(temp2.mod$shared)), stat = 'identity', colour = 'black')  + 
+          scale_alpha_manual(values=c(0, 1)) +
+          #geom_errorbar(aes(x = 3, ymin = round(minPcntShared-yadjst), ymax = round(minPcntShared-yadjst)))+
+          scale_y_continuous(breaks = c(0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100))+
+          scale_x_continuous(breaks = c(1, 3, 5), labels = c(sampleName5, sampleName3, sampleName2))+
+          geom_text(aes(x = 1, y = round(minPcntShared-yadjst)), label = '')+
+          geom_text(aes(x = 3, y = round(minPcntShared-yadjst)), label = '')+
+          geom_text(aes(x = 5, y = round(minPcntShared-yadjst)), label = '')+
+
+
+          annotate(geom = "segment", x = -Inf, xend = -Inf, y = -Inf, yend = Inf) +
+          #annotate(geom = "segment", x = -Inf, xend = -Inf, y =  round(minPcntShared-yadjst), yend = round(minPcntShared, -1),
+                   #linetype = "dashed", color = "white")+ 
+         # coord_cartesian(ylim=c(round(minPcntShared-yadjst), 100), expand = T) +
+          labs(title = 'Shared Genera CVG017', x = ' ', y = 'Cumulative % of Sample')+
+          theme(legend.position="right", legend.title=element_blank(), panel.background = element_blank()) + coord_flip() + guides(alpha = FALSE) + scale_fill_discrete(breaks=c(stackedShared$fillseq), labels = c(stackedShared$Genus))   + theme(
+    plot.title = element_text(color="black", size=28, face="bold"),
+    axis.title.x = element_text(color="black", size=28, face="bold"),
+    axis.title.y = element_text(color="black", size=28, face="bold"),
+    axis.text=element_text(size=26),
+    legend.title = element_text(color = "black", size = 26),
+    legend.text = element_text(color = "black", size = 20)) + guides(fill=guide_legend(ncol=1))+ labs(fill = "Genus")
+        
+ggsave(paste('CVG017_', paste(sampleName2, sampleName3, sampleName5, sep = '_'), '_taxa_Genus_large',  '.pdf', sep = ''), 
+ggp, width = 31, height = 24, units = c('cm'))
+
+ggp
+

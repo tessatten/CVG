@@ -1,0 +1,280 @@
+---
+title: "All CVG Thesis plots"
+author: "Tess Attenborough"
+date: "02/05/2020"
+output: html_document
+---
+
+
+```{r}
+library("ape")
+library("ggplot2")
+library("plyr")
+library("scales")
+library("vegan")
+library("knitr")
+library("dplyr")
+library("praise")
+library("tidyverse")
+library("phyloseq")
+library("Bios2cor")
+library("grid")
+library("ggpubr")
+library("patchwork")
+library("ghibli")
+```
+
+```{r}
+
+integer_breaks <- function(n = 5, ...) {
+  fxn <- function(x) {
+    breaks <- floor(pretty(x, n, ...))
+    names(breaks) <- attr(breaks, "labels")
+    breaks
+  }
+  return(fxn)
+}
+
+diversities_theALL <- read.csv('diversity_data_allpatients.csv', stringsAsFactors = F) #no diversities below 400
+diversities_the20 <- read.csv('diversity_data_the20.csv', stringsAsFactors = F) #no diversities below 400
+
+
+
+```
+
+```{r}
+#########################################
+#time vs gini alpha
+good.shapes = c(65:82, 18, 20)
+p1 = ggplot(the20, aes(x=Number_of_days_post_transplant, y=Gini_coefficient, color=Patient_ID, fill=Patient_ID, shape = Patient_ID)) +
+  geom_point(size=6) + labs(title = "Gini coefficient (alpha chain)", x ="Day", y = "Gini coefficient", color = "Individual") +   theme_bw() + guides(fill=FALSE)+ theme(
+    plot.title = element_text(color="black", size=20, face="bold"),
+    axis.title.x = element_text(color="black", size=20, face="bold"),
+    axis.title.y = element_text(color="black", size=20, face="bold"),
+    axis.text=element_text(size=20),
+    legend.title = element_text(color = "black", size = 20),
+    legend.text = element_text(color = "black", size = 20)
+  ) + theme(axis.text.x = element_text(hjust = 0.5,size=20)) + guides(fill=FALSE, shape=FALSE)  +geom_line(aes(group=Patient_ID), size =1) +
+   scale_x_continuous(labels = comma) + facet_wrap(~ Patient_ID, ncol=4)# +
+   # scale_shape_manual(values=good.shapes[1:20])
+p1
+ggsave("GiniDays.pdf", width = 35, height = 20, units = c('cm'))
+############################################################
+```
+
+```{r}
+#########################################
+#time vs gini  in bins
+
+
+good.shapes = c(65:82, 18, 20)
+p1 = ggplot(diversities_theALL, aes(x=factor(Bin), y=Gini_coefficient, color=ID, fill=ID))+
+  geom_point(size=6) + labs(title = "Gini coefficient ", x ="Day after transplant (by bin)", y = "Gini coefficient", color = "Individual") +   theme_bw() + guides(fill=FALSE)+ theme(
+    plot.title = element_text(color="black", size=24, face="bold"),
+    axis.title.x = element_text(color="black", size=20, face="bold"),
+    axis.title.y = element_text(color="black", size=20, face="bold"),
+    axis.text=element_text(size=20),
+    legend.title = element_text(color = "black", size = 26),
+    legend.text = element_text(color = "black", size = 24)
+  ) + theme(axis.text.x = element_text(hjust = 0.5,size=22)) + guides(fill=FALSE, color=guide_legend(ncol=1)) +
+     geom_boxplot(data = p1$data, aes(x = Bin, y = Gini_coefficient, color = NULL, group = Bin), 
+  alpha = 0.1) 
+ggsave("TimeAndGiniBin.pdf", width = 40, height = 20, units = c('cm'))
+############################################################
+```
+
+```{r}
+#########################################
+#time vs shannon  in bins
+
+
+good.shapes = c(65:82, 18, 20)
+p2 = ggplot(diversities_theALL, aes(x=factor(Bin), y=Shannon, color=ID, fill=ID))+
+  geom_point(size=6) + labs(title = "Shannon entropy ", x ="Day after transplant (by bin)", y = "Shannon entropy", color = "Individual") +   theme_bw() + guides(fill=FALSE)+ theme(
+    plot.title = element_text(color="black", size=24, face="bold"),
+    axis.title.x = element_text(color="black", size=20, face="bold"),
+    axis.title.y = element_text(color="black", size=20, face="bold"),
+    axis.text=element_text(size=20),
+    legend.title = element_text(color = "black", size = 26),
+    legend.text = element_text(color = "black", size = 24)
+  ) + theme(axis.text.x = element_text(hjust = 0.5,size=22)) + guides(fill=FALSE, color=guide_legend(ncol=1)) +
+     geom_boxplot(data = p2$data, aes(x = Bin, y = Shannon, color = NULL, group = Bin), 
+  alpha = 0.1)
+p2
+ggsave("TimeAndShannonBin.pdf", width = 40, height = 20, units = c('cm'))
+############################################################
+```
+```{r}
+#########################################
+#time vs observed  in bins
+
+
+good.shapes = c(65:82, 18, 20)
+p3 = ggplot(diversities_theALL, aes(x=factor(Bin), y=Observed, color=ID, fill=ID))+
+  geom_point(size=6) + labs(title = "Observed OTUs", x ="Day after transplant (by bin)", y = "Observed OTUs", color = "Individual") +   theme_bw() + guides(fill=FALSE)+ theme(
+    plot.title = element_text(color="black", size=24, face="bold"),
+    axis.title.x = element_text(color="black", size=20, face="bold"),
+    axis.title.y = element_text(color="black", size=20, face="bold"),
+    axis.text=element_text(size=20),
+    legend.title = element_text(color = "black", size = 26),
+    legend.text = element_text(color = "black", size = 24)
+  ) + theme(axis.text.x = element_text(hjust = 0.5,size=22)) + guides(fill=FALSE, color=guide_legend(ncol=1)) +
+     geom_boxplot(data = p3$data, aes(x = Bin, y = Observed, color = NULL, group = Bin), 
+  alpha = 0.1)
+p3
+ggsave("TimeAndObservedBin.pdf", width = 40, height = 20, units = c('cm'))
+############################################################
+```
+
+```{r}
+p3 / p2 /
+  p1 + plot_layout(guides = 'collect', ncol = 1)
+
+
+ggsave("DivCVGAllBin.pdf", width = 35, height = 50, units = c('cm'))
+```
+
+```{r}
+#########################################
+#time vs gini  in bins
+
+
+good.shapes = c(65:82, 18, 20)
+p1 = ggplot(diversities_theALL, aes(x=Days_post, y=Gini_coefficient, color=ID, fill=ID))+
+  geom_point(size=6) + labs(title = "Gini coefficient ", x ="Day after transplant", y = "Gini coefficient", color = "Individual") +   theme_bw() + guides(fill=FALSE)+ theme(
+    plot.title = element_text(color="black", size=24, face="bold"),
+    axis.title.x = element_text(color="black", size=20, face="bold"),
+    axis.title.y = element_text(color="black", size=20, face="bold"),
+    axis.text=element_text(size=20),
+    legend.title = element_text(color = "black", size = 26),
+    legend.text = element_text(color = "black", size = 24)
+  ) + theme(axis.text.x = element_text(hjust = 0.5,size=22)) + guides(fill=FALSE, color=guide_legend(ncol=1)) + xlim(-42, 375) +
+  geom_line(aes(group=ID), size =1)
+ 
+ggsave("TimeAndGini.pdf", width = 40, height = 20, units = c('cm'))
+############################################################
+```
+
+```{r}
+#########################################
+#time vs gini  in bins
+
+
+good.shapes = c(65:82, 18, 20)
+p2 = ggplot(diversities_theALL, aes(x=Days_post, y=Shannon, color=ID, fill=ID))+
+  geom_point(size=6) + labs(title = "Shannon entropy", x ="Day after transplant", y = "Shannon entropy", color = "Individual") +   theme_bw() + guides(fill=FALSE)+ theme(
+    plot.title = element_text(color="black", size=24, face="bold"),
+    axis.title.x = element_text(color="black", size=20, face="bold"),
+    axis.title.y = element_text(color="black", size=20, face="bold"),
+    axis.text=element_text(size=20),
+    legend.title = element_text(color = "black", size = 26),
+    legend.text = element_text(color = "black", size = 24)
+  ) + theme(axis.text.x = element_text(hjust = 0.5,size=22)) + guides(fill=FALSE, color=guide_legend(ncol=1)) + xlim(-42, 375) +
+  geom_line(aes(group=ID), size =1)
+ 
+ggsave("TimeAndShannon.pdf", width = 40, height = 20, units = c('cm'))
+############################################################
+```
+
+```{r}
+#########################################
+#time vs gini  in bins
+
+
+good.shapes = c(65:82, 18, 20)
+p3 = ggplot(diversities_theALL, aes(x=Days_post, y=Observed, color=ID, fill=ID))+
+  geom_point(size=6) + labs(title = "Observed OTUs", x ="Day after transplant", y = "Observed OTUs", color = "Individual") +   theme_bw() + guides(fill=FALSE)+ theme(
+    plot.title = element_text(color="black", size=24, face="bold"),
+    axis.title.x = element_text(color="black", size=20, face="bold"),
+    axis.title.y = element_text(color="black", size=20, face="bold"),
+    axis.text=element_text(size=20),
+    legend.title = element_text(color = "black", size = 26),
+    legend.text = element_text(color = "black", size = 24)
+  ) + theme(axis.text.x = element_text(hjust = 0.5,size=22)) + guides(fill=FALSE, color=guide_legend(ncol=1)) + xlim(-42, 375) +
+  geom_line(aes(group=ID), size =1)
+ 
+ggsave("TimeAndObserved.pdf", width = 40, height = 20, units = c('cm'))
+############################################################
+```
+
+```{r}
+p3 / p2 /
+  p1 + plot_layout(guides = 'collect', ncol = 1)
+
+
+ggsave("DivCVGAllNOBin.pdf", width = 35, height = 50, units = c('cm'))
+```
+
+
+```{r}
+#########################################
+#time vs gini  in bins
+
+
+good.shapes = c(65:82, 18, 20)
+p1 = ggplot(diversities_the20, aes(x=factor(ID), y=Gini_coefficient, color=ID, fill=ID))+
+  geom_point(size=6) + labs(title = "Gini coefficient ", x ="Individual", y = "Gini coefficient", color = "Individual") +   theme_bw() + guides(fill=FALSE)+ theme(
+    plot.title = element_text(color="black", size=24, face="bold"),
+    axis.title.x = element_text(color="black", size=20, face="bold"),
+    axis.title.y = element_text(color="black", size=20, face="bold"),
+    axis.text=element_text(size=20),
+    legend.title = element_text(color = "black", size = 26),
+    legend.text = element_text(color = "black", size = 24)
+  ) + theme(axis.text.x = element_text(hjust = 1,size=20, angle = 45)) + guides(fill=FALSE, color=guide_legend(ncol=1)) +
+     geom_boxplot(data = p1$data, aes(x = ID, y = Gini_coefficient, color = NULL, group = ID), 
+  alpha = 0.1) 
+p1
+ggsave("TimeAndGiniIndivid.pdf", width = 40, height = 20, units = c('cm'))
+############################################################
+```
+
+```{r}
+#########################################
+#time vs shannin  in bins
+
+
+good.shapes = c(65:82, 18, 20)
+p2 = ggplot(diversities_the20, aes(x=factor(ID), y=Shannon, color=ID, fill=ID))+
+  geom_point(size=6) + labs(title = "Shannon entropy", x ="Individual", y = "Shannon entropy", color = "Individual") +   theme_bw() + guides(fill=FALSE)+ theme(
+    plot.title = element_text(color="black", size=24, face="bold"),
+    axis.title.x = element_text(color="black", size=20, face="bold"),
+    axis.title.y = element_text(color="black", size=20, face="bold"),
+    axis.text=element_text(size=20),
+    legend.title = element_text(color = "black", size = 26),
+    legend.text = element_text(color = "black", size = 24)
+  ) + theme(axis.text.x = element_text(hjust = 1,size=20, angle = 45)) + guides(fill=FALSE, color=guide_legend(ncol=1)) +
+     geom_boxplot(data = p2$data, aes(x = ID, y = Shannon, color = NULL, group = ID), 
+  alpha = 0.1) 
+p2
+ggsave("TimeAndShannonIndivid.pdf", width = 40, height = 20, units = c('cm'))
+############################################################
+```
+```{r}
+#########################################
+#time vs obs  in bins
+
+
+good.shapes = c(65:82, 18, 20)
+p3 = ggplot(diversities_the20, aes(x=factor(ID), y=Observed, color=ID, fill=ID))+
+  geom_point(size=6) + labs(title = "Observed OTUs", x ="Individual", y = "Observed OTUs", color = "Individual") +   theme_bw() + guides(fill=FALSE)+ theme(
+    plot.title = element_text(color="black", size=24, face="bold"),
+    axis.title.x = element_text(color="black", size=20, face="bold"),
+    axis.title.y = element_text(color="black", size=20, face="bold"),
+    axis.text=element_text(size=20),
+    legend.title = element_text(color = "black", size = 26),
+    legend.text = element_text(color = "black", size = 24)
+  ) + theme(axis.text.x = element_text(hjust = 1,size=20, angle = 45)) + guides(fill=FALSE, color=guide_legend(ncol=1)) +
+     geom_boxplot(data = p3$data, aes(x = ID, y = Observed, color = NULL, group = ID), 
+  alpha = 0.1) 
+p3
+ggsave("TimeAndObservedIndivid.pdf", width = 40, height = 20, units = c('cm'))
+############################################################
+```
+
+```{r}
+p3 / p2 /
+  p1 + plot_layout(guides = 'collect', ncol = 1)
+
+
+ggsave("DivCVGThe20winthinBin.pdf", width = 35, height = 50, units = c('cm'))
+```

@@ -1,0 +1,1551 @@
+---
+title: "immunarch on CVG"
+author: "Tess Attenborough"
+date: "14/07/2020"
+output: html_document
+---
+
+```{r}
+library(dplyr)
+library(immunarch)
+library("devtools")
+library("ggplot2")
+library("vegan")
+library("ineq")
+library("tidyverse")
+library("praise")
+library("scales")
+library("patchwork")
+library("ghibli")
+library("phyloseq")
+
+```
+
+making my own immunarch friendly set
+```{r}
+metadata_cvg <- read.csv("CVG_metadata_immunarch.txt", sep = "\t", header = TRUE)
+
+metadata_cvg = as_tibble(metadata_cvg)
+
+
+
+class(metadata_cvg)
+
+```
+
+
+import all of them: start w/ cvg001
+```{r}
+######
+mylen <- length(row_number(CVG001dfm$OTU))
+
+rep(NA, mylen)
+
+courgette <- data.frame(Clones = rep(NA, mylen),
+                        Proportion = rep(NA, mylen),
+                        CDR3.nt = rep(NA, mylen),
+                        CDR3.aa = rep(NA, mylen),
+                        V.name = rep(NA, mylen),
+                        D.name = rep(NA, mylen),
+                        J.name = rep(NA, mylen),
+                        V.end = rep(NA, mylen),
+                        D.start = rep(NA, mylen),
+                        D.end = rep(NA, mylen),
+                        J.start = rep(NA, mylen),
+                        VJ.ins = rep(NA, mylen),
+                        VD.ins = rep(NA, mylen),
+                        DJ.in = rep(NA, mylen),
+                        Sequence = rep(NA, mylen))
+
+'CVG001_-8' = courgette
+`CVG001_-8`$Clones = CVG001dfm$CVG14V54004
+`CVG001_-8`$CDR3.aa = CVG001dfm$Genus
+`CVG001_-8` = as_tibble(`CVG001_-8`)
+`CVG001_-8`$CDR3.aa <- as.character(`CVG001_-8`$CDR3.aa)
+####
+
+######
+mylen <- length(row_number(CVG001dfm$OTU))
+
+rep(NA, mylen)
+
+courgette <- data.frame(Clones = rep(NA, mylen),
+                        Proportion = rep(NA, mylen),
+                        CDR3.nt = rep(NA, mylen),
+                        CDR3.aa = rep(NA, mylen),
+                        V.name = rep(NA, mylen),
+                        D.name = rep(NA, mylen),
+                        J.name = rep(NA, mylen),
+                        V.end = rep(NA, mylen),
+                        D.start = rep(NA, mylen),
+                        D.end = rep(NA, mylen),
+                        J.start = rep(NA, mylen),
+                        VJ.ins = rep(NA, mylen),
+                        VD.ins = rep(NA, mylen),
+                        DJ.in = rep(NA, mylen),
+                        Sequence = rep(NA, mylen))
+
+CVG001_12 = courgette
+CVG001_12$Clones = CVG001dfm$CVG14V54008
+CVG001_12$CDR3.aa = CVG001dfm$Genus
+CVG001_12 = as_tibble(CVG001_12)
+CVG001_12$CDR3.aa <- as.character(CVG001_12$CDR3.aa)
+####
+
+######
+mylen <- length(row_number(CVG001dfm$OTU))
+
+rep(NA, mylen)
+
+courgette <- data.frame(Clones = rep(NA, mylen),
+                        Proportion = rep(NA, mylen),
+                        CDR3.nt = rep(NA, mylen),
+                        CDR3.aa = rep(NA, mylen),
+                        V.name = rep(NA, mylen),
+                        D.name = rep(NA, mylen),
+                        J.name = rep(NA, mylen),
+                        V.end = rep(NA, mylen),
+                        D.start = rep(NA, mylen),
+                        D.end = rep(NA, mylen),
+                        J.start = rep(NA, mylen),
+                        VJ.ins = rep(NA, mylen),
+                        VD.ins = rep(NA, mylen),
+                        DJ.in = rep(NA, mylen),
+                        Sequence = rep(NA, mylen))
+
+CVG001_27 = courgette
+CVG001_27$Clones = CVG001dfm$CVG14V54017
+CVG001_27$CDR3.aa = CVG001dfm$Genus
+CVG001_27 = as_tibble(CVG001_27)
+CVG001_27$CDR3.aa <- as.character(CVG001_27$CDR3.aa)
+####
+
+######
+mylen <- length(row_number(CVG001dfm$OTU))
+
+rep(NA, mylen)
+
+courgette <- data.frame(Clones = rep(NA, mylen),
+                        Proportion = rep(NA, mylen),
+                        CDR3.nt = rep(NA, mylen),
+                        CDR3.aa = rep(NA, mylen),
+                        V.name = rep(NA, mylen),
+                        D.name = rep(NA, mylen),
+                        J.name = rep(NA, mylen),
+                        V.end = rep(NA, mylen),
+                        D.start = rep(NA, mylen),
+                        D.end = rep(NA, mylen),
+                        J.start = rep(NA, mylen),
+                        VJ.ins = rep(NA, mylen),
+                        VD.ins = rep(NA, mylen),
+                        DJ.in = rep(NA, mylen),
+                        Sequence = rep(NA, mylen))
+
+CVG001_41 = courgette
+CVG001_41$Clones = CVG001dfm$CVG14V54031
+CVG001_41$CDR3.aa = CVG001dfm$Genus
+CVG001_41 = as_tibble(CVG001_41)
+CVG001_41$CDR3.aa <- as.character(CVG001_41$CDR3.aa)
+####
+
+######
+mylen <- length(row_number(CVG001dfm$OTU))
+
+rep(NA, mylen)
+
+courgette <- data.frame(Clones = rep(NA, mylen),
+                        Proportion = rep(NA, mylen),
+                        CDR3.nt = rep(NA, mylen),
+                        CDR3.aa = rep(NA, mylen),
+                        V.name = rep(NA, mylen),
+                        D.name = rep(NA, mylen),
+                        J.name = rep(NA, mylen),
+                        V.end = rep(NA, mylen),
+                        D.start = rep(NA, mylen),
+                        D.end = rep(NA, mylen),
+                        J.start = rep(NA, mylen),
+                        VJ.ins = rep(NA, mylen),
+                        VD.ins = rep(NA, mylen),
+                        DJ.in = rep(NA, mylen),
+                        Sequence = rep(NA, mylen))
+
+CVG001_104 = courgette
+CVG001_104$Clones = CVG001dfm$CVG14V54120
+CVG001_104$CDR3.aa = CVG001dfm$Genus
+CVG001_104 = as_tibble(CVG001_104)
+CVG001_104$CDR3.aa <- as.character(CVG001_104$CDR3.aa)
+
+# first list
+data <- list(`CVG001_-8` = `CVG001_-8`, CVG001_12 = CVG001_12, CVG001_27 = CVG001_27, CVG001_41 = CVG001_41, CVG001_104 = CVG001_104)
+# nested lists
+CVG001immun <- list(data = data, meta = metadata_cvg) #all the alpha CD4 samples over 1000 reads
+
+repClonality(CVG001immun$data, "homeo") %>% vis()
+
+####
+```
+
+import all of them: start w/ cvg002
+```{r}
+######
+mylen <- length(row_number(CVG002dfm$OTU))
+
+rep(NA, mylen)
+
+courgette <- data.frame(Clones = rep(NA, mylen),
+                        Proportion = rep(NA, mylen),
+                        CDR3.nt = rep(NA, mylen),
+                        CDR3.aa = rep(NA, mylen),
+                        V.name = rep(NA, mylen),
+                        D.name = rep(NA, mylen),
+                        J.name = rep(NA, mylen),
+                        V.end = rep(NA, mylen),
+                        D.start = rep(NA, mylen),
+                        D.end = rep(NA, mylen),
+                        J.start = rep(NA, mylen),
+                        VJ.ins = rep(NA, mylen),
+                        VD.ins = rep(NA, mylen),
+                        DJ.in = rep(NA, mylen),
+                        Sequence = rep(NA, mylen))
+
+CVG002_10 = courgette
+CVG002_10$Clones = CVG002dfm$CVG14V54006
+CVG002_10$CDR3.aa = CVG002dfm$Genus
+CVG002_10 = as_tibble(CVG002_10)
+CVG002_10$CDR3.aa <- as.character(CVG002_10$CDR3.aa)
+
+mylen <- length(row_number(CVG002dfm$OTU))
+
+rep(NA, mylen)
+
+courgette <- data.frame(Clones = rep(NA, mylen),
+                        Proportion = rep(NA, mylen),
+                        CDR3.nt = rep(NA, mylen),
+                        CDR3.aa = rep(NA, mylen),
+                        V.name = rep(NA, mylen),
+                        D.name = rep(NA, mylen),
+                        J.name = rep(NA, mylen),
+                        V.end = rep(NA, mylen),
+                        D.start = rep(NA, mylen),
+                        D.end = rep(NA, mylen),
+                        J.start = rep(NA, mylen),
+                        VJ.ins = rep(NA, mylen),
+                        VD.ins = rep(NA, mylen),
+                        DJ.in = rep(NA, mylen),
+                        Sequence = rep(NA, mylen))
+
+CVG002_26 = courgette
+CVG002_26$Clones = CVG002dfm$CVG14V54013
+CVG002_26$CDR3.aa = CVG002dfm$Genus
+CVG002_26 = as_tibble(CVG002_26)
+CVG002_26$CDR3.aa <- as.character(CVG002_26$CDR3.aa)
+
+mylen <- length(row_number(CVG002dfm$OTU))
+
+rep(NA, mylen)
+
+courgette <- data.frame(Clones = rep(NA, mylen),
+                        Proportion = rep(NA, mylen),
+                        CDR3.nt = rep(NA, mylen),
+                        CDR3.aa = rep(NA, mylen),
+                        V.name = rep(NA, mylen),
+                        D.name = rep(NA, mylen),
+                        J.name = rep(NA, mylen),
+                        V.end = rep(NA, mylen),
+                        D.start = rep(NA, mylen),
+                        D.end = rep(NA, mylen),
+                        J.start = rep(NA, mylen),
+                        VJ.ins = rep(NA, mylen),
+                        VD.ins = rep(NA, mylen),
+                        DJ.in = rep(NA, mylen),
+                        Sequence = rep(NA, mylen))
+
+CVG002_32 = courgette
+CVG002_32$Clones = CVG002dfm$CVG14V54014
+CVG002_32$CDR3.aa = CVG002dfm$Genus
+CVG002_32 = as_tibble(CVG002_32)
+CVG002_32$CDR3.aa <- as.character(CVG002_32$CDR3.aa)
+
+mylen <- length(row_number(CVG002dfm$OTU))
+
+rep(NA, mylen)
+
+courgette <- data.frame(Clones = rep(NA, mylen),
+                        Proportion = rep(NA, mylen),
+                        CDR3.nt = rep(NA, mylen),
+                        CDR3.aa = rep(NA, mylen),
+                        V.name = rep(NA, mylen),
+                        D.name = rep(NA, mylen),
+                        J.name = rep(NA, mylen),
+                        V.end = rep(NA, mylen),
+                        D.start = rep(NA, mylen),
+                        D.end = rep(NA, mylen),
+                        J.start = rep(NA, mylen),
+                        VJ.ins = rep(NA, mylen),
+                        VD.ins = rep(NA, mylen),
+                        DJ.in = rep(NA, mylen),
+                        Sequence = rep(NA, mylen))
+
+CVG002_67 = courgette
+CVG002_67$Clones = CVG002dfm$CVG14V54069
+CVG002_67$CDR3.aa = CVG002dfm$Genus
+CVG002_67 = as_tibble(CVG002_67)
+CVG002_67$CDR3.aa <- as.character(CVG002_67$CDR3.aa)
+
+mylen <- length(row_number(CVG002dfm$OTU))
+
+rep(NA, mylen)
+
+courgette <- data.frame(Clones = rep(NA, mylen),
+                        Proportion = rep(NA, mylen),
+                        CDR3.nt = rep(NA, mylen),
+                        CDR3.aa = rep(NA, mylen),
+                        V.name = rep(NA, mylen),
+                        D.name = rep(NA, mylen),
+                        J.name = rep(NA, mylen),
+                        V.end = rep(NA, mylen),
+                        D.start = rep(NA, mylen),
+                        D.end = rep(NA, mylen),
+                        J.start = rep(NA, mylen),
+                        VJ.ins = rep(NA, mylen),
+                        VD.ins = rep(NA, mylen),
+                        DJ.in = rep(NA, mylen),
+                        Sequence = rep(NA, mylen))
+
+CVG002_69 = courgette
+CVG002_69$Clones = CVG002dfm$CVG14V54078
+CVG002_69$CDR3.aa = CVG002dfm$Genus
+CVG002_69 = as_tibble(CVG002_69)
+CVG002_69$CDR3.aa <- as.character(CVG002_69$CDR3.aa)
+
+mylen <- length(row_number(CVG002dfm$OTU))
+
+rep(NA, mylen)
+
+courgette <- data.frame(Clones = rep(NA, mylen),
+                        Proportion = rep(NA, mylen),
+                        CDR3.nt = rep(NA, mylen),
+                        CDR3.aa = rep(NA, mylen),
+                        V.name = rep(NA, mylen),
+                        D.name = rep(NA, mylen),
+                        J.name = rep(NA, mylen),
+                        V.end = rep(NA, mylen),
+                        D.start = rep(NA, mylen),
+                        D.end = rep(NA, mylen),
+                        J.start = rep(NA, mylen),
+                        VJ.ins = rep(NA, mylen),
+                        VD.ins = rep(NA, mylen),
+                        DJ.in = rep(NA, mylen),
+                        Sequence = rep(NA, mylen))
+
+CVG002_90 = courgette
+CVG002_90$Clones = CVG002dfm$CVG14V54100
+CVG002_90$CDR3.aa = CVG002dfm$Genus
+CVG002_90 = as_tibble(CVG002_90)
+CVG002_90$CDR3.aa <- as.character(CVG002_90$CDR3.aa)
+
+mylen <- length(row_number(CVG002dfm$OTU))
+
+rep(NA, mylen)
+
+courgette <- data.frame(Clones = rep(NA, mylen),
+                        Proportion = rep(NA, mylen),
+                        CDR3.nt = rep(NA, mylen),
+                        CDR3.aa = rep(NA, mylen),
+                        V.name = rep(NA, mylen),
+                        D.name = rep(NA, mylen),
+                        J.name = rep(NA, mylen),
+                        V.end = rep(NA, mylen),
+                        D.start = rep(NA, mylen),
+                        D.end = rep(NA, mylen),
+                        J.start = rep(NA, mylen),
+                        VJ.ins = rep(NA, mylen),
+                        VD.ins = rep(NA, mylen),
+                        DJ.in = rep(NA, mylen),
+                        Sequence = rep(NA, mylen))
+
+CVG002_207 = courgette
+CVG002_207$Clones = CVG002dfm$CVG14V54252
+CVG002_207$CDR3.aa = CVG002dfm$Genus
+CVG002_207 = as_tibble(CVG002_207)
+CVG002_207$CDR3.aa <- as.character(CVG002_207$CDR3.aa)
+
+mylen <- length(row_number(CVG002dfm$OTU))
+
+rep(NA, mylen)
+
+courgette <- data.frame(Clones = rep(NA, mylen),
+                        Proportion = rep(NA, mylen),
+                        CDR3.nt = rep(NA, mylen),
+                        CDR3.aa = rep(NA, mylen),
+                        V.name = rep(NA, mylen),
+                        D.name = rep(NA, mylen),
+                        J.name = rep(NA, mylen),
+                        V.end = rep(NA, mylen),
+                        D.start = rep(NA, mylen),
+                        D.end = rep(NA, mylen),
+                        J.start = rep(NA, mylen),
+                        VJ.ins = rep(NA, mylen),
+                        VD.ins = rep(NA, mylen),
+                        DJ.in = rep(NA, mylen),
+                        Sequence = rep(NA, mylen))
+
+CVG002_222 = courgette
+CVG002_222$Clones = CVG002dfm$CVG14V54283
+CVG002_222$CDR3.aa = CVG002dfm$Genus
+CVG002_222 = as_tibble(CVG002_222)
+CVG002_222$CDR3.aa <- as.character(CVG002_222$CDR3.aa)
+
+CVG002_304 = courgette
+CVG002_304$Clones = CVG002dfm$CVG14V54442
+CVG002_304$CDR3.aa = CVG002dfm$Genus
+CVG002_304 = as_tibble(CVG002_304)
+CVG002_304$CDR3.aa <- as.character(CVG002_304$CDR3.aa)
+####
+
+# first list
+data <- list(CVG002_10 = CVG002_10, CVG002_26 = CVG002_26, CVG002_32 = CVG002_32, CVG002_67 = CVG002_67, CVG002_69 = CVG002_69, CVG002_90 = CVG002_90, CVG002_207 = CVG002_207, CVG002_222= CVG002_222, CVG002_304 = CVG002_304)
+# nested lists
+CVG002immun <- list(data = data, meta = metadata_cvg) #all the alpha CD4 samples over 1000 reads
+
+repClonality(CVG002immun$data, "homeo") %>% vis()
+
+```
+cvg003
+```{r}
+mylen <- length(row_number(CVG003dfm$OTU))
+
+rep(NA, mylen)
+
+courgette <- data.frame(Clones = rep(NA, mylen),
+                        Proportion = rep(NA, mylen),
+                        CDR3.nt = rep(NA, mylen),
+                        CDR3.aa = rep(NA, mylen),
+                        V.name = rep(NA, mylen),
+                        D.name = rep(NA, mylen),
+                        J.name = rep(NA, mylen),
+                        V.end = rep(NA, mylen),
+                        D.start = rep(NA, mylen),
+                        D.end = rep(NA, mylen),
+                        J.start = rep(NA, mylen),
+                        VJ.ins = rep(NA, mylen),
+                        VD.ins = rep(NA, mylen),
+                        DJ.in = rep(NA, mylen),
+                        Sequence = rep(NA, mylen))
+
+CVG003_0 = courgette
+CVG003_0$Clones = CVG003dfm$CVG14V54022
+CVG003_0$CDR3.aa = CVG003dfm$Genus
+CVG003_0 = as_tibble(CVG003_0)
+CVG003_0$CDR3.aa <- as.character(CVG003_0$CDR3.aa)
+
+CVG003_32 = courgette
+CVG003_32$Clones = CVG003dfm$CVG14V54077
+CVG003_32$CDR3.aa = CVG003dfm$Genus
+CVG003_32 = as_tibble(CVG003_32)
+CVG003_32$CDR3.aa <- as.character(CVG003_32$CDR3.aa)
+
+CVG003_180 = courgette
+CVG003_180$Clones = CVG003dfm$CVG14V54268
+CVG003_180$CDR3.aa = CVG003dfm$Genus
+CVG003_180 = as_tibble(CVG003_180)
+CVG003_180$CDR3.aa <- as.character(CVG003_180$CDR3.aa)
+
+
+# first list
+data <- list(CVG003_0 = CVG003_0, CVG003_32 = CVG003_32, CVG003_180 = CVG003_180)
+# nested lists
+CVG003immun <- list(data = data, meta = metadata_cvg) #all the alpha CD4 samples over 1000 reads
+
+repClonality(CVG003immun$data, "homeo") %>% vis()
+```
+cvg004
+```{r}
+mylen <- length(row_number(CVG004dfm$OTU))
+
+rep(NA, mylen)
+
+courgette <- data.frame(Clones = rep(NA, mylen),
+                        Proportion = rep(NA, mylen),
+                        CDR3.nt = rep(NA, mylen),
+                        CDR3.aa = rep(NA, mylen),
+                        V.name = rep(NA, mylen),
+                        D.name = rep(NA, mylen),
+                        J.name = rep(NA, mylen),
+                        V.end = rep(NA, mylen),
+                        D.start = rep(NA, mylen),
+                        D.end = rep(NA, mylen),
+                        J.start = rep(NA, mylen),
+                        VJ.ins = rep(NA, mylen),
+                        VD.ins = rep(NA, mylen),
+                        DJ.in = rep(NA, mylen),
+                        Sequence = rep(NA, mylen))
+
+CVG004_0 = courgette
+CVG004_0$Clones = CVG004dfm$CVG14V54020
+CVG004_0$CDR3.aa = CVG004dfm$Genus
+CVG004_0 = as_tibble(CVG004_0)
+CVG004_0$CDR3.aa <- as.character(CVG004_0$CDR3.aa)
+
+CVG004_28 = courgette
+CVG004_28$Clones = CVG004dfm$CVG14V54068
+CVG004_28$CDR3.aa = CVG004dfm$Genus
+CVG004_28 = as_tibble(CVG004_28)
+CVG004_28$CDR3.aa <- as.character(CVG004_28$CDR3.aa)
+
+CVG004_161 = courgette
+CVG004_161$Clones = CVG004dfm$CVG14V54241
+CVG004_161$CDR3.aa = CVG004dfm$Genus
+CVG004_161 = as_tibble(CVG004_161)
+CVG004_161$CDR3.aa <- as.character(CVG004_161$CDR3.aa)
+
+CVG004_210 = courgette
+CVG004_210$Clones = CVG004dfm$CVG14V54316
+CVG004_210$CDR3.aa = CVG004dfm$Genus
+CVG004_210 = as_tibble(CVG004_210)
+CVG004_210$CDR3.aa <- as.character(CVG004_210$CDR3.aa)
+
+# first list
+data <- list(CVG004_0 = CVG004_0, CVG004_28 = CVG004_28, CVG004_161 = CVG004_161, CVG004_210 = CVG004_210)
+# nested lists
+CVG004immun <- list(data = data, meta = metadata_cvg) #all the alpha CD4 samples over 1000 reads
+
+repClonality(CVG004immun$data, "homeo") %>% vis()
+
+```
+cvg005
+```{r}
+mylen <- length(row_number(CVG005dfm$OTU))
+
+rep(NA, mylen)
+
+courgette <- data.frame(Clones = rep(NA, mylen),
+                        Proportion = rep(NA, mylen),
+                        CDR3.nt = rep(NA, mylen),
+                        CDR3.aa = rep(NA, mylen),
+                        V.name = rep(NA, mylen),
+                        D.name = rep(NA, mylen),
+                        J.name = rep(NA, mylen),
+                        V.end = rep(NA, mylen),
+                        D.start = rep(NA, mylen),
+                        D.end = rep(NA, mylen),
+                        J.start = rep(NA, mylen),
+                        VJ.ins = rep(NA, mylen),
+                        VD.ins = rep(NA, mylen),
+                        DJ.in = rep(NA, mylen),
+                        Sequence = rep(NA, mylen))
+
+CVG005_34 = courgette
+CVG005_34$Clones = CVG005dfm$CVG14V54099
+CVG005_34$CDR3.aa = CVG005dfm$Genus
+CVG005_34 = as_tibble(CVG005_34)
+CVG005_34$CDR3.aa <- as.character(CVG005_34$CDR3.aa)
+
+CVG005_43 = courgette
+CVG005_43$Clones = CVG005dfm$CVG14V54114
+CVG005_43$CDR3.aa = CVG005dfm$Genus
+CVG005_43 = as_tibble(CVG005_43)
+CVG005_43$CDR3.aa <- as.character(CVG005_43$CDR3.aa)
+
+CVG005_44 = courgette
+CVG005_44$Clones = CVG005dfm$CVG14V54117
+CVG005_44$CDR3.aa = CVG005dfm$Genus
+CVG005_44 = as_tibble(CVG005_44)
+CVG005_44$CDR3.aa <- as.character(CVG005_44$CDR3.aa)
+
+data <- list(CVG005_34 = CVG005_34, CVG005_43 = CVG005_43, CVG005_44 = CVG005_44)
+# nested lists
+CVG005immun <- list(data = data, meta = metadata_cvg) #all the alpha CD4 samples over 1000 reads
+
+repClonality(CVG005immun$data, "homeo") %>% vis()
+
+
+
+
+```
+
+```{r}
+mylen <- length(row_number(CVG012dfm$OTU))
+
+rep(NA, mylen)
+
+courgette <- data.frame(Clones = rep(NA, mylen),
+                        Proportion = rep(NA, mylen),
+                        CDR3.nt = rep(NA, mylen),
+                        CDR3.aa = rep(NA, mylen),
+                        V.name = rep(NA, mylen),
+                        D.name = rep(NA, mylen),
+                        J.name = rep(NA, mylen),
+                        V.end = rep(NA, mylen),
+                        D.start = rep(NA, mylen),
+                        D.end = rep(NA, mylen),
+                        J.start = rep(NA, mylen),
+                        VJ.ins = rep(NA, mylen),
+                        VD.ins = rep(NA, mylen),
+                        DJ.in = rep(NA, mylen),
+                        Sequence = rep(NA, mylen))
+
+`CVG012_-7` = courgette
+`CVG012_-7`$Clones = CVG012dfm$CVG14V54079
+`CVG012_-7`$CDR3.aa = CVG012dfm$Genus
+`CVG012_-7` = as_tibble(`CVG012_-7`)
+`CVG012_-7`$CDR3.aa <- as.character(`CVG012_-7`$CDR3.aa)
+
+CVG012_1 = courgette
+CVG012_1$Clones = CVG012dfm$CVG14V54083
+CVG012_1$CDR3.aa = CVG012dfm$Genus
+CVG012_1 = as_tibble(CVG012_1)
+CVG012_1$CDR3.aa <- as.character(CVG012_1$CDR3.aa)
+
+CVG012_7 = courgette
+CVG012_7$Clones = CVG012dfm$CVG14V54092
+CVG012_7$CDR3.aa = CVG012dfm$Genus
+CVG012_7 = as_tibble(CVG012_7)
+CVG012_7$CDR3.aa <- as.character(CVG012_7$CDR3.aa)
+
+CVG012_25 = courgette
+CVG012_25$Clones = CVG012dfm$CVG14V54107
+CVG012_25$CDR3.aa = CVG012dfm$Genus
+CVG012_25 = as_tibble(CVG012_25)
+CVG012_25$CDR3.aa <- as.character(CVG012_25$CDR3.aa)
+
+CVG012_36 = courgette
+CVG012_36$Clones = CVG012dfm$CVG14V54121
+CVG012_36$CDR3.aa = CVG012dfm$Genus
+CVG012_36 = as_tibble(CVG012_36)
+CVG012_36$CDR3.aa <- as.character(CVG012_36$CDR3.aa)
+
+CVG012_62 = courgette
+CVG012_62$Clones = CVG012dfm$CVG14V54176
+CVG012_62$CDR3.aa = CVG012dfm$Genus
+CVG012_62 = as_tibble(CVG012_62)
+CVG012_62$CDR3.aa <- as.character(CVG012_62$CDR3.aa)
+
+CVG012_89 = courgette
+CVG012_89$Clones = CVG012dfm$CVG14V54206
+CVG012_89$CDR3.aa = CVG012dfm$Genus
+CVG012_89 = as_tibble(CVG012_89)
+CVG012_89$CDR3.aa <- as.character(CVG012_89$CDR3.aa)
+
+CVG012_117 = courgette
+CVG012_117$Clones = CVG012dfm$CVG14V54235
+CVG012_117$CDR3.aa = CVG012dfm$Genus
+CVG012_117 = as_tibble(CVG012_117)
+CVG012_117$CDR3.aa <- as.character(CVG012_117$CDR3.aa)
+
+CVG012_236 = courgette
+CVG012_236$Clones = CVG012dfm$CVG14V54436
+CVG012_236$CDR3.aa = CVG012dfm$Genus
+CVG012_236 = as_tibble(CVG012_236)
+CVG012_236$CDR3.aa <- as.character(CVG012_236$CDR3.aa)
+
+CVG012_271 = courgette
+CVG012_271$Clones = CVG012dfm$CVG14V54484
+CVG012_271$CDR3.aa = CVG012dfm$Genus
+CVG012_271 = as_tibble(CVG012_271)
+CVG012_271$CDR3.aa <- as.character(CVG012_271$CDR3.aa)
+
+data <- list(`CVG012_-7` = `CVG012_-7`, CVG012_1 = CVG012_1, CVG012_7 = CVG012_7, CVG012_25 = CVG012_25, CVG012_36 = CVG012_36, CVG012_62 = CVG012_62, CVG012_89 = CVG012_89, CVG012_117 = CVG012_117, CVG012_236 = CVG012_236, CVG012_271 = CVG012_271)
+# nested lists
+CVG012immun <- list(data = data, meta = metadata_cvg) #all the alpha CD4 samples over 1000 reads
+
+repClonality(CVG012immun$data, "homeo") %>% vis()
+```
+cvg014
+```{r}
+mylen <- length(row_number(CVG014dfm$OTU))
+
+rep(NA, mylen)
+
+courgette <- data.frame(Clones = rep(NA, mylen),
+                        Proportion = rep(NA, mylen),
+                        CDR3.nt = rep(NA, mylen),
+                        CDR3.aa = rep(NA, mylen),
+                        V.name = rep(NA, mylen),
+                        D.name = rep(NA, mylen),
+                        J.name = rep(NA, mylen),
+                        V.end = rep(NA, mylen),
+                        D.start = rep(NA, mylen),
+                        D.end = rep(NA, mylen),
+                        J.start = rep(NA, mylen),
+                        VJ.ins = rep(NA, mylen),
+                        VD.ins = rep(NA, mylen),
+                        DJ.in = rep(NA, mylen),
+                        Sequence = rep(NA, mylen))
+
+
+CVG014_18 = courgette
+CVG014_18$Clones = CVG014dfm$CVG14V54113
+CVG014_18$CDR3.aa = CVG014dfm$Genus
+CVG014_18 = as_tibble(CVG014_18)
+CVG014_18$CDR3.aa <- as.character(CVG014_18$CDR3.aa)
+
+CVG014_19 = courgette
+CVG014_19$Clones = CVG014dfm$CVG14V54159
+CVG014_19$CDR3.aa = CVG014dfm$Genus
+CVG014_19 = as_tibble(CVG014_19)
+CVG014_19$CDR3.aa <- as.character(CVG014_19$CDR3.aa)
+
+CVG014_34 = courgette
+CVG014_34$Clones = CVG014dfm$CVG14V54167
+CVG014_34$CDR3.aa = CVG014dfm$Genus
+CVG014_34 = as_tibble(CVG014_34)
+CVG014_34$CDR3.aa <- as.character(CVG014_34$CDR3.aa)
+
+CVG014_55 = courgette
+CVG014_55$Clones = CVG014dfm$CVG14V54181
+CVG014_55$CDR3.aa = CVG014dfm$Genus
+CVG014_55 = as_tibble(CVG014_18)
+CVG014_55$CDR3.aa <- as.character(CVG014_55$CDR3.aa)
+
+data <- list(CVG014_18 = CVG014_18, CVG014_19 = CVG014_19, CVG014_34 = CVG014_34, CVG014_55 = CVG014_55)
+# nested lists
+CVG014immun <- list(data = data, meta = metadata_cvg) #all the alpha CD4 samples over 1000 reads
+
+repClonality(CVG014immun$data, "homeo") %>% vis()
+```
+
+cvg016
+```{r}
+mylen <- length(row_number(CVG016dfm$OTU))
+
+rep(NA, mylen)
+
+courgette <- data.frame(Clones = rep(NA, mylen),
+                        Proportion = rep(NA, mylen),
+                        CDR3.nt = rep(NA, mylen),
+                        CDR3.aa = rep(NA, mylen),
+                        V.name = rep(NA, mylen),
+                        D.name = rep(NA, mylen),
+                        J.name = rep(NA, mylen),
+                        V.end = rep(NA, mylen),
+                        D.start = rep(NA, mylen),
+                        D.end = rep(NA, mylen),
+                        J.start = rep(NA, mylen),
+                        VJ.ins = rep(NA, mylen),
+                        VD.ins = rep(NA, mylen),
+                        DJ.in = rep(NA, mylen),
+                        Sequence = rep(NA, mylen))
+
+CVG016_8 = courgette
+CVG016_8$Clones = CVG016dfm$CVG14V54119
+CVG016_8$CDR3.aa = CVG016dfm$Genus
+CVG016_8 = as_tibble(CVG016_8)
+CVG016_8$CDR3.aa <- as.character(CVG016_8$CDR3.aa)
+
+CVG016_35 = courgette
+CVG016_35$Clones = CVG016dfm$CVG14V54172
+CVG016_35$CDR3.aa = CVG016dfm$Genus
+CVG016_35 = as_tibble(CVG016_35)
+CVG016_35$CDR3.aa <- as.character(CVG016_35$CDR3.aa)
+
+CVG016_220 = courgette
+CVG016_220$Clones = CVG016dfm$CVG14V54472
+CVG016_220$CDR3.aa = CVG016dfm$Genus
+CVG016_220 = as_tibble(CVG016_220)
+CVG016_220$CDR3.aa <- as.character(CVG016_220$CDR3.aa)
+
+data <- list(CVG016_8 = CVG016_8, CVG016_35 = CVG016_35, CVG016_220 = CVG016_220)
+# nested lists
+CVG016immun <- list(data = data, meta = metadata_cvg) #all the alpha CD4 samples over 1000 reads
+
+repClonality(CVG016immun$data, "homeo") %>% vis()
+```
+cvg017
+```{r}
+mylen <- length(row_number(CVG017dfm$OTU))
+
+rep(NA, mylen)
+
+courgette <- data.frame(Clones = rep(NA, mylen),
+                        Proportion = rep(NA, mylen),
+                        CDR3.nt = rep(NA, mylen),
+                        CDR3.aa = rep(NA, mylen),
+                        V.name = rep(NA, mylen),
+                        D.name = rep(NA, mylen),
+                        J.name = rep(NA, mylen),
+                        V.end = rep(NA, mylen),
+                        D.start = rep(NA, mylen),
+                        D.end = rep(NA, mylen),
+                        J.start = rep(NA, mylen),
+                        VJ.ins = rep(NA, mylen),
+                        VD.ins = rep(NA, mylen),
+                        DJ.in = rep(NA, mylen),
+                        Sequence = rep(NA, mylen))
+
+`CVG017_-6` = courgette
+`CVG017_-6`$Clones = CVG017dfm$CVG14V54122
+`CVG017_-6`$CDR3.aa = CVG017dfm$Genus
+`CVG017_-6` = as_tibble(`CVG017_-6`)
+`CVG017_-6`$CDR3.aa <- as.character(`CVG017_-6`$CDR3.aa)
+
+CVG017_1 = courgette
+CVG017_1$Clones = CVG017dfm$CVG14V54156
+CVG017_1$CDR3.aa = CVG017dfm$Genus
+CVG017_1 = as_tibble(CVG017_1)
+CVG017_1$CDR3.aa <- as.character(CVG017_1$CDR3.aa)
+
+CVG017_35 = courgette
+CVG017_35$Clones = CVG017dfm$CVG14V54194
+CVG017_35$CDR3.aa = CVG017dfm$Genus
+CVG017_35 = as_tibble(CVG017_35)
+CVG017_35$CDR3.aa <- as.character(CVG017_35$CDR3.aa)
+
+CVG017_147 = courgette
+CVG017_147$Clones = CVG017dfm$CVG14V54331
+CVG017_147$CDR3.aa = CVG017dfm$Genus
+CVG017_147 = as_tibble(CVG017_147)
+CVG017_147$CDR3.aa <- as.character(CVG017_147$CDR3.aa)
+
+CVG017_180 = courgette
+CVG017_180$Clones = CVG017dfm$CVG14V54407
+CVG017_180$CDR3.aa = CVG017dfm$Genus
+CVG017_180 = as_tibble(CVG017_180)
+CVG017_180$CDR3.aa <- as.character(CVG017_180$CDR3.aa)
+
+data <- list(CVG017_1 = CVG017_1, CVG017_35 = CVG017_35, CVG017_180 = CVG017_180)
+# nested lists
+CVG017immun <- list(data = data, meta = metadata_cvg) #all the alpha CD4 samples over 1000 reads
+
+repClonality(CVG017immun$data, "homeo") %>% vis()
+
+```
+cvg019
+```{r}
+mylen <- length(row_number(CVG019dfm$OTU))
+
+rep(NA, mylen)
+
+courgette <- data.frame(Clones = rep(NA, mylen),
+                        Proportion = rep(NA, mylen),
+                        CDR3.nt = rep(NA, mylen),
+                        CDR3.aa = rep(NA, mylen),
+                        V.name = rep(NA, mylen),
+                        D.name = rep(NA, mylen),
+                        J.name = rep(NA, mylen),
+                        V.end = rep(NA, mylen),
+                        D.start = rep(NA, mylen),
+                        D.end = rep(NA, mylen),
+                        J.start = rep(NA, mylen),
+                        VJ.ins = rep(NA, mylen),
+                        VD.ins = rep(NA, mylen),
+                        DJ.in = rep(NA, mylen),
+                        Sequence = rep(NA, mylen))
+
+CVG019_39 = courgette
+CVG019_39$Clones = CVG019dfm$CVG14V54220
+CVG019_39$CDR3.aa = CVG019dfm$Genus
+CVG019_39 = as_tibble(CVG019_39)
+CVG019_39$CDR3.aa <- as.character(CVG019_39$CDR3.aa)
+
+CVG019_61 = courgette
+CVG019_61$Clones = CVG019dfm$CVG14V54242
+CVG019_61$CDR3.aa = CVG019dfm$Genus
+CVG019_61 = as_tibble(CVG019_61)
+CVG019_61$CDR3.aa <- as.character(CVG019_61$CDR3.aa)
+
+CVG019_82 = courgette
+CVG019_82$Clones = CVG019dfm$CVG14V54269
+CVG019_82$CDR3.aa = CVG019dfm$Genus
+CVG019_82 = as_tibble(CVG019_82)
+CVG019_82$CDR3.aa <- as.character(CVG019_82$CDR3.aa)
+
+CVG019_370 = courgette
+CVG019_370$Clones = CVG019dfm$CVG14V54629
+CVG019_370$CDR3.aa = CVG019dfm$Genus
+CVG019_370 = as_tibble(CVG019_370)
+CVG019_370$CDR3.aa <- as.character(CVG019_370$CDR3.aa)
+
+data <- list(CVG019_39 = CVG019_39, CVG019_61 = CVG019_61, CVG019_82 = CVG019_82, CVG019_370 = CVG019_370)
+# nested lists
+CVG019immun <- list(data = data, meta = metadata_cvg) #all the alpha CD4 samples over 1000 reads
+
+repClonality(CVG019immun$data, "homeo") %>% vis()
+
+
+```
+cvg021
+```{r}
+mylen <- length(row_number(CVG021dfm$OTU))
+
+rep(NA, mylen)
+
+courgette <- data.frame(Clones = rep(NA, mylen),
+                        Proportion = rep(NA, mylen),
+                        CDR3.nt = rep(NA, mylen),
+                        CDR3.aa = rep(NA, mylen),
+                        V.name = rep(NA, mylen),
+                        D.name = rep(NA, mylen),
+                        J.name = rep(NA, mylen),
+                        V.end = rep(NA, mylen),
+                        D.start = rep(NA, mylen),
+                        D.end = rep(NA, mylen),
+                        J.start = rep(NA, mylen),
+                        VJ.ins = rep(NA, mylen),
+                        VD.ins = rep(NA, mylen),
+                        DJ.in = rep(NA, mylen),
+                        Sequence = rep(NA, mylen))
+
+`CVG021_-7` = courgette
+`CVG021_-7`$Clones = CVG021dfm$CVG14V54182
+`CVG021_-7`$CDR3.aa = CVG021dfm$Genus
+`CVG021_-7` = as_tibble(`CVG021_-7`)
+`CVG021_-7`$CDR3.aa <- as.character(`CVG021_-7`$CDR3.aa)
+
+CVG021_0 = courgette
+CVG021_0$Clones = CVG021dfm$CVG14V54186
+CVG021_0$CDR3.aa = CVG021dfm$Genus
+CVG021_0 = as_tibble(CVG021_0)
+CVG021_0$CDR3.aa <- as.character(CVG021_0$CDR3.aa)
+
+CVG021_16 = courgette
+CVG021_16$Clones = CVG021dfm$CVG14V54201
+CVG021_16$CDR3.aa = CVG021dfm$Genus
+CVG021_16 = as_tibble(CVG021_16)
+CVG021_16$CDR3.aa <- as.character(CVG021_16$CDR3.aa)
+
+CVG021_23 = courgette
+CVG021_23$Clones = CVG021dfm$CVG14V54212
+CVG021_23$CDR3.aa = CVG021dfm$Genus
+CVG021_23 = as_tibble(CVG021_23)
+CVG021_23$CDR3.aa <- as.character(CVG021_23$CDR3.aa)
+
+data <- list(`CVG021_-7` = `CVG021_-7`, CVG021_0 = CVG021_0, CVG021_16 = CVG021_16, CVG021_23 = CVG021_23)
+# nested lists
+CVG021immun <- list(data = data, meta = metadata_cvg) #all the alpha CD4 samples over 1000 reads
+
+repClonality(CVG021immun$data, "homeo") %>% vis()
+
+
+```
+cvg028
+```{r}
+mylen <- length(row_number(CVG028dfm$OTU))
+
+rep(NA, mylen)
+
+courgette <- data.frame(Clones = rep(NA, mylen),
+                        Proportion = rep(NA, mylen),
+                        CDR3.nt = rep(NA, mylen),
+                        CDR3.aa = rep(NA, mylen),
+                        V.name = rep(NA, mylen),
+                        D.name = rep(NA, mylen),
+                        J.name = rep(NA, mylen),
+                        V.end = rep(NA, mylen),
+                        D.start = rep(NA, mylen),
+                        D.end = rep(NA, mylen),
+                        J.start = rep(NA, mylen),
+                        VJ.ins = rep(NA, mylen),
+                        VD.ins = rep(NA, mylen),
+                        DJ.in = rep(NA, mylen),
+                        Sequence = rep(NA, mylen))
+
+`CVG028_-13`= courgette
+`CVG028_-13`$Clones = CVG028dfm$CVG14V54224
+`CVG028_-13`$CDR3.aa = CVG028dfm$Genus
+`CVG028_-13` = as_tibble(`CVG028_-13`)
+`CVG028_-13`$CDR3.aa <- as.character(`CVG028_-13`$CDR3.aa)
+
+CVG028_1 = courgette
+CVG028_1$Clones = CVG028dfm$CVG14V54232
+CVG028_1$CDR3.aa = CVG028dfm$Genus
+CVG028_1 = as_tibble(CVG028_1)
+CVG028_1$CDR3.aa <- as.character(CVG028_1$CDR3.aa)
+
+CVG028_41 = courgette
+CVG028_41$Clones = CVG028dfm$CVG14V54277
+CVG028_41$CDR3.aa = CVG028dfm$Genus
+CVG028_41 = as_tibble(CVG028_41)
+CVG028_41$CDR3.aa <- as.character(CVG028_41$CDR3.aa)
+
+CVG028_65 = courgette
+CVG028_65$Clones = CVG028dfm$CVG14V54311
+CVG028_65$CDR3.aa = CVG028dfm$Genus
+CVG028_65 = as_tibble(CVG028_65)
+CVG028_65$CDR3.aa <- as.character(CVG028_65$CDR3.aa)
+
+CVG028_281 = courgette
+CVG028_281$Clones = CVG028dfm$CVG14V54600
+CVG028_281$CDR3.aa = CVG028dfm$Genus
+CVG028_281 = as_tibble(CVG028_281)
+CVG028_281$CDR3.aa <- as.character(CVG028_281$CDR3.aa)
+
+data <- list(`CVG028_-13` = `CVG028_-13`, CVG028_1 = CVG028_1, CVG028_41 = CVG028_41, CVG028_65 = CVG028_65, CVG028_281 = CVG028_281)
+# nested lists
+CVG028immun <- list(data = data, meta = metadata_cvg) #all the alpha CD4 samples over 1000 reads
+
+repClonality(CVG028immun$data, "homeo") %>% vis()
+
+```
+cvg032
+```{r}
+mylen <- length(row_number(CVG032dfm$OTU))
+
+rep(NA, mylen)
+
+courgette <- data.frame(Clones = rep(NA, mylen),
+                        Proportion = rep(NA, mylen),
+                        CDR3.nt = rep(NA, mylen),
+                        CDR3.aa = rep(NA, mylen),
+                        V.name = rep(NA, mylen),
+                        D.name = rep(NA, mylen),
+                        J.name = rep(NA, mylen),
+                        V.end = rep(NA, mylen),
+                        D.start = rep(NA, mylen),
+                        D.end = rep(NA, mylen),
+                        J.start = rep(NA, mylen),
+                        VJ.ins = rep(NA, mylen),
+                        VD.ins = rep(NA, mylen),
+                        DJ.in = rep(NA, mylen),
+                        Sequence = rep(NA, mylen))
+
+`CVG032_-2` = courgette
+`CVG032_-2`$Clones = CVG032dfm$CVG14V54259
+`CVG032_-2`$CDR3.aa = CVG032dfm$Genus
+`CVG032_-2` = as_tibble(`CVG032_-2`)
+`CVG032_-2`$CDR3.aa <- as.character(`CVG032_-2`$CDR3.aa)
+
+`CVG032_-7` = courgette
+`CVG032_-7`$Clones = CVG032dfm$CVG14V54260
+`CVG032_-7`$CDR3.aa = CVG032dfm$Genus
+`CVG032_-7` = as_tibble(`CVG032_-7`)
+`CVG032_-7`$CDR3.aa <- as.character(`CVG032_-7`$CDR3.aa)
+
+CVG032_0 = courgette
+CVG032_0$Clones = CVG032dfm$CVG14V54266
+CVG032_0$CDR3.aa = CVG032dfm$Genus
+CVG032_0 = as_tibble(CVG032_0)
+CVG032_0$CDR3.aa <- as.character(CVG032_0$CDR3.aa)
+
+CVG032_42 = courgette
+CVG032_42$Clones = CVG032dfm$CVG14V54336
+CVG032_42$CDR3.aa = CVG032dfm$Genus
+CVG032_42 = as_tibble(CVG032_42)
+CVG032_42$CDR3.aa <- as.character(CVG032_42$CDR3.aa)
+
+CVG032_69 = courgette
+CVG032_69$Clones = CVG032dfm$CVG14V54370
+CVG032_69$CDR3.aa = CVG032dfm$Genus
+CVG032_69 = as_tibble(CVG032_69)
+CVG032_69$CDR3.aa <- as.character(CVG032_69$CDR3.aa)
+
+CVG032_96 = courgette
+CVG032_96$Clones = CVG032dfm$CVG14V54429
+CVG032_96$CDR3.aa = CVG032dfm$Genus
+CVG032_96 = as_tibble(CVG032_96)
+CVG032_96$CDR3.aa <- as.character(CVG032_96$CDR3.aa)
+
+CVG032_98 = courgette
+CVG032_98$Clones = CVG032dfm$CVG14V54459
+CVG032_98$CDR3.aa = CVG032dfm$Genus
+CVG032_98 = as_tibble(CVG032_98)
+CVG032_98$CDR3.aa <- as.character(CVG032_98$CDR3.aa)
+
+CVG032_142 = courgette
+CVG032_142$Clones = CVG032dfm$CVG14V54520
+CVG032_142$CDR3.aa = CVG032dfm$Genus
+CVG032_142 = as_tibble(CVG032_142)
+CVG032_142$CDR3.aa <- as.character(CVG032_142$CDR3.aa)
+
+data <- list(`CVG032_-7` = `CVG032_-7`, `CVG032_-2` = `CVG032_-2`, CVG032_0 = CVG032_0, CVG032_42 = CVG032_42, CVG032_69 = CVG032_69, CVG032_96 = CVG032_96, CVG032_98 = CVG032_98, CVG032_142 = CVG032_142)
+# nested lists
+CVG032immun <- list(data = data, meta = metadata_cvg) #all the alpha CD4 samples over 1000 reads
+
+repClonality(CVG032immun$data, "homeo") %>% vis()
+
+```
+cvg041
+```{r}
+mylen <- length(row_number(CVG041dfm$OTU))
+
+rep(NA, mylen)
+
+courgette <- data.frame(Clones = rep(NA, mylen),
+                        Proportion = rep(NA, mylen),
+                        CDR3.nt = rep(NA, mylen),
+                        CDR3.aa = rep(NA, mylen),
+                        V.name = rep(NA, mylen),
+                        D.name = rep(NA, mylen),
+                        J.name = rep(NA, mylen),
+                        V.end = rep(NA, mylen),
+                        D.start = rep(NA, mylen),
+                        D.end = rep(NA, mylen),
+                        J.start = rep(NA, mylen),
+                        VJ.ins = rep(NA, mylen),
+                        VD.ins = rep(NA, mylen),
+                        DJ.in = rep(NA, mylen),
+                        Sequence = rep(NA, mylen))
+
+CVG041_1 = courgette
+CVG041_1$Clones = CVG041dfm$CVG14V54338
+CVG041_1$CDR3.aa = CVG041dfm$Genus
+CVG041_1 = as_tibble(CVG041_1)
+CVG041_1$CDR3.aa <- as.character(CVG041_1$CDR3.aa)
+
+CVG041_16 = courgette
+CVG041_16$Clones = CVG041dfm$CVG14V54371
+CVG041_16$CDR3.aa = CVG041dfm$Genus
+CVG041_16 = as_tibble(CVG041_16)
+CVG041_16$CDR3.aa <- as.character(CVG041_16$CDR3.aa)
+
+CVG041_37 = courgette
+CVG041_37$Clones = CVG041dfm$CVG14V54405
+CVG041_37$CDR3.aa = CVG041dfm$Genus
+CVG041_37 = as_tibble(CVG041_37)
+CVG041_37$CDR3.aa <- as.character(CVG041_37$CDR3.aa)
+
+CVG041_58 = courgette
+CVG041_58$Clones = CVG041dfm$CVG14V54457
+CVG041_58$CDR3.aa = CVG041dfm$Genus
+CVG041_58 = as_tibble(CVG041_58)
+CVG041_58$CDR3.aa <- as.character(CVG041_58$CDR3.aa)
+
+CVG041_120 = courgette
+CVG041_120$Clones = CVG041dfm$CVG14V54540
+CVG041_120$CDR3.aa = CVG041dfm$Genus
+CVG041_120 = as_tibble(CVG041_120)
+CVG041_120$CDR3.aa <- as.character(CVG041_120$CDR3.aa)
+
+CVG041_134 = courgette
+CVG041_134$Clones = CVG041dfm$CVG14V54551
+CVG041_134$CDR3.aa = CVG041dfm$Genus
+CVG041_134 = as_tibble(CVG041_134)
+CVG041_134$CDR3.aa <- as.character(CVG041_134$CDR3.aa)
+
+CVG041_150 = courgette
+CVG041_150$Clones = CVG041dfm$CVG14V54570
+CVG041_150$CDR3.aa = CVG041dfm$Genus
+CVG041_150 = as_tibble(CVG041_150)
+CVG041_150$CDR3.aa <- as.character(CVG041_150$CDR3.aa)
+
+data <- list(CVG041_1 = CVG041_1, CVG041_16 = CVG041_16, CVG041_37 = CVG041_37, CVG041_58 = CVG041_58, CVG041_120 = CVG041_120, CVG041_134 = CVG041_134, CVG041_150 = CVG041_150)
+# nested lists
+CVG041immun <- list(data = data, meta = metadata_cvg) #all the alpha CD4 samples over 1000 reads
+
+repClonality(CVG041immun$data, "homeo") %>% vis()
+
+```
+cvg042
+```{r}
+mylen <- length(row_number(CVG042dfm$OTU))
+
+rep(NA, mylen)
+
+courgette <- data.frame(Clones = rep(NA, mylen),
+                        Proportion = rep(NA, mylen),
+                        CDR3.nt = rep(NA, mylen),
+                        CDR3.aa = rep(NA, mylen),
+                        V.name = rep(NA, mylen),
+                        D.name = rep(NA, mylen),
+                        J.name = rep(NA, mylen),
+                        V.end = rep(NA, mylen),
+                        D.start = rep(NA, mylen),
+                        D.end = rep(NA, mylen),
+                        J.start = rep(NA, mylen),
+                        VJ.ins = rep(NA, mylen),
+                        VD.ins = rep(NA, mylen),
+                        DJ.in = rep(NA, mylen),
+                        Sequence = rep(NA, mylen))
+
+CVG042_12 = courgette
+CVG042_12$Clones = CVG042dfm$CVG14V54363
+CVG042_12$CDR3.aa = CVG042dfm$Genus
+CVG042_12 = as_tibble(CVG042_12)
+CVG042_12$CDR3.aa <- as.character(CVG042_12$CDR3.aa)
+
+CVG042_20 = courgette
+CVG042_20$Clones = CVG042dfm$CVG14V54389
+CVG042_20$CDR3.aa = CVG042dfm$Genus
+CVG042_20 = as_tibble(CVG042_20)
+CVG042_20$CDR3.aa <- as.character(CVG042_20$CDR3.aa)
+
+CVG042_34 = courgette
+CVG042_34$Clones = CVG042dfm$CVG14V54437
+CVG042_34$CDR3.aa = CVG042dfm$Genus
+CVG042_34 = as_tibble(CVG042_34)
+CVG042_34$CDR3.aa <- as.character(CVG042_34$CDR3.aa)
+
+CVG042_88 = courgette
+CVG042_88$Clones = CVG042dfm$CVG14V54513
+CVG042_88$CDR3.aa = CVG042dfm$Genus
+CVG042_88 = as_tibble(CVG042_88)
+CVG042_88$CDR3.aa <- as.character(CVG042_88$CDR3.aa)
+
+CVG042_158 = courgette
+CVG042_158$Clones = CVG042dfm$CVG14V54581
+CVG042_158$CDR3.aa = CVG042dfm$Genus
+CVG042_158 = as_tibble(CVG042_158)
+CVG042_158$CDR3.aa <- as.character(CVG042_158$CDR3.aa)
+
+data <- list(CVG042_12 = CVG042_12, CVG042_20 = CVG042_20, CVG042_34 = CVG042_34, CVG042_88 = CVG042_88, CVG042_158 = CVG042_158)
+# nested lists
+CVG042immun <- list(data = data, meta = metadata_cvg) #all the alpha CD4 samples over 1000 reads
+
+repClonality(CVG042immun$data, "homeo") %>% vis()
+
+```
+cvg046
+```{r}
+mylen <- length(row_number(CVG046dfm$OTU))
+
+rep(NA, mylen)
+
+courgette <- data.frame(Clones = rep(NA, mylen),
+                        Proportion = rep(NA, mylen),
+                        CDR3.nt = rep(NA, mylen),
+                        CDR3.aa = rep(NA, mylen),
+                        V.name = rep(NA, mylen),
+                        D.name = rep(NA, mylen),
+                        J.name = rep(NA, mylen),
+                        V.end = rep(NA, mylen),
+                        D.start = rep(NA, mylen),
+                        D.end = rep(NA, mylen),
+                        J.start = rep(NA, mylen),
+                        VJ.ins = rep(NA, mylen),
+                        VD.ins = rep(NA, mylen),
+                        DJ.in = rep(NA, mylen),
+                        Sequence = rep(NA, mylen))
+
+`CVG046_-7` = courgette
+`CVG046_-7`$Clones = CVG046dfm$CVG14V54333
+`CVG046_-7`$CDR3.aa = CVG046dfm$Genus
+`CVG046_-7` = as_tibble(`CVG046_-7`)
+`CVG046_-7`$CDR3.aa <- as.character(`CVG046_-7`$CDR3.aa)
+
+CVG046_19 = courgette
+CVG046_19$Clones = CVG046dfm$CVG14V54395
+CVG046_19$CDR3.aa = CVG046dfm$Genus
+CVG046_19 = as_tibble(CVG046_19)
+CVG046_19$CDR3.aa <- as.character(CVG046_19$CDR3.aa)
+
+CVG046_37 = courgette
+CVG046_37$Clones = CVG046dfm$CVG14V54443
+CVG046_37$CDR3.aa = CVG046dfm$Genus
+CVG046_37 = as_tibble(CVG046_37)
+CVG046_37$CDR3.aa <- as.character(CVG046_37$CDR3.aa)
+
+CVG046_62 = courgette
+CVG046_62$Clones = CVG046dfm$CVG14V54485
+CVG046_62$CDR3.aa = CVG046dfm$Genus
+CVG046_62 = as_tibble(CVG046_62)
+CVG046_62$CDR3.aa <- as.character(CVG046_62$CDR3.aa)
+
+data <- list(`CVG046_-7` = `CVG046_-7`, CVG046_19 = CVG046_19, CVG046_37 = CVG046_37, CVG046_62 = CVG046_62)
+# nested lists
+CVG046immun <- list(data = data, meta = metadata_cvg) #all the alpha CD4 samples over 1000 reads
+
+repClonality(CVG046immun$data, "homeo") %>% vis()
+```
+cvg047
+```{r}
+mylen <- length(row_number(CVG047dfm$OTU))
+
+rep(NA, mylen)
+
+courgette <- data.frame(Clones = rep(NA, mylen),
+                        Proportion = rep(NA, mylen),
+                        CDR3.nt = rep(NA, mylen),
+                        CDR3.aa = rep(NA, mylen),
+                        V.name = rep(NA, mylen),
+                        D.name = rep(NA, mylen),
+                        J.name = rep(NA, mylen),
+                        V.end = rep(NA, mylen),
+                        D.start = rep(NA, mylen),
+                        D.end = rep(NA, mylen),
+                        J.start = rep(NA, mylen),
+                        VJ.ins = rep(NA, mylen),
+                        VD.ins = rep(NA, mylen),
+                        DJ.in = rep(NA, mylen),
+                        Sequence = rep(NA, mylen))
+
+`CVG047_-8` = courgette
+`CVG047_-8`$Clones = CVG047dfm$CVG14V54339
+`CVG047_-8`$CDR3.aa = CVG047dfm$Genus
+`CVG047_-8` = as_tibble(`CVG047_-8`)
+`CVG047_-8`$CDR3.aa <- as.character(`CVG047_-8`$CDR3.aa)
+
+CVG047_13 = courgette
+CVG047_13$Clones = CVG047dfm$CVG14V54393
+CVG047_13$CDR3.aa = CVG047dfm$Genus
+CVG047_13 = as_tibble(CVG047_13)
+CVG047_13$CDR3.aa <- as.character(CVG047_13$CDR3.aa)
+
+CVG047_25 = courgette
+CVG047_25$Clones = CVG047dfm$CVG14V54408
+CVG047_25$CDR3.aa = CVG047dfm$Genus
+CVG047_25 = as_tibble(CVG047_25)
+CVG047_25$CDR3.aa <- as.character(CVG047_25$CDR3.aa)
+
+CVG047_35 = courgette
+CVG047_35$Clones = CVG047dfm$CVG14V54433
+CVG047_35$CDR3.aa = CVG047dfm$Genus
+CVG047_35 = as_tibble(CVG047_35)
+CVG047_35$CDR3.aa <- as.character(CVG047_35$CDR3.aa)
+
+CVG047_31 = courgette
+CVG047_31$Clones = CVG047dfm$CVG14V54438
+CVG047_31$CDR3.aa = CVG047dfm$Genus
+CVG047_31 = as_tibble(CVG047_31)
+CVG047_31$CDR3.aa <- as.character(CVG047_31$CDR3.aa)
+
+CVG047_60 = courgette
+CVG047_60$Clones = CVG047dfm$CVG14V54468
+CVG047_60$CDR3.aa = CVG047dfm$Genus
+CVG047_60 = as_tibble(CVG047_60)
+CVG047_60$CDR3.aa <- as.character(CVG047_60$CDR3.aa)
+
+CVG047_90 = courgette
+CVG047_90$Clones = CVG047dfm$CVG14V54517
+CVG047_90$CDR3.aa = CVG047dfm$Genus
+CVG047_90 = as_tibble(CVG047_90)
+CVG047_90$CDR3.aa <- as.character(CVG047_90$CDR3.aa)
+
+CVG047_180 = courgette
+CVG047_180$Clones = CVG047dfm$CVG14V54602
+CVG047_180$CDR3.aa = CVG047dfm$Genus
+CVG047_180 = as_tibble(CVG047_180)
+CVG047_180$CDR3.aa <- as.character(CVG047_180$CDR3.aa)
+
+CVG047_242 = courgette
+CVG047_242$Clones = CVG047dfm$CVG14V54627
+CVG047_242$CDR3.aa = CVG047dfm$Genus
+CVG047_242 = as_tibble(CVG047_242)
+CVG047_242$CDR3.aa <- as.character(CVG047_242$CDR3.aa)
+
+data <- list(`CVG047_-8` = `CVG047_-8`, CVG047_13 = CVG047_13, CVG047_25 = CVG047_25, CVG047_31 = CVG047_31, CVG047_35 = CVG047_35, CVG047_60 = CVG047_60, CVG047_90 = CVG047_90, CVG047_180 = CVG047_180, CVG047_242 = CVG047_242)
+# nested lists
+CVG047immun <- list(data = data, meta = metadata_cvg) #all the alpha CD4 samples over 1000 reads
+
+repClonality(CVG047immun$data, "homeo") %>% vis()
+```
+cvg048
+```{r}
+mylen <- length(row_number(CVG048dfm$OTU))
+
+rep(NA, mylen)
+
+courgette <- data.frame(Clones = rep(NA, mylen),
+                        Proportion = rep(NA, mylen),
+                        CDR3.nt = rep(NA, mylen),
+                        CDR3.aa = rep(NA, mylen),
+                        V.name = rep(NA, mylen),
+                        D.name = rep(NA, mylen),
+                        J.name = rep(NA, mylen),
+                        V.end = rep(NA, mylen),
+                        D.start = rep(NA, mylen),
+                        D.end = rep(NA, mylen),
+                        J.start = rep(NA, mylen),
+                        VJ.ins = rep(NA, mylen),
+                        VD.ins = rep(NA, mylen),
+                        DJ.in = rep(NA, mylen),
+                        Sequence = rep(NA, mylen))
+
+CVG048_9 = courgette
+CVG048_9$Clones = CVG048dfm$CVG14V54451
+CVG048_9$CDR3.aa = CVG048dfm$Genus
+CVG048_9 = as_tibble(CVG048_9)
+CVG048_9$CDR3.aa <- as.character(CVG048_9$CDR3.aa)
+
+CVG048_7 = courgette
+CVG048_7$Clones = CVG048dfm$CVG14V54458
+CVG048_7$CDR3.aa = CVG048dfm$Genus
+CVG048_7 = as_tibble(CVG048_7)
+CVG048_7$CDR3.aa <- as.character(CVG048_7$CDR3.aa)
+
+CVG048_153 = courgette
+CVG048_153$Clones = CVG048dfm$CVG14V54601
+CVG048_153$CDR3.aa = CVG048dfm$Genus
+CVG048_153 = as_tibble(CVG048_153)
+CVG048_153$CDR3.aa <- as.character(CVG048_153$CDR3.aa)
+
+data <- list(CVG048_7 = CVG048_7, CVG048_9 = CVG048_9, CVG048_153 = CVG048_153)
+# nested lists
+CVG048immun <- list(data = data, meta = metadata_cvg) #all the alpha CD4 samples over 1000 reads
+
+repClonality(CVG048immun$data, "homeo") %>% vis()
+```
+cvg052
+```{r}
+mylen <- length(row_number(CVG052dfm$OTU))
+
+rep(NA, mylen)
+
+courgette <- data.frame(Clones = rep(NA, mylen),
+                        Proportion = rep(NA, mylen),
+                        CDR3.nt = rep(NA, mylen),
+                        CDR3.aa = rep(NA, mylen),
+                        V.name = rep(NA, mylen),
+                        D.name = rep(NA, mylen),
+                        J.name = rep(NA, mylen),
+                        V.end = rep(NA, mylen),
+                        D.start = rep(NA, mylen),
+                        D.end = rep(NA, mylen),
+                        J.start = rep(NA, mylen),
+                        VJ.ins = rep(NA, mylen),
+                        VD.ins = rep(NA, mylen),
+                        DJ.in = rep(NA, mylen),
+                        Sequence = rep(NA, mylen))
+
+CVG052_7 = courgette
+CVG052_7$Clones = CVG052dfm$CVG14V54456
+CVG052_7$CDR3.aa = CVG052dfm$Genus
+CVG052_7 = as_tibble(CVG052_7)
+CVG052_7$CDR3.aa <- as.character(CVG052_7$CDR3.aa)
+
+CVG052_0 = courgette
+CVG052_0$Clones = CVG052dfm$CVG14V54474
+CVG052_0$CDR3.aa = CVG052dfm$Genus
+CVG052_0 = as_tibble(CVG052_0)
+CVG052_0$CDR3.aa <- as.character(CVG052_0$CDR3.aa)
+
+CVG052_62 = courgette
+CVG052_62$Clones = CVG052dfm$CVG14V54545
+CVG052_62$CDR3.aa = CVG052dfm$Genus
+CVG052_62 = as_tibble(CVG052_62)
+CVG052_62$CDR3.aa <- as.character(CVG052_62$CDR3.aa)
+
+data <- list(CVG052_0 = CVG052_0, CVG052_7 = CVG052_7, CVG052_62 = CVG052_62)
+# nested lists
+CVG052immun <- list(data = data, meta = metadata_cvg) #all the alpha CD4 samples over 1000 reads
+
+repClonality(CVG052immun$data, "homeo") %>% vis()
+```
+cvg054
+```{r}
+mylen <- length(row_number(CVG054dfm$OTU))
+
+rep(NA, mylen)
+
+courgette <- data.frame(Clones = rep(NA, mylen),
+                        Proportion = rep(NA, mylen),
+                        CDR3.nt = rep(NA, mylen),
+                        CDR3.aa = rep(NA, mylen),
+                        V.name = rep(NA, mylen),
+                        D.name = rep(NA, mylen),
+                        J.name = rep(NA, mylen),
+                        V.end = rep(NA, mylen),
+                        D.start = rep(NA, mylen),
+                        D.end = rep(NA, mylen),
+                        J.start = rep(NA, mylen),
+                        VJ.ins = rep(NA, mylen),
+                        VD.ins = rep(NA, mylen),
+                        DJ.in = rep(NA, mylen),
+                        Sequence = rep(NA, mylen))
+
+`CVG054_-7` = courgette
+`CVG054_-7`$Clones = CVG054dfm$CVG14V54430
+`CVG054_-7`$CDR3.aa = CVG054dfm$Genus
+`CVG054_-7` = as_tibble(`CVG054_-7`)
+`CVG054_-7`$CDR3.aa <- as.character(`CVG054_-7`$CDR3.aa)
+
+CVG054_6 = courgette
+CVG054_6$Clones = CVG054dfm$CVG14V54470
+CVG054_6$CDR3.aa = CVG054dfm$Genus
+CVG054_6 = as_tibble(CVG054_6)
+CVG054_6$CDR3.aa <- as.character(CVG054_6$CDR3.aa)
+
+CVG054_28 = courgette
+CVG054_28$Clones = CVG054dfm$CVG14V54489
+CVG054_28$CDR3.aa = CVG054dfm$Genus
+CVG054_28 = as_tibble(CVG054_28)
+CVG054_28$CDR3.aa <- as.character(CVG054_28$CDR3.aa)
+
+data <- list(`CVG054_-7` = `CVG054_-7`, CVG054_6 = CVG054_6, CVG054_28 = CVG054_28)
+# nested lists
+CVG054immun <- list(data = data, meta = metadata_cvg) #all the alpha CD4 samples over 1000 reads
+
+repClonality(CVG054immun$data, "homeo") %>% vis()
+```
+
+```{r}
+data <- list(`CVG001_-8` = `CVG001_-8`, CVG001_12 = CVG001_12, CVG001_27 = CVG001_27, CVG001_41 = CVG001_41, CVG001_104 = CVG001_104, CVG002_10 = CVG002_10, CVG002_26 = CVG002_26, CVG002_32 = CVG002_32, CVG002_67 = CVG002_67, CVG002_69 = CVG002_69, CVG002_90 = CVG002_90, CVG002_207 = CVG002_207, CVG002_222= CVG002_222, CVG002_304 = CVG002_304,CVG003_0 = CVG003_0, CVG003_32 = CVG003_32, CVG003_180 = CVG003_180,CVG004_0 = CVG004_0, CVG004_28 = CVG004_28, CVG004_161 = CVG004_161, CVG004_210 = CVG004_210,CVG005_34 = CVG005_34, CVG005_43 = CVG005_43, CVG005_44 = CVG005_44,`CVG012_-7` = `CVG012_-7`, CVG012_1 = CVG012_1, CVG012_7 = CVG012_7, CVG012_25 = CVG012_25, CVG012_36 = CVG012_36, CVG012_62 = CVG012_62, CVG012_89 = CVG012_89, CVG012_117 = CVG012_117, CVG012_236 = CVG012_236, CVG012_271 = CVG012_271,CVG014_18 = CVG014_18, CVG014_19 = CVG014_19, CVG014_34 = CVG014_34, CVG014_55 = CVG014_55,CVG016_8 = CVG016_8, CVG016_35 = CVG016_35, CVG016_220 = CVG016_220, CVG017_1 = CVG017_1, CVG017_35 = CVG017_35, CVG017_180 = CVG017_180,CVG019_39 = CVG019_39, CVG019_61 = CVG019_61, CVG019_82 = CVG019_82, CVG019_370 = CVG019_370,`CVG021_-7` = `CVG021_-7`, CVG021_0 = CVG021_0, CVG021_16 = CVG021_16, CVG021_23 = CVG021_23,`CVG028_-13` = `CVG028_-13`, CVG028_1 = CVG028_1, CVG028_41 = CVG028_41, CVG028_65 = CVG028_65, CVG028_281 = CVG028_281,`CVG032_-7` = `CVG032_-7`, `CVG032_-2` = `CVG032_-2`, CVG032_0 = CVG032_0, CVG032_42 = CVG032_42, CVG032_69 = CVG032_69, CVG032_96 = CVG032_96, CVG032_98 = CVG032_98, CVG032_142 = CVG032_142,CVG041_1 = CVG041_1, CVG041_16 = CVG041_16, CVG041_37 = CVG041_37, CVG041_58 = CVG041_58, CVG041_120 = CVG041_120, CVG041_134 = CVG041_134, CVG041_150 = CVG041_150,CVG042_12 = CVG042_12, CVG042_20 = CVG042_20, CVG042_34 = CVG042_34, CVG042_88 = CVG042_88, CVG042_158 = CVG042_158,`CVG046_-7` = `CVG046_-7`, CVG046_19 = CVG046_19, CVG046_37 = CVG046_37, CVG046_62 = CVG046_62,`CVG047_-8` = `CVG047_-8`, CVG047_13 = CVG047_13, CVG047_25 = CVG047_25, CVG047_31 = CVG047_31, CVG047_35 = CVG047_35, CVG047_60 = CVG047_60, CVG047_90 = CVG047_90, CVG047_180 = CVG047_180, CVG047_242 = CVG047_242,CVG048_7 = CVG048_7, CVG048_9 = CVG048_9, CVG048_153 = CVG048_153,CVG052_0 = CVG052_0, CVG052_7 = CVG052_7, CVG052_62 = CVG052_62,`CVG054_-7` = `CVG054_-7`, CVG054_6 = CVG054_6, CVG054_28 = CVG054_28)
+# nested lists
+the20immun <- list(data = data, meta = metadata_cvg) #all the alpha CD4 samples over 1000 reads
+
+repClonality(the20immun$data, "homeo") %>% vis()
+
+repClonality(the20immun$data, .method = "rare")%>% vis()
+
+repClonality(the20immun$data, "homeo",
+  .clone.types = c(Small = .01, Medium = 0.1, Large = 1, Hyperexpanded = 10)) %>% vis()
+
+```
+
+
+
+cvg006
+```{r}
+mylen <- length(row_number(CVG006dfm$OTU))
+
+rep(NA, mylen)
+
+courgette <- data.frame(Clones = rep(NA, mylen),
+                        Proportion = rep(NA, mylen),
+                        CDR3.nt = rep(NA, mylen),
+                        CDR3.aa = rep(NA, mylen),
+                        V.name = rep(NA, mylen),
+                        D.name = rep(NA, mylen),
+                        J.name = rep(NA, mylen),
+                        V.end = rep(NA, mylen),
+                        D.start = rep(NA, mylen),
+                        D.end = rep(NA, mylen),
+                        J.start = rep(NA, mylen),
+                        VJ.ins = rep(NA, mylen),
+                        VD.ins = rep(NA, mylen),
+                        DJ.in = rep(NA, mylen),
+                        Sequence = rep(NA, mylen))
+
+`CVG006_-151` = courgette
+`CVG006_-151`$Clones = CVG006dfm$CVG14V54035
+`CVG006_-151`$CDR3.aa = CVG006dfm$Genus
+`CVG006_-151` = as_tibble(`CVG006_-151`)
+`CVG006_-151`$CDR3.aa <- as.character(`CVG006_-151`$CDR3.aa)
+
+data <- list(`CVG006_-151` = `CVG006_-151`)
+# nested lists
+CVG006immun <- list(data = data, meta = metadata_cvg) #all the alpha CD4 samples over 1000 reads
+
+repClonality(CVG006immun$data, "homeo") %>% vis()
+```
+
+cvg007
+```{r}
+mylen <- length(row_number(CVG007dfm$OTU))
+
+rep(NA, mylen)
+
+courgette <- data.frame(Clones = rep(NA, mylen),
+                        Proportion = rep(NA, mylen),
+                        CDR3.nt = rep(NA, mylen),
+                        CDR3.aa = rep(NA, mylen),
+                        V.name = rep(NA, mylen),
+                        D.name = rep(NA, mylen),
+                        J.name = rep(NA, mylen),
+                        V.end = rep(NA, mylen),
+                        D.start = rep(NA, mylen),
+                        D.end = rep(NA, mylen),
+                        J.start = rep(NA, mylen),
+                        VJ.ins = rep(NA, mylen),
+                        VD.ins = rep(NA, mylen),
+                        DJ.in = rep(NA, mylen),
+                        Sequence = rep(NA, mylen))
+
+`CVG007_-8` = courgette
+`CVG007_-8`$Clones = CVG007dfm$CVG14V54441
+`CVG007_-8`$CDR3.aa = CVG007dfm$Genus
+`CVG007_-8` = as_tibble(`CVG007_-8`)
+`CVG007_-8`$CDR3.aa <- as.character(`CVG007_-8`$CDR3.aa)
+
+data <- list(`CVG007_-8` = `CVG007_-8`)
+# nested lists
+CVG007immun <- list(data = data, meta = metadata_cvg) #all the alpha CD4 samples over 1000 reads
+
+repClonality(CVG007immun$data, "homeo") %>% vis()
+```
+
+
+
+
+
+
+
